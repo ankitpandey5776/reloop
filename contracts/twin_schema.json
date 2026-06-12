@@ -1,0 +1,65 @@
+{
+  "twin_id": "uuid-v4-string",
+  "item": {
+    "sku": "string",
+    "title": "string",
+    "category": "electronics | fashion | home | books | other",
+    "original_price": 2000,
+    "purchase_date": "2026-06-10T00:00:00Z",
+    "image_url": "string or null"
+  },
+  "customer": {
+    "customer_id": "uuid-v4-string",
+    "pincode": "711101",
+    "name": "string"
+  },
+  "state": "ACTIVE | RETURN_INTENT | GRADED | ROUTED | LISTED | SOLD | DONATED | RECYCLED",
+  "prevention": {
+    "risk_score": 0.87,
+    "risk_factors": ["size_bracketing", "high_return_category", "review_fit_warnings"],
+    "nudge_shown": true,
+    "nudge_type": "size_suggestion | keep_discount | fit_predictor | none",
+    "prevented": false
+  },
+  "grading": {
+    "grade": "A | B | C | D",
+    "confidence": 0.92,
+    "defects": [
+      {
+        "type": "scratch | dent | stain | missing_part | discoloration | packaging_damage",
+        "location": "string",
+        "severity": "minor | moderate | major"
+      }
+    ],
+    "photo_urls": ["string"],
+    "condition_report": "Human-readable condition summary string",
+    "graded_at": "ISO-8601"
+  },
+  "valuation": {
+    "resale_price": 1400,
+    "price_multiplier": 0.70,
+    "demand_factor": 1.0
+  },
+  "routing": {
+    "decision": "RESELL_P2P | RESELL_RENEWED | REFURBISH | DONATE | RECYCLE",
+    "reasoning": "LLM-generated explanation string",
+    "destination": {
+      "type": "buyer | fulfillment_center | refurbisher | ngo | recycler",
+      "name": "string",
+      "pincode": "string"
+    },
+    "savings": {
+      "cost_saved": 310,
+      "co2_saved_kg": 1.2,
+      "km_avoided": 796
+    },
+    "routed_at": "ISO-8601"
+  },
+  "credits": {
+    "earned": 50,
+    "action": "p2p_local_handoff | bought_refurbished | kept_with_discount | donated",
+    "lifetime_credits": 350
+  },
+  "created_at": "ISO-8601",
+  "updated_at": "ISO-8601"
+}
