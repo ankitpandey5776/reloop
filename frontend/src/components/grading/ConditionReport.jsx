@@ -1,18 +1,27 @@
-import { CheckCircle, AlertTriangle } from 'lucide-react'
+import { CheckCircle } from 'lucide-react'
 import Badge from '../common/Badge.jsx'
+import { useTypewriter } from '../../hooks/useAnimations.js'
 
 const severityVariant = { minor: 'warning', moderate: 'danger', major: 'danger' }
 const defectIcon = { scratch: '🔍', dent: '💢', stain: '🟤', missing_part: '❓', discoloration: '🎨', packaging_damage: '📦' }
 
-export default function ConditionReport({ grading }) {
+function ReportQuote({ text, typed }) {
+  const [displayed, done] = useTypewriter(typed ? text : '', 18)
+  const content = typed ? displayed : text
+  return (
+    <div className="bg-gray-50 rounded-xl p-4 border-l-4 border-emerald-400">
+      <p className={`text-sm text-gray-700 italic leading-relaxed ${typed && !done ? 'cursor-blink' : ''}`}>"{content}"</p>
+    </div>
+  )
+}
+
+export default function ConditionReport({ grading, typed = false }) {
   if (!grading) return null
   const { condition_report, defects } = grading
 
   return (
     <div className="space-y-4">
-      <div className="bg-gray-50 rounded-xl p-4 border-l-4 border-emerald-400">
-        <p className="text-sm text-gray-700 italic leading-relaxed">"{condition_report}"</p>
-      </div>
+      <ReportQuote text={condition_report} typed={typed} />
       <div>
         <p className="text-sm font-semibold text-gray-700 mb-2">Defects Found</p>
         {defects && defects.length > 0 ? (

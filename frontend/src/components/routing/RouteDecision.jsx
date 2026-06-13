@@ -8,7 +8,7 @@ export default function RouteDecision({ routing, credits }) {
   return (
     <div className="space-y-5">
       <div className="text-center">
-        <span className={`inline-flex items-center px-5 py-2 rounded-full text-lg font-bold ${
+        <span className={`inline-flex items-center px-5 py-2 rounded-full text-lg font-bold font-display ${
           { success: 'bg-emerald-100 text-emerald-800', info: 'bg-sky-100 text-sky-800', purple: 'bg-violet-100 text-violet-800', teal: 'bg-teal-100 text-teal-800', cyan: 'bg-cyan-100 text-cyan-800' }[decisionVariant(routing.decision)]
         }`}>
           {decisionLabel(routing.decision)}

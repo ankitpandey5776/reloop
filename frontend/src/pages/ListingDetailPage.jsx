@@ -46,7 +46,7 @@ export default function ListingDetailPage() {
   const discount = valuation ? Math.round((1 - valuation.price_multiplier) * 100) : 0
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="animate-fadeInUp max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link to="/marketplace" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6">
         <ArrowLeft size={16} /> Back to Marketplace
       </Link>
@@ -73,10 +73,11 @@ export default function ListingDetailPage() {
         {/* Right: details */}
         <div className="space-y-5">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 capitalize">{item.category}</p>
-            <h1 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h1>
+            <p className="text-xs font-medium text-gray-500 tracking-wider mb-1 capitalize">{item.category}</p>
+            <h1 className="font-display text-2xl font-bold text-gray-900 mb-1 tracking-tight">{item.title}</h1>
+            <p className="font-mono text-xs text-gray-400 mb-3">{twin.twin_id}</p>
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-emerald-600">₹{valuation?.resale_price?.toLocaleString('en-IN')}</span>
+              <span className="font-display text-4xl font-bold text-emerald-600 tracking-tight tabular-nums">₹{valuation?.resale_price?.toLocaleString('en-IN')}</span>
               <span className="text-gray-400 line-through text-lg">₹{item.original_price?.toLocaleString('en-IN')}</span>
               {discount > 0 && <Badge text={`Save ${discount}%`} variant="success" />}
             </div>

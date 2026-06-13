@@ -29,14 +29,14 @@ function Navbar() {
   }, [])
 
   return (
-    <nav className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? 'glass border-b border-emerald-100/60 shadow-[0_4px_24px_-12px_rgba(16,185,129,0.35)]' : 'bg-white/80 border-b border-transparent'}`}>
+    <nav className={`sticky top-0 z-40 bg-[#022c22] transition-shadow duration-300 ${scrolled ? 'shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)]' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="group flex items-center gap-2 font-bold text-xl">
-            <span className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition-transform duration-500 group-hover:rotate-180">
+          <Link to="/" className="group flex items-center gap-2.5 font-display font-bold text-xl">
+            <span className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-[#022c22] shadow-md shadow-emerald-500/30 transition-transform duration-500 group-hover:rotate-180">
               <Recycle size={20} />
             </span>
-            <span className="text-gradient">ReLoop</span>
+            <span className="text-emerald-400">ReLoop</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
@@ -46,13 +46,13 @@ function Navbar() {
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `relative px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-emerald-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
+                  `relative px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-white' : 'text-gray-300 hover:text-white hover:bg-white/5'}`
                 }
               >
                 {({ isActive }) => (
                   <>
                     {label}
-                    {isActive && <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />}
+                    {isActive && <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-emerald-400" />}
                   </>
                 )}
               </NavLink>
@@ -61,7 +61,7 @@ function Navbar() {
 
           <div className="flex items-center gap-3">
             <CreditBadge credits={350} />
-            <button className="md:hidden p-2 rounded-lg hover:bg-gray-100" onClick={() => setOpen(!open)}>
+            <button className="md:hidden p-2 rounded-lg text-gray-200 hover:bg-white/10" onClick={() => setOpen(!open)}>
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
@@ -69,7 +69,7 @@ function Navbar() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1">
+        <div className="md:hidden border-t border-white/10 bg-[#022c22] px-4 py-3 space-y-1">
           {navLinks.map(({ to, label, end }) => (
             <NavLink
               key={to}
@@ -77,7 +77,7 @@ function Navbar() {
               end={end}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-gray-50'}`
+                `block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-emerald-500/15 text-emerald-300' : 'text-gray-300 hover:bg-white/5'}`
               }
             >
               {label}
@@ -112,11 +112,10 @@ export default function App() {
             } />
           </Routes>
         </main>
-        <footer className="relative bg-gray-900 text-gray-400 py-10 overflow-hidden">
-          <div className="absolute inset-0 bg-mesh opacity-10" />
+        <footer className="relative text-gray-400 py-10 overflow-hidden" style={{ background: 'var(--gradient-dark)' }}>
           <div className="relative max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-            <div className="flex items-center gap-2 font-semibold text-white">
-              <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
+            <div className="flex items-center gap-2 font-display font-semibold text-white">
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 text-[#022c22]">
                 <Recycle size={15} />
               </span>
               ReLoop

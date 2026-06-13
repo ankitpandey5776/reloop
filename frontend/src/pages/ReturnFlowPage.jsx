@@ -104,18 +104,25 @@ export default function ReturnFlowPage() {
   const decision = routeResult?.routing?.decision
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Return an Item</h1>
+    <div className="animate-fadeInUp max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900 mb-8">Return an Item</h1>
 
-      {/* Progress bar */}
-      <div className="flex items-center gap-1 mb-8 overflow-x-auto pb-1">
+      {/* Segmented progress bar with active glow */}
+      <div className="flex items-center justify-between mb-10">
         {STEPS.map((s, i) => (
-          <div key={s} className="flex items-center gap-1 shrink-0">
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${i === step ? 'bg-emerald-600 text-white' : i < step ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
-              {i < step ? <CheckCircle size={12} /> : <span>{i + 1}</span>}
-              {s}
+          <div key={s} className="flex items-center flex-1 last:flex-none">
+            <div className="flex flex-col items-center gap-2 shrink-0">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold font-display transition-all duration-500
+                ${i < step ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30' : ''}
+                ${i === step ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40 ring-4 ring-emerald-500/20 scale-110' : ''}
+                ${i > step ? 'bg-gray-200 text-gray-400' : ''}`}>
+                {i < step ? <CheckCircle size={18} /> : i + 1}
+              </div>
+              <span className={`text-[11px] font-medium text-center hidden sm:block transition-colors ${i <= step ? 'text-emerald-700' : 'text-gray-400'}`}>{s}</span>
             </div>
-            {i < STEPS.length - 1 && <div className={`w-4 h-0.5 ${i < step ? 'bg-emerald-300' : 'bg-gray-200'}`} />}
+            {i < STEPS.length - 1 && (
+              <div className={`h-0.5 flex-1 mx-1 sm:mx-2 -mt-6 sm:-mt-7 rounded-full transition-all duration-500 ${i < step ? 'bg-emerald-500' : 'bg-gray-200'}`} />
+            )}
           </div>
         ))}
       </div>
@@ -177,18 +184,14 @@ export default function ReturnFlowPage() {
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
           {grading ? (
             <div className="flex flex-col items-center py-12 gap-6">
-              <div className="relative w-24 h-24">
-                <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center">
-                  <Package size={36} className="text-gray-400" />
-                </div>
-                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-emerald-500 animate-spin" />
-                <div className="absolute bottom-0 left-0 right-0 h-2 bg-emerald-400/30 rounded-b-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 animate-pulse" style={{ width: '60%' }} />
-                </div>
+              {/* Scan line sweeping over a product silhouette */}
+              <div className="relative w-48 h-48 rounded-2xl bg-gray-100 overflow-hidden border border-gray-200">
+                <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent animate-scan shadow-[0_0_12px_2px_rgba(16,185,129,0.6)]" />
+                <Package className="absolute inset-0 m-auto text-gray-300" size={64} />
               </div>
               <div className="text-center">
-                <p className="font-semibold text-gray-900 mb-1">AI is analyzing your item…</p>
-                <p className="text-sm text-gray-500 animate-pulse">{SCAN_MESSAGES[scanMsg]}</p>
+                <p className="font-display text-lg font-semibold text-gray-800">{SCAN_MESSAGES[scanMsg]}</p>
+                <p className="text-sm text-gray-400 mt-1">Powered by AI Vision</p>
               </div>
             </div>
           ) : gradeResult ? (
@@ -230,10 +233,10 @@ export default function ReturnFlowPage() {
       {/* Step 4: Done */}
       {step === 4 && (
         <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-          <div className="mb-4 inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50">
+          <div className="mb-4 inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50 animate-scaleIn">
             <CheckCircle size={44} className="text-emerald-500" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Your item has found its second life!</h2>
+          <h2 className="font-display text-2xl font-bold text-gray-900 mb-2">Your item has found its second life!</h2>
           <p className="text-gray-600 text-sm mb-6">
             {decision === 'RESELL_P2P' || decision === 'RESELL_RENEWED'
               ? `Listed on Marketplace at ₹${routeResult?.routing ? (gradeResult?.valuation?.resale_price?.toLocaleString('en-IN') ?? '—') : '—'}`

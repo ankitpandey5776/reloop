@@ -57,10 +57,10 @@ export default function CheckoutPage() {
   const showNudge = !nudgeDismissed && riskData && riskData.risk_score >= 0.6
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="animate-fadeInUp max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center gap-3 mb-8">
         <ShoppingCart size={24} className="text-emerald-600" />
-        <h1 className="text-2xl font-semibold text-gray-900">Your Cart</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900">Your Cart</h1>
         {riskLoading && <span className="text-xs text-gray-400 animate-pulse">Analyzing cart…</span>}
       </div>
 
