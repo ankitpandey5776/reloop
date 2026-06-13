@@ -87,6 +87,14 @@ export default function App() {
             <Route path="/marketplace" element={<MarketplacePage />} />
             <Route path="/marketplace/:twinId" element={<ListingDetailPage />} />
             <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route path="*" element={
+              <div className="flex flex-col items-center justify-center py-32 text-center px-4">
+                <p className="text-6xl font-bold text-gray-200 mb-4">404</p>
+                <p className="text-xl font-semibold text-gray-700 mb-2">Page not found</p>
+                <p className="text-gray-500 mb-8">The page you're looking for doesn't exist.</p>
+                <a href="/" className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium">Go Home</a>
+              </div>
+            } />
           </Routes>
         </main>
         <footer className="bg-white border-t border-gray-100 py-6 text-center text-sm text-gray-400">
