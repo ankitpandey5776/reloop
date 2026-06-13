@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingCart, CheckCircle, ArrowRight } from 'lucide-react'
-import { checkRisk } from '../api/client.js'
+import { checkRisk, createTwin } from '../api/client.js'
 import CartItem from '../components/checkout/CartItem.jsx'
 import RiskNudge from '../components/checkout/RiskNudge.jsx'
 import Button from '../components/common/Button.jsx'
@@ -47,7 +47,24 @@ export default function CheckoutPage() {
 
   async function handlePlaceOrder() {
     setPlacing(true)
-    await new Promise(r => setTimeout(r, 1000))
+    try {
+      const customer = { customer_id: 'cust-001', pincode: '400001', name: 'Demo User' }
+      const promises = []
+      for (const cartItem of cart) {
+        for (let i = 0; i < cartItem.qty; i++) {
+          promises.push(createTwin({
+            sku: cartItem.sku,
+            title: cartItem.title,
+            category: cartItem.category,
+            original_price: cartItem.price,
+            purchase_date: new Date().toISOString()
+          }, customer))
+        }
+      }
+      await Promise.all(promises)
+    } catch (e) {
+      console.error('Error creating twins:', e)
+    }
     setPlacing(false)
     setOrderModal(true)
   }
