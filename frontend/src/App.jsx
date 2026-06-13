@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom'
 import { Recycle, Menu, X } from 'lucide-react'
 import CreditBadge from './components/common/CreditBadge.jsx'
+import ThemeToggle from './components/common/ThemeToggle.jsx'
 import LandingPage from './pages/LandingPage.jsx'
 import CheckoutPage from './pages/CheckoutPage.jsx'
 import ReturnFlowPage from './pages/ReturnFlowPage.jsx'
@@ -59,7 +60,8 @@ function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
             <CreditBadge credits={350} />
             <button className="md:hidden p-2 rounded-lg text-gray-200 hover:bg-white/10" onClick={() => setOpen(!open)}>
               {open ? <X size={20} /> : <Menu size={20} />}
@@ -92,7 +94,7 @@ function Navbar() {
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
         <Navbar />
         <main className="flex-1">
           <Routes>
@@ -104,10 +106,10 @@ export default function App() {
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="*" element={
               <div className="flex flex-col items-center justify-center py-32 text-center px-4">
-                <p className="text-6xl font-bold text-gray-200 mb-4">404</p>
-                <p className="text-xl font-semibold text-gray-700 mb-2">Page not found</p>
-                <p className="text-gray-500 mb-8">The page you're looking for doesn't exist.</p>
-                <a href="/" className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium">Go Home</a>
+                <p className="font-display text-7xl font-bold text-gray-200 dark:text-gray-800 mb-4">404</p>
+                <p className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Page not found</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-8">The page you're looking for doesn't exist.</p>
+                <a href="/" className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors font-medium">Go Home</a>
               </div>
             } />
           </Routes>

@@ -47,23 +47,23 @@ export default function ListingDetailPage() {
 
   return (
     <div className="animate-fadeInUp max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Link to="/marketplace" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6">
+      <Link to="/marketplace" className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6">
         <ArrowLeft size={16} /> Back to Marketplace
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left: image + grade */}
         <div>
-          <div className="bg-gray-100 rounded-2xl h-72 flex items-center justify-center mb-4">
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl h-72 flex items-center justify-center mb-4">
             {item.image_url ? (
               <img src={item.image_url} alt={item.title} className="w-full h-full object-cover rounded-2xl" />
             ) : (
-              <Package size={64} className="text-gray-300" />
+              <Package size={64} className="text-gray-300 dark:text-gray-600" />
             )}
           </div>
           {grading?.grade && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col items-center">
-              <p className="text-sm font-semibold text-gray-700 mb-4">AI-Verified Condition</p>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 flex flex-col items-center">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">AI-Verified Condition</p>
               <GradeIndicator grade={grading.grade} confidence={grading.confidence} size="lg" />
               <p className="text-xs text-gray-400 mt-4">Graded on {new Date(grading.graded_at).toLocaleDateString('en-IN')}</p>
             </div>
@@ -73,33 +73,33 @@ export default function ListingDetailPage() {
         {/* Right: details */}
         <div className="space-y-5">
           <div>
-            <p className="text-xs font-medium text-gray-500 tracking-wider mb-1 capitalize">{item.category}</p>
-            <h1 className="font-display text-2xl font-bold text-gray-900 mb-1 tracking-tight">{item.title}</h1>
-            <p className="font-mono text-xs text-gray-400 mb-3">{twin.twin_id}</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 tracking-wider mb-1 capitalize">{item.category}</p>
+            <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white mb-1 tracking-tight">{item.title}</h1>
+            <p className="font-mono text-xs text-gray-400 dark:text-gray-500 mb-3">{twin.twin_id}</p>
             <div className="flex items-baseline gap-3">
-              <span className="font-display text-4xl font-bold text-emerald-600 tracking-tight tabular-nums">₹{valuation?.resale_price?.toLocaleString('en-IN')}</span>
-              <span className="text-gray-400 line-through text-lg">₹{item.original_price?.toLocaleString('en-IN')}</span>
+              <span className="font-display text-4xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight tabular-nums">₹{valuation?.resale_price?.toLocaleString('en-IN')}</span>
+              <span className="text-gray-400 dark:text-gray-500 line-through text-lg">₹{item.original_price?.toLocaleString('en-IN')}</span>
               {discount > 0 && <Badge text={`Save ${discount}%`} variant="success" />}
             </div>
           </div>
 
           {/* Trust section */}
-          <div className="bg-sky-50 rounded-xl p-4 border border-sky-100">
+          <div className="bg-sky-50 dark:bg-sky-500/10 rounded-xl p-4 border border-sky-100 dark:border-sky-500/20">
             <div className="flex items-center gap-2 mb-3">
-              <CheckCircle size={16} className="text-sky-600" />
-              <p className="text-sm font-semibold text-sky-800">AI-Verified Condition Report</p>
+              <CheckCircle size={16} className="text-sky-600 dark:text-sky-400" />
+              <p className="text-sm font-semibold text-sky-800 dark:text-sky-300">AI-Verified Condition Report</p>
             </div>
             <ConditionReport grading={grading} />
           </div>
 
           {/* Environmental impact */}
           {routing?.savings && (
-            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+            <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-4 border border-emerald-100 dark:border-emerald-500/20">
               <div className="flex items-center gap-2 mb-2">
-                <Leaf size={16} className="text-emerald-600" />
-                <p className="text-sm font-semibold text-emerald-800">Environmental Impact</p>
+                <Leaf size={16} className="text-emerald-600 dark:text-emerald-400" />
+                <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">Environmental Impact</p>
               </div>
-              <p className="text-sm text-emerald-700">
+              <p className="text-sm text-emerald-700 dark:text-emerald-300">
                 Buying this saves <strong>{routing.savings.co2_saved_kg} kg CO₂</strong> and{' '}
                 <strong>₹{routing.savings.cost_saved?.toLocaleString('en-IN')}</strong> in logistics.
               </p>
@@ -115,8 +115,8 @@ export default function ListingDetailPage() {
       <Modal isOpen={bought} onClose={() => setBought(false)} title="Purchase Successful!">
         <div className="text-center">
           <CheckCircle size={52} className="text-emerald-500 mx-auto mb-4" />
-          <p className="text-lg font-semibold text-gray-900 mb-2">You've secured this item!</p>
-          <p className="text-gray-600 text-sm mb-6">The seller will be notified. Expect delivery in 2-3 days.</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">You've secured this item!</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">The seller will be notified. Expect delivery in 2-3 days.</p>
           <div className="flex flex-col gap-3">
             <Link to="/marketplace" onClick={() => setBought(false)}>
               <Button className="w-full">Back to Marketplace</Button>

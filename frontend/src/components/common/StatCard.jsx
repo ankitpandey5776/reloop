@@ -2,12 +2,12 @@ import { TrendingUp } from 'lucide-react'
 
 export default function StatCard({ label, value, icon: Icon, trend, prefix = '' }) {
   return (
-    <div className="group relative bg-white rounded-2xl shadow-sm border border-gray-100 p-6 overflow-hidden card-hover animate-scaleIn">
-      <div className="absolute -right-6 -top-6 w-24 h-24 bg-emerald-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <div className="group relative bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 overflow-hidden card-hover animate-scaleIn">
+      <div className="absolute -right-6 -top-6 w-24 h-24 bg-emerald-50 dark:bg-emerald-500/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-1">{label}</p>
-          <p className="font-display text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight tabular-nums">
+          <p className="text-sm font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">{label}</p>
+          <p className="font-display text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight tabular-nums">
             {prefix}{typeof value === 'number' ? value.toLocaleString('en-IN') : value}
           </p>
           {trend && (
@@ -17,7 +17,7 @@ export default function StatCard({ label, value, icon: Icon, trend, prefix = '' 
           )}
         </div>
         {Icon && (
-          <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 transition-all duration-300 group-hover:bg-emerald-100 group-hover:scale-110 group-hover:-rotate-6">
+          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 transition-all duration-300 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-500/25 group-hover:scale-110 group-hover:-rotate-6">
             <Icon size={24} />
           </div>
         )}

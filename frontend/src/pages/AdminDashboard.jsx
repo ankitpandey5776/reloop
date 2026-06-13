@@ -99,8 +99,8 @@ export default function AdminDashboard() {
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <RouteDistribution data={stats?.items_by_route} />
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 className="font-display text-base font-semibold text-gray-900 mb-4">Grade Distribution</h3>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+            <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">Grade Distribution</h3>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={gradeData} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
                 <XAxis dataKey="grade" tick={{ fontSize: 14, fontWeight: 600 }} />
@@ -117,21 +117,21 @@ export default function AdminDashboard() {
         </div>
 
         {/* Pipeline status */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
-          <h3 className="font-display text-base font-semibold text-gray-900 mb-4">Pipeline Status</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 mb-8">
+          <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">Pipeline Status</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {Object.entries(stats?.items_by_state || {}).map(([state, count]) => (
-              <div key={state} className="bg-gray-50 rounded-xl p-3 text-center">
-                <p className="font-display text-2xl font-bold text-gray-900 tabular-nums">{count}</p>
-                <p className="text-xs text-gray-500 mt-1 capitalize">{state.replace('_', ' ')}</p>
+              <div key={state} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 text-center">
+                <p className="font-display text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{count}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 capitalize">{state.replace('_', ' ')}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Recent activity */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <h3 className="font-display text-base font-semibold text-gray-900 mb-4">Recent Activity</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+          <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
           <TwinFeed twins={recentTwins} />
         </div>
       </div>

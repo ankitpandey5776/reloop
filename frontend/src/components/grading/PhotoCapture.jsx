@@ -39,11 +39,11 @@ export default function PhotoCapture({ photos, setPhotos, error, setError }) {
         onClick={() => inputRef.current?.click()}
         onDragOver={e => e.preventDefault()}
         onDrop={e => { e.preventDefault(); handleFiles(e.dataTransfer.files) }}
-        className="border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center cursor-pointer hover:border-emerald-400 hover:bg-emerald-50 transition-all duration-200"
+        className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl p-12 text-center cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/5 transition-all duration-200"
       >
         <Camera size={40} className="text-gray-400 mx-auto mb-3" />
-        <p className="text-gray-700 font-medium">Take Photo or Upload</p>
-        <p className="text-gray-500 text-sm mt-1">JPG, PNG, WebP · Max 10MB · Up to 4 photos</p>
+        <p className="text-gray-700 dark:text-gray-200 font-medium">Take Photo or Upload</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">JPG, PNG, WebP · Max 10MB · Up to 4 photos</p>
         <input
           ref={inputRef}
           type="file"

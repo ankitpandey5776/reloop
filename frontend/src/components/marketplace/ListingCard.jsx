@@ -10,8 +10,8 @@ export default function ListingCard({ twin }) {
   const discount = valuation ? Math.round((1 - valuation.price_multiplier) * 100) : 0
 
   return (
-    <div className="group bg-white rounded-2xl border border-gray-100 shadow-sm card-hover overflow-hidden flex flex-col">
-      <div className="relative h-44 bg-gray-100 flex items-center justify-center overflow-hidden">
+    <div className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm card-hover overflow-hidden flex flex-col">
+      <div className="relative h-44 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
         {item.image_url ? (
           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
         ) : (
@@ -35,13 +35,13 @@ export default function ListingCard({ twin }) {
         </div>
       </div>
       <div className="p-4 flex flex-col flex-1">
-        <p className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 group-hover:text-emerald-700 transition-colors">{item.title}</p>
+        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 mb-2 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">{item.title}</p>
         <div className="flex items-baseline gap-2 mb-1">
-          <span className="font-display text-xl font-bold text-emerald-600 tabular-nums">₹{valuation?.resale_price?.toLocaleString('en-IN')}</span>
-          <span className="text-xs text-gray-400 line-through">₹{item.original_price?.toLocaleString('en-IN')}</span>
+          <span className="font-display text-xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">₹{valuation?.resale_price?.toLocaleString('en-IN')}</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500 line-through">₹{item.original_price?.toLocaleString('en-IN')}</span>
         </div>
         {grading?.condition_report && (
-          <p className="text-xs text-gray-500 line-clamp-1 mb-3">{grading.condition_report}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mb-3">{grading.condition_report}</p>
         )}
         <div className="mt-auto">
           <Button className="w-full" size="sm" onClick={() => navigate(`/marketplace/${twin.twin_id}`)}>

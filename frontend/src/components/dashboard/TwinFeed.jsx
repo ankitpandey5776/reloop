@@ -16,14 +16,14 @@ function timeAgo(iso) {
 }
 
 export default function TwinFeed({ twins }) {
-  if (!twins?.length) return <p className="text-sm text-gray-500 py-4 text-center">No recent activity.</p>
+  if (!twins?.length) return <p className="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No recent activity.</p>
 
   return (
     <div className="space-y-2">
       {twins.map(t => (
-        <div key={t.twin_id} className={`flex items-center gap-3 p-3 rounded-xl border-l-4 bg-gray-50/60 hover:bg-gray-50 transition-colors animate-fadeIn ${BORDER[t.state] || 'border-gray-300'}`}>
-          <span className="font-mono text-xs text-gray-400 w-16 shrink-0">{timeAgo(t.updated_at)}</span>
-          <p className="text-sm text-gray-800 font-medium truncate flex-1">{t.item.title}</p>
+        <div key={t.twin_id} className={`flex items-center gap-3 p-3 rounded-xl border-l-4 bg-gray-50/60 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors animate-fadeIn ${BORDER[t.state] || 'border-gray-300'}`}>
+          <span className="font-mono text-xs text-gray-400 dark:text-gray-500 w-16 shrink-0">{timeAgo(t.updated_at)}</span>
+          <p className="text-sm text-gray-800 dark:text-gray-200 font-medium truncate flex-1">{t.item.title}</p>
           <div className="flex items-center gap-1.5 shrink-0">
             <Badge text={t.state.replace('_', ' ')} variant={stateVariant(t.state)} />
             {t.grading?.grade && <Badge text={`Grade ${t.grading.grade}`} variant={{ A: 'success', B: 'info', C: 'warning', D: 'danger' }[t.grading.grade]} />}

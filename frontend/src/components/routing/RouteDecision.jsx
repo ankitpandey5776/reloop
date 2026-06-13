@@ -14,20 +14,20 @@ export default function RouteDecision({ routing, credits }) {
           {decisionLabel(routing.decision)}
         </span>
       </div>
-      <div className="bg-gray-50 rounded-xl p-4 border-l-4 border-violet-400">
-        <p className="text-sm text-gray-700 italic leading-relaxed">"{routing.reasoning}"</p>
+      <div className="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-4 border-l-4 border-violet-400">
+        <p className="text-sm text-gray-700 dark:text-gray-300 italic leading-relaxed">"{routing.reasoning}"</p>
       </div>
       <SavingsDisplay savings={routing.savings} />
       {routing.destination && (
-        <div className="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-xl p-3 border border-gray-100">
+        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-900 rounded-xl p-3 border border-gray-100 dark:border-gray-800">
           <MapPin size={16} className="text-emerald-500" />
           <span><span className="font-medium">{routing.destination.name}</span> · {routing.destination.pincode}</span>
         </div>
       )}
       {credits?.earned > 0 && (
-        <div className="bg-emerald-50 rounded-xl p-4 text-center border border-emerald-100">
-          <p className="text-emerald-700 font-semibold">+{credits.earned} Green Credits earned 🌿</p>
-          <p className="text-xs text-gray-500 mt-1">Total lifetime: {credits.lifetime_credits} credits</p>
+        <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-xl p-4 text-center border border-emerald-100 dark:border-emerald-500/20">
+          <p className="text-emerald-700 dark:text-emerald-300 font-semibold">+{credits.earned} Green Credits earned 🌿</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total lifetime: {credits.lifetime_credits} credits</p>
         </div>
       )}
     </div>

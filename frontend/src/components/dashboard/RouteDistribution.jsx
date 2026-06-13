@@ -25,8 +25,8 @@ export default function RouteDistribution({ data }) {
   const total = chartData.reduce((s, d) => s + d.value, 0)
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-      <h3 className="font-display text-base font-semibold text-gray-900 mb-4">Route Distribution</h3>
+    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+      <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-4">Route Distribution</h3>
       <ResponsiveContainer width="100%" height={240}>
         <PieChart>
           <Pie
@@ -46,7 +46,7 @@ export default function RouteDistribution({ data }) {
           <Legend iconType="circle" iconSize={10} />
         </PieChart>
       </ResponsiveContainer>
-      <p className="text-center text-sm text-gray-500 -mt-2">{total} items routed</p>
+      <p className="text-center text-sm text-gray-500 dark:text-gray-400 -mt-2">{total} items routed</p>
     </div>
   )
 }

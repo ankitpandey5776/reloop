@@ -24,14 +24,14 @@ export default function GradeResult({ grading, valuation, originalPrice }) {
       {/* Frame 4: price slides in from the right */}
       {valuation && (
         <div
-          className="bg-gradient-to-br from-emerald-50 to-lime-50 rounded-2xl p-5 text-center border border-emerald-100 animate-fadeInUp"
+          className="bg-gradient-to-br from-emerald-50 to-lime-50 dark:from-emerald-500/10 dark:to-lime-500/10 rounded-2xl p-5 text-center border border-emerald-100 dark:border-emerald-500/20 animate-fadeInUp"
           style={{ animationDelay: '1.4s', opacity: 0, animationFillMode: 'forwards' }}
         >
-          <p className="text-sm text-gray-600 mb-1">Your item is worth</p>
-          <p className="font-display text-4xl font-bold text-emerald-600 mb-1 tracking-tight tabular-nums">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Your item is worth</p>
+          <p className="font-display text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-1 tracking-tight tabular-nums">
             ₹{valuation.resale_price?.toLocaleString('en-IN')}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {Math.round(valuation.price_multiplier * 100)}% of original{' '}
             <span className="line-through">₹{originalPrice?.toLocaleString('en-IN')}</span>
           </p>
