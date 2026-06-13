@@ -57,10 +57,10 @@ export default function CheckoutPage() {
   const showNudge = !nudgeDismissed && riskData && riskData.risk_score >= 0.6
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="animate-fadeInUp max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center gap-3 mb-8">
         <ShoppingCart size={24} className="text-emerald-600" />
-        <h1 className="text-2xl font-semibold text-gray-900">Your Cart</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Your Cart</h1>
         {riskLoading && <span className="text-xs text-gray-400 animate-pulse">Analyzing cart…</span>}
       </div>
 
@@ -85,14 +85,14 @@ export default function CheckoutPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
-        <div className="flex justify-between text-sm text-gray-600 mb-2">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
+        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
           <span>{cart.length} item{cart.length !== 1 ? 's' : ''}</span>
           <span>₹{subtotal.toLocaleString('en-IN')}</span>
         </div>
-        <div className="flex justify-between font-semibold text-gray-900 text-lg border-t border-gray-100 pt-3 mb-5">
+        <div className="flex justify-between font-semibold text-gray-900 dark:text-white text-lg border-t border-gray-100 dark:border-gray-800 pt-3 mb-5">
           <span>Total</span>
-          <span>₹{subtotal.toLocaleString('en-IN')}</span>
+          <span className="font-display tabular-nums">₹{subtotal.toLocaleString('en-IN')}</span>
         </div>
         <Button className="w-full" size="lg" loading={placing} onClick={handlePlaceOrder}>
           Place Order
@@ -107,8 +107,8 @@ export default function CheckoutPage() {
       <Modal isOpen={orderModal} onClose={() => setOrderModal(false)} title="Order Confirmed!">
         <div className="text-center">
           <CheckCircle size={56} className="text-emerald-500 mx-auto mb-4" />
-          <p className="text-lg font-semibold text-gray-900 mb-2">Your order has been placed!</p>
-          <p className="text-gray-600 text-sm mb-6">Your items will arrive in 2-4 business days. Easy returns available if needed.</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Your order has been placed!</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">Your items will arrive in 2-4 business days. Easy returns available if needed.</p>
           <div className="flex flex-col gap-3">
             <Link to="/return" onClick={() => setOrderModal(false)}>
               <Button className="w-full">Try Return Flow Demo <ArrowRight size={16} /></Button>

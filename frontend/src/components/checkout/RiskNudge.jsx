@@ -5,7 +5,10 @@ export default function RiskNudge({ riskData, onAccept, onDismiss, accepted }) {
   if (!riskData || riskData.risk_score < 0.6) return null
 
   return (
-    <div className={`rounded-xl p-4 border mb-4 transition-all duration-300 ${accepted ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'}`}>
+    <div className={`relative overflow-hidden rounded-2xl p-5 border-2 mb-4 animate-slideDown ${accepted ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'}`}>
+      {!accepted && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-rose-400 to-amber-400 animate-pulse" />
+      )}
       <div className="flex items-start gap-3">
         <div className={`p-1.5 rounded-lg ${accepted ? 'bg-emerald-100' : 'bg-amber-100'}`}>
           {accepted

@@ -1,10 +1,10 @@
 import { Loader2 } from 'lucide-react'
 
 const variants = {
-  primary: 'bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500',
-  secondary: 'bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 focus:ring-gray-400',
-  danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-  ghost: 'bg-transparent hover:bg-gray-100 text-gray-600 focus:ring-gray-400',
+  primary: 'bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white focus-visible:ring-emerald-500 shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 hover:-translate-y-0.5',
+  secondary: 'bg-white border-2 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50 text-emerald-700 focus-visible:ring-emerald-400',
+  danger: 'bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white focus-visible:ring-rose-500 shadow-lg shadow-rose-500/25 hover:-translate-y-0.5',
+  ghost: 'bg-transparent hover:bg-gray-100 text-gray-600 focus-visible:ring-gray-400',
 }
 
 const sizes = {
@@ -19,7 +19,7 @@ export default function Button({ variant = 'primary', size = 'md', loading = fal
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:translate-y-0 active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 ${variants[variant]} ${sizes[size]} ${className}`}
     >
       {loading && <Loader2 size={16} className="animate-spin" />}
       {children}

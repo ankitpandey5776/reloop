@@ -104,18 +104,25 @@ export default function ReturnFlowPage() {
   const decision = routeResult?.routing?.decision
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Return an Item</h1>
+    <div className="animate-fadeInUp max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-8">Return an Item</h1>
 
-      {/* Progress bar */}
-      <div className="flex items-center gap-1 mb-8 overflow-x-auto pb-1">
+      {/* Segmented progress bar with active glow */}
+      <div className="flex items-center justify-between mb-10">
         {STEPS.map((s, i) => (
-          <div key={s} className="flex items-center gap-1 shrink-0">
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${i === step ? 'bg-emerald-600 text-white' : i < step ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
-              {i < step ? <CheckCircle size={12} /> : <span>{i + 1}</span>}
-              {s}
+          <div key={s} className="flex items-center flex-1 last:flex-none">
+            <div className="flex flex-col items-center gap-2 shrink-0">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold font-display transition-all duration-500
+                ${i < step ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30' : ''}
+                ${i === step ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40 ring-4 ring-emerald-500/20 scale-110' : ''}
+                ${i > step ? 'bg-gray-200 text-gray-400' : ''}`}>
+                {i < step ? <CheckCircle size={18} /> : i + 1}
+              </div>
+              <span className={`text-[11px] font-medium text-center hidden sm:block transition-colors ${i <= step ? 'text-emerald-700' : 'text-gray-400'}`}>{s}</span>
             </div>
-            {i < STEPS.length - 1 && <div className={`w-4 h-0.5 ${i < step ? 'bg-emerald-300' : 'bg-gray-200'}`} />}
+            {i < STEPS.length - 1 && (
+              <div className={`h-0.5 flex-1 mx-1 sm:mx-2 -mt-6 sm:-mt-7 rounded-full transition-all duration-500 ${i < step ? 'bg-emerald-500' : 'bg-gray-200'}`} />
+            )}
           </div>
         ))}
       </div>
@@ -127,7 +134,7 @@ export default function ReturnFlowPage() {
       {/* Step 0: Select item */}
       {step === 0 && (
         <div>
-          <h2 className="text-lg font-medium text-gray-800 mb-4">Which item would you like to return?</h2>
+          <h2 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">Which item would you like to return?</h2>
           {loading ? (
             <div className="flex justify-center py-16"><LoadingSpinner message="Loading your orders…" /></div>
           ) : twins.length === 0 ? (
@@ -135,13 +142,13 @@ export default function ReturnFlowPage() {
           ) : (
             <div className="space-y-3">
               {twins.map(twin => (
-                <div key={twin.twin_id} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-sm transition-all">
-                  <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div key={twin.twin_id} className="flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-sm transition-all">
+                  <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Package size={22} className="text-gray-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 text-sm">{twin.item.title}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">₹{twin.item.original_price?.toLocaleString('en-IN')} · Purchased {new Date(twin.item.purchase_date).toLocaleDateString('en-IN')}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{twin.item.title}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">₹{twin.item.original_price?.toLocaleString('en-IN')} · Purchased {new Date(twin.item.purchase_date).toLocaleDateString('en-IN')}</p>
                     <Badge text={twin.state} variant={stateVariant(twin.state)} className="mt-1" />
                   </div>
                   <Button size="sm" onClick={() => selectItem(twin)}>Initiate Return</Button>
@@ -154,12 +161,12 @@ export default function ReturnFlowPage() {
 
       {/* Step 1: Photo upload */}
       {step === 1 && selected && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
           <div className="flex items-center gap-3 mb-2">
             <Package size={20} className="text-emerald-600" />
-            <p className="font-medium text-gray-900">{selected.item.title}</p>
+            <p className="font-medium text-gray-900 dark:text-gray-100">{selected.item.title}</p>
           </div>
-          <p className="text-sm text-gray-500 mb-6">Upload 1–4 clear photos showing the item's condition</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Upload 1–4 clear photos showing the item's condition</p>
           <PhotoCapture photos={photos} setPhotos={setPhotos} error={photoError} setError={setPhotoError} />
           <Button
             className="mt-6 w-full"
@@ -174,21 +181,17 @@ export default function ReturnFlowPage() {
 
       {/* Step 2: Grading */}
       {step === 2 && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
           {grading ? (
             <div className="flex flex-col items-center py-12 gap-6">
-              <div className="relative w-24 h-24">
-                <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center">
-                  <Package size={36} className="text-gray-400" />
-                </div>
-                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-emerald-500 animate-spin" />
-                <div className="absolute bottom-0 left-0 right-0 h-2 bg-emerald-400/30 rounded-b-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 animate-pulse" style={{ width: '60%' }} />
-                </div>
+              {/* Scan line sweeping over a product silhouette */}
+              <div className="relative w-48 h-48 rounded-2xl bg-gray-100 dark:bg-gray-800 overflow-hidden border border-gray-200 dark:border-gray-700">
+                <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent animate-scan shadow-[0_0_12px_2px_rgba(16,185,129,0.6)]" />
+                <Package className="absolute inset-0 m-auto text-gray-300 dark:text-gray-600" size={64} />
               </div>
               <div className="text-center">
-                <p className="font-semibold text-gray-900 mb-1">AI is analyzing your item…</p>
-                <p className="text-sm text-gray-500 animate-pulse">{SCAN_MESSAGES[scanMsg]}</p>
+                <p className="font-display text-lg font-semibold text-gray-800 dark:text-gray-100">{SCAN_MESSAGES[scanMsg]}</p>
+                <p className="text-sm text-gray-400 mt-1">Powered by AI Vision</p>
               </div>
             </div>
           ) : gradeResult ? (
@@ -204,7 +207,7 @@ export default function ReturnFlowPage() {
 
       {/* Step 3: Routing */}
       {step === 3 && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
           {routing ? (
             <div className="flex flex-col items-center py-12 gap-4">
               <LoadingSpinner size="lg" message="Finding the optimal path for your item…" />
@@ -229,12 +232,12 @@ export default function ReturnFlowPage() {
 
       {/* Step 4: Done */}
       {step === 4 && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-          <div className="mb-4 inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-8 text-center">
+          <div className="mb-4 inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50 dark:bg-emerald-500/10 animate-scaleIn">
             <CheckCircle size={44} className="text-emerald-500" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Your item has found its second life!</h2>
-          <p className="text-gray-600 text-sm mb-6">
+          <h2 className="font-display text-2xl font-bold text-gray-900 dark:text-white mb-2">Your item has found its second life!</h2>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
             {decision === 'RESELL_P2P' || decision === 'RESELL_RENEWED'
               ? `Listed on Marketplace at ₹${routeResult?.routing ? (gradeResult?.valuation?.resale_price?.toLocaleString('en-IN') ?? '—') : '—'}`
               : decision === 'DONATE' ? 'Sent to a local NGO'
@@ -245,16 +248,16 @@ export default function ReturnFlowPage() {
           {routeResult?.routing?.savings && (
             <div className="flex justify-center gap-6 mb-8 text-sm">
               <div className="text-center">
-                <p className="font-bold text-emerald-600">₹{routeResult.routing.savings.cost_saved?.toLocaleString('en-IN')}</p>
-                <p className="text-gray-500 text-xs">Saved</p>
+                <p className="font-display font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">₹{routeResult.routing.savings.cost_saved?.toLocaleString('en-IN')}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-xs">Saved</p>
               </div>
               <div className="text-center">
-                <p className="font-bold text-sky-600">{routeResult.routing.savings.co2_saved_kg} kg</p>
-                <p className="text-gray-500 text-xs">CO₂ Prevented</p>
+                <p className="font-display font-bold text-sky-600 dark:text-sky-400 tabular-nums">{routeResult.routing.savings.co2_saved_kg} kg</p>
+                <p className="text-gray-500 dark:text-gray-400 text-xs">CO₂ Prevented</p>
               </div>
               <div className="text-center">
-                <p className="font-bold text-violet-600">{routeResult.routing.savings.km_avoided} km</p>
-                <p className="text-gray-500 text-xs">Travel Avoided</p>
+                <p className="font-display font-bold text-violet-600 dark:text-violet-400 tabular-nums">{routeResult.routing.savings.km_avoided} km</p>
+                <p className="text-gray-500 dark:text-gray-400 text-xs">Travel Avoided</p>
               </div>
             </div>
           )}
