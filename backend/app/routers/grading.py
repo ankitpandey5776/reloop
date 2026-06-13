@@ -1,8 +1,7 @@
 import os
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from typing import List
-from app.database import get_db
-from app.models import Twin
+from app.database import get_db, Twin
 from app.services.grading_service import grading_service
 from app.services.valuation_service import valuation_service
 
@@ -47,15 +46,15 @@ async def grade(
         photo_urls.append(f"/uploads/{twin_id}/{photo.filename}")
 
     # Fetch twin
-    twin = Twin.get_by_id(db, twin_id)
+    twin = db.query(Twin).filter(Twin.twin_id == twin_id).first()
     if not twin:
         raise HTTPException(status_code=404, detail={"error": {"code": "TWIN_NOT_FOUND", "message": "Twin not found."}})
         
-    if twin.get("state") != "RETURN_INTENT":
-        raise HTTPException(status_code=409, detail={"error": {"code": "INVALID_STATE", "message": f"Expected RETURN_INTENT, got {twin.get('state')}"}})
+    if twin.state != "RETURN_INTENT" and twin.state != "ACTIVE":
+        raise HTTPException(status_code=409, detail={"error": {"code": "INVALID_STATE", "message": f"Expected RETURN_INTENT or ACTIVE, got {twin.state}"}})
         
     # Grading Service
-    item_info = twin.get("item", {})
+    item_info = twin.item_data or {}
     grading_result = grading_service.grade_item(photo_bytes_list, item_info)
     grading_result["photo_urls"] = photo_urls
     
@@ -68,11 +67,10 @@ async def grade(
     )
     
     # Update DB
-    updates = {
-        "grading": grading_result,
-        "valuation": valuation_result,
-        "state": "GRADED"
-    }
+    twin.grading_data = grading_result
+    twin.valuation_data = valuation_result
+    twin.state = "GRADED"
+    db.commit()
+    db.refresh(twin)
     
-    updated_twin = Twin.update(db, twin_id, updates)
-    return updated_twin
+    return twin

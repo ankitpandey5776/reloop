@@ -5,18 +5,21 @@ from app.services.bedrock_client import bedrock_client
 class GradingService:
     def __init__(self):
         self.prompt_template = """
-You are an expert product quality grader for Amazon's Second Life Commerce program.
+You are an expert product quality grader and fraud investigator for Amazon's Second Life Commerce program.
 
-Analyze the provided product photos and assess the item's physical condition.
+Analyze the provided product photos and assess the item's physical condition, authenticity, and image quality.
 
 Product Info:
-- Title: {title}
-- Category: {category}
+- Expected Title: {title}
+- Expected Category: {category}
 - Original Price: ₹{original_price}
 
 Respond ONLY with a JSON object (no markdown, no backticks, no extra text):
 {{
-  "grade": "A or B or C or D",
+  "is_authentic": <boolean, true if the image clearly matches the Expected Title and Category>,
+  "is_blurry": <boolean, true if the image is too blurry or dark to grade properly>,
+  "fraud_reason": "<if is_authentic is false, explain why it does not match the expected product. else empty string>",
+  "grade": "A or B or C or D or F",
   "confidence": <float between 0.0 and 1.0>,
   "defects": [
     {{
@@ -33,12 +36,16 @@ A (Like New): No visible defects, original packaging intact, could pass as new
 B (Good): Minor cosmetic defects only, fully functional, light wear
 C (Fair): Noticeable wear or cosmetic damage, functional but visible defects
 D (Salvage): Significant damage, missing parts, or non-functional components
+F (Fraud/Invalid): Item does not match the product description, or photo is completely unusable.
 
-Be precise about defect locations. Be honest about condition.
+Be precise about defect locations. Be honest about condition. If is_authentic is false, grade MUST be F.
 """
 
     def _get_fallback_grading(self) -> dict:
         return {
+            "is_authentic": True,
+            "is_blurry": False,
+            "fraud_reason": "",
             "grade": "B",
             "confidence": 0.5,
             "defects": [],
@@ -70,7 +77,7 @@ Be precise about defect locations. Be honest about condition.
             grading_result = json.loads(clean_json_str)
 
             # Validation
-            if grading_result.get('grade') not in ['A', 'B', 'C', 'D']:
+            if grading_result.get('grade') not in ['A', 'B', 'C', 'D', 'F']:
                 grading_result['grade'] = 'B'
                 
             confidence = grading_result.get('confidence', 0.5)
@@ -82,6 +89,15 @@ Be precise about defect locations. Be honest about condition.
                 
             if not grading_result.get('condition_report'):
                 grading_result['condition_report'] = "Assessed automatically."
+                
+            if 'is_authentic' not in grading_result:
+                grading_result['is_authentic'] = True
+            if 'is_blurry' not in grading_result:
+                grading_result['is_blurry'] = False
+                
+            # Override if fraudulent or invalid
+            if grading_result.get('is_authentic') is False or grading_result.get('is_blurry') is True:
+                grading_result['grade'] = 'F'
                 
             grading_result['photo_urls'] = [] # To be filled by the router
             grading_result['graded_at'] = datetime.utcnow().isoformat() + "Z"

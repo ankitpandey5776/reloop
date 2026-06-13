@@ -68,8 +68,7 @@ export async function getTwins(params = {}) {
     return { twins: twins.slice(start, start + limit), total: twins.length, page }
   }
   const { data } = await api.get('/api/v1/twins/', { params })
-  // Backend returns an array, but UI expects { twins: [...] }
-  return Array.isArray(data) ? { twins: data, total: data.length, page: params.page || 1 } : data
+  return Array.isArray(data) ? { twins: data } : data
 }
 
 export async function updateTwinState(twinId, state) {

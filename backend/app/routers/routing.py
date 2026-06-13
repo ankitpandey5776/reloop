@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from app.database import get_db
-from app.models import Twin
+from app.database import get_db, Twin
 from app.services.routing_service import routing_service
 
 router = APIRouter(prefix="/api/v1/routing", tags=["routing"])
@@ -19,22 +18,30 @@ async def route(
     """
     twin_id = request.twin_id
     
-    twin = Twin.get_by_id(db, twin_id)
+    twin = db.query(Twin).filter(Twin.twin_id == twin_id).first()
     if not twin:
         raise HTTPException(status_code=404, detail={"error": {"code": "TWIN_NOT_FOUND", "message": "Twin not found."}})
         
-    if twin.get("state") != "GRADED":
-        raise HTTPException(status_code=409, detail={"error": {"code": "INVALID_STATE", "message": f"Expected GRADED, got {twin.get('state')}"}})
+    if twin.state != "GRADED":
+        raise HTTPException(status_code=409, detail={"error": {"code": "INVALID_STATE", "message": f"Expected GRADED, got {twin.state}"}})
         
+    # Construct a dict for routing service which expects dicts
+    twin_dict = {
+        "twin_id": twin.twin_id,
+        "item": twin.item_data,
+        "customer": twin.customer_data,
+        "grading": twin.grading_data,
+        "valuation": twin.valuation_data,
+        "state": twin.state
+    }
     # Call routing service
-    routing_result = routing_service.route_item(twin)
+    routing_result = routing_service.route_item(twin_dict)
     
     # Update DB
-    updates = {
-        "routing": routing_result.get("routing", {}),
-        "credits": routing_result.get("credits", {}),
-        "state": "ROUTED"
-    }
+    twin.routing_data = routing_result.get("routing", {})
+    twin.credits_data = routing_result.get("credits", {})
+    twin.state = "ROUTED"
     
-    updated_twin = Twin.update(db, twin_id, updates)
-    return updated_twin
+    db.commit()
+    db.refresh(twin)
+    return twin

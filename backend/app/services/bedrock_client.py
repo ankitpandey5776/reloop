@@ -21,8 +21,33 @@ class BedrockClient:
                 print(f"Failed to initialize Bedrock client: {e}")
                 self.mock_mode = True
                 
-    def _get_mock_multimodal_response(self) -> str:
+    def _get_mock_multimodal_response(self, prompt: str = "") -> str:
+        if "brick" in prompt.lower() or "fraud" in prompt.lower() or "counterfeit" in prompt.lower():
+            return json.dumps({
+                "is_authentic": False,
+                "is_blurry": False,
+                "fraud_reason": "The uploaded item appears to be a brick, which does not match the expected product.",
+                "grade": "F",
+                "confidence": 0.99,
+                "defects": [],
+                "condition_report": "Return rejected. The item in the photo does not match the original purchase."
+            })
+            
+        if "blurry" in prompt.lower():
+            return json.dumps({
+                "is_authentic": True,
+                "is_blurry": True,
+                "fraud_reason": "",
+                "grade": "F",
+                "confidence": 0.20,
+                "defects": [],
+                "condition_report": "The photo provided is completely blurry and unrecognizable. Please retake the photo."
+            })
+
         return json.dumps({
+            "is_authentic": True,
+            "is_blurry": False,
+            "fraud_reason": "",
             "grade": "B",
             "confidence": 0.85,
             "defects": [
@@ -36,11 +61,16 @@ class BedrockClient:
         })
         
     def _get_mock_text_response(self, prompt: str) -> str:
+        if "copywriter" in prompt.lower() or "title" in prompt.lower():
+            return json.dumps({
+                "title": "Eco-Friendly Second Life Deal",
+                "description": "Don't miss out on this fantastic pre-loved item, carefully inspected and ready for a new home. Help save the planet while scoring a huge discount!"
+            })
         return "This decision makes sense because the item is in good condition and can be sold locally to avoid shipping costs and reduce environmental impact."
 
     def invoke_multimodal(self, images: list[bytes], prompt: str) -> str:
         if self.mock_mode:
-            return self._get_mock_multimodal_response()
+            return self._get_mock_multimodal_response(prompt)
             
         try:
             content = []
@@ -80,11 +110,11 @@ class BedrockClient:
             )
             
             response_body = json.loads(response.get('body').read())
-            return response_body.get('content', [{}])[0].get('text', self._get_mock_multimodal_response())
+            return response_body.get('content', [{}])[0].get('text', self._get_mock_multimodal_response(prompt))
             
         except (BotoCoreError, ClientError, Exception) as e:
             print(f"Bedrock multimodal invocation error: {e}")
-            return self._get_mock_multimodal_response()
+            return self._get_mock_multimodal_response(prompt)
 
     def invoke_text(self, prompt: str) -> str:
         if self.mock_mode:
