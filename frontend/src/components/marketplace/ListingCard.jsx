@@ -10,16 +10,22 @@ export default function ListingCard({ twin }) {
   const discount = valuation ? Math.round((1 - valuation.price_multiplier) * 100) : 0
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col">
-      <div className="relative h-44 bg-gray-100 flex items-center justify-center">
+    <div className="group bg-white rounded-2xl border border-gray-100 shadow-sm card-hover overflow-hidden flex flex-col">
+      <div className="relative h-44 bg-gray-100 flex items-center justify-center overflow-hidden">
         {item.image_url ? (
-          <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+          <img src={item.image_url} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
         ) : (
           <Package size={40} className="text-gray-300" />
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         {grading?.grade && (
           <div className="absolute top-2 right-2">
             <Badge text={`Grade ${grading.grade}`} variant={gradeVariant(grading.grade)} />
+          </div>
+        )}
+        {discount > 0 && (
+          <div className="absolute top-2 left-0 bg-gradient-to-r from-rose-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-r-full shadow-md">
+            −{discount}%
           </div>
         )}
       </div>

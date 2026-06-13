@@ -48,7 +48,11 @@ export default function MarketplacePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {listings.map(twin => <ListingCard key={twin.twin_id} twin={twin} />)}
+            {listings.map((twin, i) => (
+              <div key={twin.twin_id} className="animate-fade-up" style={{ animationDelay: `${Math.min(i * 0.06, 0.5)}s` }}>
+                <ListingCard twin={twin} />
+              </div>
+            ))}
           </div>
         )}
       </div>

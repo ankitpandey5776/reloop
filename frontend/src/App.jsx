@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom'
 import { Recycle, Menu, X } from 'lucide-react'
 import CreditBadge from './components/common/CreditBadge.jsx'
@@ -19,14 +19,24 @@ const navLinks = [
 
 function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <nav className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
+    <nav className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? 'glass border-b border-emerald-100/60 shadow-[0_4px_24px_-12px_rgba(16,185,129,0.35)]' : 'bg-white/80 border-b border-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 text-emerald-600 font-bold text-xl">
-            <Recycle size={24} />
-            <span>ReLoop</span>
+          <Link to="/" className="group flex items-center gap-2 font-bold text-xl">
+            <span className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition-transform duration-500 group-hover:rotate-180">
+              <Recycle size={20} />
+            </span>
+            <span className="text-gradient">ReLoop</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
@@ -36,10 +46,15 @@ function Navbar() {
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
+                  `relative px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-emerald-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
                 }
               >
-                {label}
+                {({ isActive }) => (
+                  <>
+                    {label}
+                    {isActive && <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />}
+                  </>
+                )}
               </NavLink>
             ))}
           </div>
@@ -97,8 +112,18 @@ export default function App() {
             } />
           </Routes>
         </main>
-        <footer className="bg-white border-t border-gray-100 py-6 text-center text-sm text-gray-400">
-          Built for HackOn with Amazon Season 6.0 | Second Life Commerce
+        <footer className="relative bg-gray-900 text-gray-400 py-10 overflow-hidden">
+          <div className="absolute inset-0 bg-mesh opacity-10" />
+          <div className="relative max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+            <div className="flex items-center gap-2 font-semibold text-white">
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
+                <Recycle size={15} />
+              </span>
+              ReLoop
+            </div>
+            <p>Built for HackOn with Amazon Season 6.0 · Second Life Commerce</p>
+            <p className="text-gray-500">Every product deserves a second life 🌱</p>
+          </div>
         </footer>
       </div>
     </BrowserRouter>
