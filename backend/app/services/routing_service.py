@@ -75,14 +75,33 @@ Keep it warm, specific, and mention the environmental benefit. Respond with plai
         
         customer_pincode = customer.get('pincode', '000000')
         nearby_pincode = str(int(customer_pincode) + random.randint(1, 10)) if customer_pincode.isdigit() else customer_pincode
-        
+
+        # Pincode → city name for realistic destination display
+        PINCODE_CITY = {
+            '700': 'Kolkata', '400': 'Mumbai', '560': 'Bangalore',
+            '110': 'Delhi',   '600': 'Chennai','500': 'Hyderabad',
+            '380': 'Ahmedabad','411': 'Pune',
+        }
+        def get_city(pin):
+            return PINCODE_CITY.get(str(pin)[:3]) or PINCODE_CITY.get(str(pin)[:2] + '0') or 'your city'
+
+        seller_city = get_city(customer_pincode)
+        buyer_city  = get_city(nearby_pincode)
+
+        # Realistic buyer names for P2P
+        P2P_BUYER_NAMES = [
+            'Rahul Sharma', 'Priya Patel', 'Arjun Singh', 'Neha Gupta',
+            'Amit Kumar', 'Sunita Joshi', 'Vikram Nair', 'Ananya Reddy',
+        ]
+        p2p_buyer = random.choice(P2P_BUYER_NAMES)
+
         # Assign Destination
         destinations = {
-            "RESELL_P2P": {"type": "buyer", "name": "Local Buyer Match", "pincode": nearby_pincode},
-            "RESELL_RENEWED": {"type": "fulfillment_center", "name": "Amazon Renewed FC", "pincode": "400001"},
-            "REFURBISH": {"type": "refurbisher", "name": "Certified Repair Partner", "pincode": "560001"},
-            "DONATE": {"type": "ngo", "name": "GreenHands Foundation", "pincode": customer_pincode},
-            "RECYCLE": {"type": "recycler", "name": "EcoRecycle India", "pincode": "411001"}
+            "RESELL_P2P":    {"type": "buyer",              "name": p2p_buyer,                  "pincode": nearby_pincode},
+            "RESELL_RENEWED":{"type": "fulfillment_center", "name": "Amazon Renewed FC",         "pincode": "400001"},
+            "REFURBISH":     {"type": "refurbisher",        "name": "Certified Repair Partner",  "pincode": "560001"},
+            "DONATE":        {"type": "ngo",                "name": "GreenHands Foundation",     "pincode": customer_pincode},
+            "RECYCLE":       {"type": "recycler",           "name": "EcoRecycle India",          "pincode": "411001"},
         }
         destination = destinations.get(decision, destinations["RECYCLE"])
         

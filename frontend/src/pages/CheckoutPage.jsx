@@ -30,7 +30,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     setRiskLoading(true)
     const items = cart.map(i => ({ sku: i.sku, category: i.category, size: i.variant, quantity: i.qty }))
-    checkRisk(items, 'cust-001')
+    checkRisk(items, 'cust-demo-001')
       .then(setRiskData)
       .catch(() => {})
       .finally(() => setRiskLoading(false))
@@ -50,7 +50,13 @@ export default function CheckoutPage() {
   async function handlePlaceOrder() {
     setPlacing(true)
     try {
-      const customer = { customer_id: 'cust-001', pincode: '400001', name: 'Demo User' }
+      // Demo customer — Kolkata based so P2P routing shows Kolkata buyers
+      const customer = {
+        customer_id: 'cust-demo-001',
+        pincode: '700001',
+        name: 'Rahul Sharma',
+        city: 'Kolkata'
+      }
       const newTwinIds = []
       for (const cartItem of cart) {
         for (let i = 0; i < cartItem.qty; i++) {
@@ -130,6 +136,10 @@ export default function CheckoutPage() {
         <div className="flex justify-between font-semibold text-gray-900 dark:text-white text-lg border-t border-gray-100 dark:border-gray-800 pt-3 mb-5">
           <span>Total</span>
           <span className="font-display tabular-nums">₹{subtotal.toLocaleString('en-IN')}</span>
+        </div>
+        <div className="flex items-center gap-2 mb-4 text-sm text-gray-500 dark:text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Delivering to: <strong>Rahul Sharma</strong> · Kolkata, 700001</span>
         </div>
         <Button className="w-full" size="lg" loading={placing} onClick={handlePlaceOrder}>
           Place Order

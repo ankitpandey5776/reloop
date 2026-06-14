@@ -97,7 +97,7 @@ class BedrockClient:
                     "type": "image",
                     "source": {
                         "type": "base64",
-                        "media_type": "image/jpeg", # assuming jpeg, could be passed or detected
+                        "media_type": "image/jpeg",
                         "data": base64_image
                     }
                 })
@@ -129,7 +129,12 @@ class BedrockClient:
             return response_body.get('content', [{}])[0].get('text', self._get_mock_multimodal_response(prompt))
             
         except (BotoCoreError, ClientError, Exception) as e:
-            print(f"Bedrock multimodal invocation error: {e}")
+            err_str = str(e)
+            if "Operation not allowed" in err_str or "not been submitted" in err_str:
+                print(f"[BedrockClient] Bedrock model access not yet approved — using mock response. "
+                      f"Enable model access at: https://console.aws.amazon.com/bedrock/home#/modelaccess")
+            else:
+                print(f"[BedrockClient] Bedrock multimodal error: {e}")
             return self._get_mock_multimodal_response(prompt)
 
     def invoke_text(self, prompt: str) -> str:
@@ -159,7 +164,12 @@ class BedrockClient:
             return response_body.get('content', [{}])[0].get('text', self._get_mock_text_response(prompt))
             
         except (BotoCoreError, ClientError, Exception) as e:
-            print(f"Bedrock text invocation error: {e}")
+            err_str = str(e)
+            if "Operation not allowed" in err_str or "not been submitted" in err_str:
+                print(f"[BedrockClient] Bedrock model access not yet approved — using mock response. "
+                      f"Enable model access at: https://console.aws.amazon.com/bedrock/home#/modelaccess")
+            else:
+                print(f"[BedrockClient] Bedrock text error: {e}")
             return self._get_mock_text_response(prompt)
 
 bedrock_client = BedrockClient()

@@ -1,22 +1,44 @@
 import { useNavigate } from 'react-router-dom'
-import { Package, CheckCircle, ShieldCheck } from 'lucide-react'
+import { CheckCircle, ShieldCheck } from 'lucide-react'
 import Badge from '../common/Badge.jsx'
 import { gradeVariant } from '../common/Badge.jsx'
 import Button from '../common/Button.jsx'
+import { CategoryIcon } from '../common/ProductIcons.jsx'
+
+/* Category → soft tinted gradient backgrounds for the image area */
+const CAT_BG = {
+  electronics: 'from-sky-100 to-cyan-100 dark:from-sky-500/15 dark:to-cyan-500/10',
+  fashion:     'from-rose-100 to-pink-100 dark:from-rose-500/15 dark:to-pink-500/10',
+  home:        'from-amber-100 to-orange-100 dark:from-amber-500/15 dark:to-orange-500/10',
+  books:       'from-violet-100 to-fuchsia-100 dark:from-violet-500/15 dark:to-fuchsia-500/10',
+  other:       'from-emerald-100 to-teal-100 dark:from-emerald-500/15 dark:to-teal-500/10',
+}
+const CAT_COLOR = {
+  electronics: 'text-sky-600 dark:text-sky-300',
+  fashion:     'text-rose-600 dark:text-rose-300',
+  home:        'text-amber-600 dark:text-amber-300',
+  books:       'text-violet-600 dark:text-violet-300',
+  other:       'text-emerald-600 dark:text-emerald-300',
+}
 
 export default function ListingCard({ twin }) {
   const navigate = useNavigate()
   const { item, grading, valuation } = twin
   const discount = valuation ? Math.round((1 - valuation.price_multiplier) * 100) : 0
   const conditionHash = grading?.condition_hash
+  const cat = item?.category || 'other'
 
   return (
     <div className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm card-hover overflow-hidden flex flex-col">
-      <div className="relative h-44 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
+      <div className={`relative h-44 bg-gradient-to-br ${CAT_BG[cat] || CAT_BG.other} flex items-center justify-center overflow-hidden`}>
         {item.image_url ? (
           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
         ) : (
-          <Package size={40} className="text-gray-300" />
+          <CategoryIcon
+            category={cat}
+            size={84}
+            className={`${CAT_COLOR[cat] || CAT_COLOR.other} transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3`}
+          />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         {grading?.grade && (
@@ -29,9 +51,15 @@ export default function ListingCard({ twin }) {
             −{discount}%
           </div>
         )}
-        {/* AI Verified badge — reveals on hover */}
-        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-emerald-700 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <CheckCircle size={12} />
+        {/* Category pill — visible always */}
+        <div className="absolute bottom-3 left-3">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/80 dark:bg-gray-900/70 backdrop-blur text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200">
+            {cat}
+          </span>
+        </div>
+        {/* AI verified badge — shows on hover */}
+        <div className="absolute bottom-3 right-3 bg-white/90 dark:bg-gray-900/80 backdrop-blur-sm rounded-full px-2.5 py-1 text-[10px] font-medium text-emerald-700 dark:text-emerald-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <CheckCircle size={11} />
           AI Verified{grading?.confidence ? ` · ${Math.round(grading.confidence * 100)}%` : ''}
         </div>
         {/* SHA-256 hash mini-badge — top-left on hover */}

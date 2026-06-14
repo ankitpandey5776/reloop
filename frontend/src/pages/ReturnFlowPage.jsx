@@ -9,6 +9,22 @@ import PhotoCapture from '../components/grading/PhotoCapture.jsx'
 import RouteDecision from '../components/routing/RouteDecision.jsx'
 import Badge from '../components/common/Badge.jsx'
 import { stateVariant } from '../components/common/Badge.jsx'
+import { CategoryIcon } from '../components/common/ProductIcons.jsx'
+
+const CAT_BG = {
+  electronics: 'bg-sky-100 dark:bg-sky-500/15',
+  fashion:     'bg-rose-100 dark:bg-rose-500/15',
+  home:        'bg-amber-100 dark:bg-amber-500/15',
+  books:       'bg-violet-100 dark:bg-violet-500/15',
+  other:       'bg-emerald-100 dark:bg-emerald-500/15',
+}
+const CAT_COLOR = {
+  electronics: 'text-sky-600 dark:text-sky-300',
+  fashion:     'text-rose-600 dark:text-rose-300',
+  home:        'text-amber-600 dark:text-amber-300',
+  books:       'text-violet-600 dark:text-violet-300',
+  other:       'text-emerald-600 dark:text-emerald-300',
+}
 
 const STEPS = ['Select Item', 'Upload Photos', 'AI Grading', 'Route Decision', 'Done']
 
@@ -114,8 +130,8 @@ export default function ReturnFlowPage() {
       setRouteResult({
         routing: {
           decision: 'RESELL_P2P',
-          reasoning: 'Your item is in great condition — a local buyer is the fastest and most eco-friendly path.',
-          destination: { type: 'buyer', name: 'Local Buyer Match', pincode: '400002' },
+          reasoning: 'Your item is in great condition — a local buyer in Kolkata is the fastest and most eco-friendly path. Direct handoff saves significant shipping cost and prevents CO₂ emissions.',
+          destination: { type: 'buyer', name: 'Amit Kumar', pincode: '700008' },
           savings: { cost_saved: 270, co2_saved_kg: 118.6, km_avoided: 45 },
           routed_at: new Date().toISOString(),
         },
@@ -184,9 +200,13 @@ export default function ReturnFlowPage() {
           ) : (
             <div className="space-y-3">
               {twins.map(twin => (
-                <div key={twin.twin_id} className="flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-sm transition-all">
-                  <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Package size={22} className="text-gray-400" />
+                <div key={twin.twin_id} className="flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-all">
+                  <div className={`w-14 h-14 ${CAT_BG[twin.item.category] || CAT_BG.other} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                    <CategoryIcon
+                      category={twin.item.category}
+                      size={32}
+                      className={CAT_COLOR[twin.item.category] || CAT_COLOR.other}
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{twin.item.title}</p>

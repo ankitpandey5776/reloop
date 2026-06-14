@@ -30,7 +30,7 @@ def random_date(days_ago=30):
     start = datetime.utcnow() - timedelta(days=days_ago)
     return start + timedelta(seconds=random.randint(0, days_ago * 24 * 60 * 60))
 
-# Rich realistic Indian product pool
+# Rich realistic Indian product pool (25+ products)
 ITEMS_POOL = [
     {"sku": "ELEC-SAM-S23",  "title": "Samsung Galaxy S23 (256GB, Phantom Black)",   "category": "electronics", "original_price": 74999},
     {"sku": "ELEC-BOAT-141", "title": "boAt Airdopes 141 True Wireless Earbuds",      "category": "electronics", "original_price": 1299},
@@ -38,17 +38,28 @@ ITEMS_POOL = [
     {"sku": "ELEC-FIRE-4K",  "title": "Fire TV Stick 4K Max (Wi-Fi 6)",               "category": "electronics", "original_price": 6999},
     {"sku": "ELEC-IPAD-10",  "title": "Apple iPad 10th Gen (64GB, Wi-Fi)",            "category": "electronics", "original_price": 44900},
     {"sku": "ELEC-BOAT-RK",  "title": "boAt Rockerz 450 Bluetooth Headphones",        "category": "electronics", "original_price": 899},
+    {"sku": "ELEC-MI-TV",    "title": "Mi 43 inch 4K Android TV (X Series)",          "category": "electronics", "original_price": 29999},
+    {"sku": "ELEC-NOISE-X",  "title": "Noise ColorFit Pro 4 Max Smartwatch",          "category": "electronics", "original_price": 3999},
+    {"sku": "ELEC-JBL-C",    "title": "JBL C100SI In-Ear Wired Earphones",            "category": "electronics", "original_price": 699},
+    {"sku": "ELEC-ANKER-CH", "title": "Anker 65W USB-C GaN Charger (2-Port)",         "category": "electronics", "original_price": 2499},
     {"sku": "FASH-ALNS-SHT", "title": "Allen Solly Men Slim Fit Casual Shirt (L)",   "category": "fashion",     "original_price": 1299},
     {"sku": "FASH-NIKE-REV", "title": "Nike Revolution 6 Running Shoes (UK 9)",       "category": "fashion",     "original_price": 3695},
     {"sku": "FASH-LEV-JNS",  "title": "Levi's 511 Slim Fit Jeans (32x30, Blue)",      "category": "fashion",     "original_price": 2999},
     {"sku": "FASH-PUMA-TRK", "title": "Puma Men's Track Pants (M, Black)",            "category": "fashion",     "original_price": 1499},
+    {"sku": "FASH-UCB-POLO", "title": "United Colors of Benetton Polo T-Shirt (XL)", "category": "fashion",     "original_price": 999},
+    {"sku": "FASH-ADID-UL",  "title": "Adidas Ultraboost 22 Running Shoes (UK 8)",   "category": "fashion",     "original_price": 13999},
+    {"sku": "FASH-FABIND-KT","title": "FabIndia Women Kurta (M, Indigo)",             "category": "fashion",     "original_price": 1799},
     {"sku": "HOME-PRES-IND", "title": "Prestige Induction Cooktop (1600W)",           "category": "home",        "original_price": 2499},
     {"sku": "HOME-PIG-MXR",  "title": "Pigeon Mixer Grinder 750W (3 Jars)",           "category": "home",        "original_price": 1899},
     {"sku": "HOME-PHIL-AIR", "title": "Philips Air Purifier AC1215 (333 sqft)",       "category": "home",        "original_price": 8999},
     {"sku": "HOME-WIP-BLB",  "title": "Wipro 9W LED Bulb Smart (Pack of 4)",          "category": "home",        "original_price": 699},
+    {"sku": "HOME-KENT-RO",  "title": "KENT Grand 8L RO+UV Water Purifier",           "category": "home",        "original_price": 14999},
+    {"sku": "HOME-HAVL-FAN", "title": "Havells Sprinto 600mm Ceiling Fan (White)",    "category": "home",        "original_price": 1999},
     {"sku": "BOOK-HP-SET",   "title": "Harry Potter Complete 7-Book Box Set",         "category": "books",       "original_price": 2500},
     {"sku": "BOOK-ATMT",     "title": "Atomic Habits by James Clear",                 "category": "books",       "original_price": 399},
     {"sku": "BOOK-ZERO",     "title": "Zero to One by Peter Thiel",                   "category": "books",       "original_price": 350},
+    {"sku": "BOOK-IKIGAI",   "title": "Ikigai by Hector Garcia & Francesc Miralles",  "category": "books",       "original_price": 299},
+    {"sku": "BOOK-SAPIENS",  "title": "Sapiens: A Brief History of Humankind",        "category": "books",       "original_price": 499},
 ]
 
 # Indian city pincodes with names for realism
@@ -278,16 +289,16 @@ def generate_synthetic_data():
         db.commit()
         print(f"Reset: deleted {deleted} existing twins.")
 
-    # State distribution chosen for maximum visual impact on dashboard
+    # State distribution chosen for maximum visual impact on dashboard (120 total)
     state_plan = (
-        ["ACTIVE"]        * 15 +
-        ["RETURN_INTENT"] * 10 +
-        ["GRADED"]        * 10 +
-        ["ROUTED"]        * 10 +
-        ["LISTED"]        * 12 +
-        ["SOLD"]          * 8  +
-        ["DONATED"]       * 5  +
-        ["RECYCLED"]      * 5
+        ["ACTIVE"]        * 25 +
+        ["RETURN_INTENT"] * 15 +
+        ["GRADED"]        * 15 +
+        ["ROUTED"]        * 15 +
+        ["LISTED"]        * 18 +
+        ["SOLD"]          * 15 +
+        ["DONATED"]       * 8  +
+        ["RECYCLED"]      * 9
     )
     random.shuffle(state_plan)
 
@@ -325,6 +336,155 @@ def generate_synthetic_data():
     print(f"  🛡️  Returns prevented: {prevented}")
 
 
+def seed_demo_customer():
+    """Seed 8 realistic twins for cust-demo-001 (Rahul Sharma, Kolkata) if not already present."""
+    existing_demo = db.query(Twin).filter(
+        Twin.customer_data.like('%cust-demo-001%')
+    ).count()
+    if existing_demo > 0:
+        print(f"\nDemo customer already has {existing_demo} twins — skipping seed_demo_customer().")
+        return
+
+    now = datetime.utcnow()
+
+    DEMO_ITEMS = [
+        # 4 ACTIVE items
+        {
+            "state": "ACTIVE",
+            "item": {"sku": "ELEC-SAM-S23",  "title": "Samsung Galaxy S23 (256GB, Phantom Black)",  "category": "electronics", "original_price": 74999, "purchase_date": (now - timedelta(days=12)).isoformat(), "image_url": None},
+        },
+        {
+            "state": "ACTIVE",
+            "item": {"sku": "ELEC-BOAT-141", "title": "boAt Airdopes 141 True Wireless Earbuds",     "category": "electronics", "original_price": 1299,  "purchase_date": (now - timedelta(days=5)).isoformat(),  "image_url": None},
+        },
+        {
+            "state": "ACTIVE",
+            "item": {"sku": "FASH-ALNS-SHT", "title": "Allen Solly Men Slim Fit Casual Shirt (L)",  "category": "fashion",     "original_price": 1299,  "purchase_date": (now - timedelta(days=8)).isoformat(),  "image_url": None},
+        },
+        {
+            "state": "ACTIVE",
+            "item": {"sku": "FASH-NIKE-REV", "title": "Nike Revolution 6 Running Shoes (UK 9)",      "category": "fashion",     "original_price": 3695,  "purchase_date": (now - timedelta(days=2)).isoformat(),  "image_url": None},
+        },
+        # 2 RETURN_INTENT items
+        {
+            "state": "RETURN_INTENT",
+            "item": {"sku": "ELEC-FIRE-4K",  "title": "Fire TV Stick 4K Max (Wi-Fi 6)",              "category": "electronics", "original_price": 6999,  "purchase_date": (now - timedelta(days=20)).isoformat(), "image_url": None},
+        },
+        {
+            "state": "RETURN_INTENT",
+            "item": {"sku": "FASH-PUMA-TRK", "title": "Puma Men's Track Pants (M, Black)",           "category": "fashion",     "original_price": 1499,  "purchase_date": (now - timedelta(days=18)).isoformat(), "image_url": None},
+        },
+        # 1 GRADED item
+        {
+            "state": "GRADED",
+            "item": {"sku": "ELEC-KIND-PW",  "title": "Amazon Kindle Paperwhite (16GB, 2023)",       "category": "electronics", "original_price": 13999, "purchase_date": (now - timedelta(days=30)).isoformat(), "image_url": None},
+            "grade": "B",
+        },
+        # 1 SOLD item (history)
+        {
+            "state": "SOLD",
+            "item": {"sku": "HOME-PHIL-AIR", "title": "Philips Air Purifier AC1215 (333 sqft)",      "category": "home",        "original_price": 8999,  "purchase_date": (now - timedelta(days=45)).isoformat(), "image_url": None},
+            "grade": "A",
+        },
+    ]
+
+    demo_customer = {
+        "customer_id": "cust-demo-001",
+        "pincode": "700001",
+        "name": "Rahul Sharma",
+        "city": "Kolkata",
+    }
+
+    created_count = 0
+    for entry in DEMO_ITEMS:
+        state = entry["state"]
+        item_tpl = entry["item"]
+        grade = entry.get("grade", None)
+        twin_id = str(uuid.uuid4())
+        created = datetime.utcnow() - timedelta(days=random.randint(1, 3))
+
+        prevention_data = None
+        grading_data    = None
+        valuation_data  = None
+        routing_data    = None
+        credits_data    = None
+
+        if state in ["GRADED", "ROUTED", "LISTED", "SOLD", "DONATED", "RECYCLED"]:
+            if grade is None:
+                grade = random.choice(["A", "A", "B", "B", "B", "C"])
+            defects = []
+            if grade in ("B", "C"):
+                defects = [{"type": "scratch", "location": "surface", "severity": "minor" if grade == "B" else "moderate"}]
+            grading_data = {
+                "grade": grade,
+                "confidence": round(random.uniform(0.85, 0.97), 2),
+                "defects": defects,
+                "photo_urls": [],
+                "condition_report": random.choice(CONDITION_REPORTS[grade]),
+                "graded_at": (created + timedelta(hours=2)).isoformat(),
+                "is_authentic": True,
+                "is_blurry": False,
+                "fraud_reason": "",
+            }
+            demand_factor = CATEGORY_DEMAND.get(item_tpl["category"], 1.0)
+            multiplier    = GRADE_MULTIPLIERS[grade]
+            resale_price  = int(item_tpl["original_price"] * multiplier * demand_factor)
+            valuation_data = {
+                "resale_price": resale_price,
+                "price_multiplier": multiplier,
+                "demand_factor": demand_factor,
+            }
+
+        if state in ["ROUTED", "LISTED", "SOLD", "DONATED", "RECYCLED"]:
+            decision = pick_decision(grade, resale_price, demand_factor)
+            km_avoided = random.randint(*KM_RANGES[decision])
+            cost_saved = 350 - ROUTE_COSTS[decision]
+            baseline_km = random.randint(400, 800)
+            net_km_saved = max(baseline_km - km_avoided, km_avoided)
+            co2_saved_kg = round(net_km_saved * 0.21, 2)
+
+            dest = dict(DESTINATION_MAP[decision])
+            if decision in ("RESELL_P2P", "DONATE"):
+                nearby = str(int(demo_customer["pincode"]) + random.randint(1, 15))
+                dest["pincode"] = nearby
+                if decision == "RESELL_P2P":
+                    dest["name"] = random.choice(["Amit Kumar", "Sunita Joshi", "Vikram Nair", "Ananya Reddy"])
+
+            routing_data = {
+                "decision": decision,
+                "reasoning": ROUTING_REASONING[decision],
+                "destination": dest,
+                "savings": {"cost_saved": cost_saved, "co2_saved_kg": co2_saved_kg, "km_avoided": km_avoided},
+                "routed_at": (created + timedelta(hours=8)).isoformat(),
+            }
+            earned = CREDIT_VALUES[decision]
+            credits_data = {
+                "earned": earned,
+                "action": decision.lower(),
+                "lifetime_credits": earned + random.randint(0, 200),
+            }
+
+        twin = Twin(
+            twin_id=twin_id,
+            state=state,
+            item_data=item_tpl,
+            customer_data=demo_customer,
+            prevention_data=prevention_data,
+            grading_data=grading_data,
+            valuation_data=valuation_data,
+            routing_data=routing_data,
+            credits_data=credits_data,
+            created_at=created,
+            updated_at=created + timedelta(hours=random.randint(1, 24)),
+        )
+        db.add(twin)
+        created_count += 1
+
+    db.commit()
+    print(f"\n✅ Seeded {created_count} twins for demo customer (cust-demo-001 / Rahul Sharma, Kolkata)")
+
+
 if __name__ == "__main__":
     generate_synthetic_data()
+    seed_demo_customer()
     db.close()

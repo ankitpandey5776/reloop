@@ -1,40 +1,58 @@
-import { ShieldCheck } from 'lucide-react'
+import { ShieldCheck, AlertTriangle } from 'lucide-react'
 import GradeIndicator from '../common/GradeIndicator.jsx'
 import ConditionReport from './ConditionReport.jsx'
 
 export default function GradeResult({ grading, valuation, originalPrice }) {
   if (!grading) return null
 
+  const isFraud    = grading.grade === 'F'
+  const isRejected = isFraud || grading.is_authentic === false
   const conditionHash = grading.condition_hash
 
   return (
     <div className="relative space-y-6">
-      {/* Frame 1: white flash as the AI "wakes up" */}
+      {/* Flash effect */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-white rounded-2xl animate-flash" />
 
-      {/* Frame 2: grade scales in with a bounce + glow */}
+      {/* Grade display */}
       <div className="flex flex-col items-center py-6">
         <div className="animate-gradeReveal">
           <GradeIndicator grade={grading.grade} confidence={grading.confidence} size="lg" />
         </div>
 
-        {/* SHA-256 trust badge — shown right under the grade */}
-        {conditionHash && (
-          <div className="mt-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/30 text-xs text-sky-700 dark:text-sky-300">
-            <ShieldCheck size={12} />
-            <span className="font-mono tracking-tight">SHA-256: {conditionHash.slice(0, 12)}…</span>
-            <span className="text-sky-500 dark:text-sky-400">Tamper-proof</span>
+        {/* Tamper-proof badge — plain English, not cryptic hex */}
+        {conditionHash && !isRejected && (
+          <div className="mt-4 flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30">
+            <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span className="text-xs text-emerald-700 dark:text-emerald-300 font-medium">
+              AI-verified condition report — digitally sealed and tamper-proof
+            </span>
+          </div>
+        )}
+
+        {/* Fraud / rejection banner */}
+        {isRejected && (
+          <div className="mt-4 flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 w-full max-w-sm">
+            <AlertTriangle size={16} className="text-rose-600 dark:text-rose-400 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-rose-700 dark:text-rose-300">Return request declined</p>
+              <p className="text-xs text-rose-600/80 dark:text-rose-400/80 mt-0.5">
+                {grading.fraud_reason || 'The item in the photo does not match the original purchase.'}
+              </p>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Frame 3: condition report types in letter by letter */}
-      <div className="animate-fadeInUp" style={{ animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}>
-        <ConditionReport grading={grading} typed />
-      </div>
+      {/* Condition report */}
+      {!isRejected && (
+        <div className="animate-fadeInUp" style={{ animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}>
+          <ConditionReport grading={grading} typed />
+        </div>
+      )}
 
-      {/* Frame 4: price slides in from the right */}
-      {valuation && (
+      {/* Value card — only for valid items */}
+      {valuation && !isRejected && valuation.resale_price > 0 && (
         <div
           className="bg-gradient-to-br from-emerald-50 to-lime-50 dark:from-emerald-500/10 dark:to-lime-500/10 rounded-2xl p-5 text-center border border-emerald-100 dark:border-emerald-500/20 animate-fadeInUp"
           style={{ animationDelay: '1.4s', opacity: 0, animationFillMode: 'forwards' }}

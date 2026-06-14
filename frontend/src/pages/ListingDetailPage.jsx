@@ -9,6 +9,22 @@ import Modal from '../components/common/Modal.jsx'
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
 import Badge from '../components/common/Badge.jsx'
 import { gradeVariant } from '../components/common/Badge.jsx'
+import { CategoryIcon } from '../components/common/ProductIcons.jsx'
+
+const CAT_BG = {
+  electronics: 'from-sky-100 to-cyan-100 dark:from-sky-500/15 dark:to-cyan-500/10',
+  fashion:     'from-rose-100 to-pink-100 dark:from-rose-500/15 dark:to-pink-500/10',
+  home:        'from-amber-100 to-orange-100 dark:from-amber-500/15 dark:to-orange-500/10',
+  books:       'from-violet-100 to-fuchsia-100 dark:from-violet-500/15 dark:to-fuchsia-500/10',
+  other:       'from-emerald-100 to-teal-100 dark:from-emerald-500/15 dark:to-teal-500/10',
+}
+const CAT_COLOR = {
+  electronics: 'text-sky-600 dark:text-sky-300',
+  fashion:     'text-rose-600 dark:text-rose-300',
+  home:        'text-amber-600 dark:text-amber-300',
+  books:       'text-violet-600 dark:text-violet-300',
+  other:       'text-emerald-600 dark:text-emerald-300',
+}
 
 export default function ListingDetailPage() {
   const { twinId } = useParams()
@@ -56,11 +72,15 @@ export default function ListingDetailPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left: image + grade */}
         <div>
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl h-72 flex items-center justify-center mb-4">
+          <div className={`bg-gradient-to-br ${CAT_BG[item.category] || CAT_BG.other} rounded-2xl h-72 flex items-center justify-center mb-4 overflow-hidden`}>
             {item.image_url ? (
               <img src={item.image_url} alt={item.title} className="w-full h-full object-cover rounded-2xl" />
             ) : (
-              <Package size={64} className="text-gray-300 dark:text-gray-600" />
+              <CategoryIcon
+                category={item.category}
+                size={140}
+                className={`${CAT_COLOR[item.category] || CAT_COLOR.other} drop-shadow-md`}
+              />
             )}
           </div>
           {grading?.grade && (
