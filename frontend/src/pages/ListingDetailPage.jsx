@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Package, ArrowLeft, CheckCircle, Leaf, TrendingUp } from 'lucide-react'
+import { Package, ArrowLeft, CheckCircle, Leaf, MapPin, ShieldCheck } from 'lucide-react'
 import { getListing, buyItem } from '../api/client.js'
 import GradeIndicator from '../components/common/GradeIndicator.jsx'
 import ConditionReport from '../components/grading/ConditionReport.jsx'
@@ -44,6 +44,8 @@ export default function ListingDetailPage() {
 
   const { item, grading, valuation, routing } = twin
   const discount = valuation ? Math.round((1 - valuation.price_multiplier) * 100) : 0
+  const conditionHash = grading?.condition_hash || twin?.condition_hash
+  const nearbyBuyer   = twin?.nearby_buyer
 
   return (
     <div className="animate-fadeInUp max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,7 +92,41 @@ export default function ListingDetailPage() {
               <p className="text-sm font-semibold text-sky-800 dark:text-sky-300">AI-Verified Condition Report</p>
             </div>
             <ConditionReport grading={grading} />
+
+            {/* SHA-256 tamper-evident fingerprint */}
+            {conditionHash && (
+              <div className="mt-3 flex items-center gap-2 pt-3 border-t border-sky-100 dark:border-sky-500/20">
+                <ShieldCheck size={13} className="text-sky-500 dark:text-sky-400 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs text-sky-700 dark:text-sky-300 font-medium">Tamper-evident fingerprint</p>
+                  <p className="font-mono text-xs text-sky-600 dark:text-sky-400 truncate">{conditionHash}</p>
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Nearby buyer card — only shown for P2P listings */}
+          {nearbyBuyer && (
+            <div className="bg-violet-50 dark:bg-violet-500/10 rounded-xl p-4 border border-violet-100 dark:border-violet-500/20">
+              <div className="flex items-center gap-2 mb-2">
+                <MapPin size={15} className="text-violet-600 dark:text-violet-400" />
+                <p className="text-sm font-semibold text-violet-800 dark:text-violet-300">Local Buyer Found Nearby</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{nearbyBuyer.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Pincode {nearbyBuyer.pincode}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-display text-lg font-bold text-violet-600 dark:text-violet-400">{nearbyBuyer.distance_km} km</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">away</p>
+                </div>
+              </div>
+              <p className="text-xs text-violet-600 dark:text-violet-400 mt-2">
+                P2P handoff saves {routing?.savings?.km_avoided} km of shipping 🌿
+              </p>
+            </div>
+          )}
 
           {/* Environmental impact */}
           {routing?.savings && (

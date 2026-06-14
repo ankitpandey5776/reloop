@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Package, CheckCircle, ArrowRight, RotateCcw } from 'lucide-react'
-import { getTwins, updateTwinState, gradeItem, routeItem, listItem } from '../api/client.js'
+import { Package, CheckCircle, ArrowRight, RotateCcw, ShieldCheck } from 'lucide-react'
+import { getTwins, updateTwinState, gradeItem, getGradingStatus, routeItem, listItem } from '../api/client.js'
 import Button from '../components/common/Button.jsx'
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
 import GradeResult from '../components/grading/GradeResult.jsx'
@@ -56,14 +56,42 @@ export default function ReturnFlowPage() {
     setStep(2)
     const files = photos.map(p => p.file)
     try {
-      const result = await gradeItem(selected.twin_id, files)
-      await new Promise(r => setTimeout(r, 500))
-      setGradeResult(result)
+      // Kick off grading — real API returns { twin_id, state, grading, valuation, ... }
+      // Mock API returns { twin_id, grading, valuation }
+      await gradeItem(selected.twin_id, files)
+
+      // Poll status until ready (handles async Bedrock processing)
+      let attempts = 0
+      let statusResult = null
+      while (attempts < 30) {
+        await new Promise(r => setTimeout(r, 800))
+        const status = await getGradingStatus(selected.twin_id).catch(() => null)
+        if (status?.ready || status?.rejected || status?.grading) {
+          statusResult = status
+          break
+        }
+        attempts++
+      }
+
+      // Normalise response — works whether polling or mock
+      const gradingData   = statusResult?.grading   || null
+      const valuationData = statusResult?.valuation  || null
+
+      if (!gradingData) throw new Error('No grading data received')
+
+      setGradeResult({ grading: gradingData, valuation: valuationData })
     } catch {
       setError('Grading failed. Using demo data.')
       setGradeResult({
-        grading: { grade: 'B', confidence: 0.88, defects: [], condition_report: 'Demo: Item is in good condition.', graded_at: new Date().toISOString() },
-        valuation: { resale_price: Math.round((selected?.item?.original_price || 1000) * 0.6), price_multiplier: 0.6, demand_factor: 1.0 }
+        grading: {
+          grade: 'B', confidence: 0.88, defects: [],
+          condition_report: 'Demo: Item is in good condition.',
+          graded_at: new Date().toISOString(), condition_hash: null,
+        },
+        valuation: {
+          resale_price: Math.round((selected?.item?.original_price || 1000) * 0.6),
+          price_multiplier: 0.6, demand_factor: 1.0,
+        }
       })
     } finally {
       setGrading(false)
@@ -76,9 +104,23 @@ export default function ReturnFlowPage() {
     try {
       const result = await routeItem(selected.twin_id)
       await new Promise(r => setTimeout(r, 500))
-      setRouteResult(result)
+      // Real API returns full twin; mock returns { routing, credits }
+      // Normalise to always have { routing, credits }
+      const routingData = result?.routing_data || result?.routing || null
+      const creditsData = result?.credits_data || result?.credits || null
+      setRouteResult({ routing: routingData, credits: creditsData })
     } catch {
       setError('Routing failed. Using demo data.')
+      setRouteResult({
+        routing: {
+          decision: 'RESELL_P2P',
+          reasoning: 'Your item is in great condition — a local buyer is the fastest and most eco-friendly path.',
+          destination: { type: 'buyer', name: 'Local Buyer Match', pincode: '400002' },
+          savings: { cost_saved: 270, co2_saved_kg: 118.6, km_avoided: 45 },
+          routed_at: new Date().toISOString(),
+        },
+        credits: { earned: 50, action: 'resell_p2p', lifetime_credits: 50 },
+      })
     } finally {
       setRouting(false)
     }

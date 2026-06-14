@@ -1,8 +1,11 @@
+import { ShieldCheck } from 'lucide-react'
 import GradeIndicator from '../common/GradeIndicator.jsx'
 import ConditionReport from './ConditionReport.jsx'
 
 export default function GradeResult({ grading, valuation, originalPrice }) {
   if (!grading) return null
+
+  const conditionHash = grading.condition_hash
 
   return (
     <div className="relative space-y-6">
@@ -14,6 +17,15 @@ export default function GradeResult({ grading, valuation, originalPrice }) {
         <div className="animate-gradeReveal">
           <GradeIndicator grade={grading.grade} confidence={grading.confidence} size="lg" />
         </div>
+
+        {/* SHA-256 trust badge — shown right under the grade */}
+        {conditionHash && (
+          <div className="mt-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/30 text-xs text-sky-700 dark:text-sky-300">
+            <ShieldCheck size={12} />
+            <span className="font-mono tracking-tight">SHA-256: {conditionHash.slice(0, 12)}…</span>
+            <span className="text-sky-500 dark:text-sky-400">Tamper-proof</span>
+          </div>
+        )}
       </div>
 
       {/* Frame 3: condition report types in letter by letter */}
