@@ -49,7 +49,18 @@ async def route(
     twin.routing_data = routing_result.get("routing", {})
     twin.credits_data = routing_result.get("credits", {})
     twin.state = "ROUTED"
-    
+
     db.commit()
     db.refresh(twin)
-    return twin
+
+    # Return the clean (non *_data suffixed) shape the frontend expects,
+    # matching the grading/twins/marketplace routers.
+    return {
+        "twin_id": twin.twin_id,
+        "state": twin.state,
+        "item": twin.item_data,
+        "grading": twin.grading_data,
+        "valuation": twin.valuation_data,
+        "routing": twin.routing_data,
+        "credits": twin.credits_data,
+    }

@@ -14,15 +14,23 @@ export default function MarketplacePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({ search: '', category: 'all', grade: 'all', sort: 'newest' })
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => { document.title = 'ReLoop — Marketplace' }, [])
 
-  // Load recommendations once on mount (personalised, separate from filters)
+  // Re-fetch whenever the underlying store changes (e.g. a return just got listed)
+  useEffect(() => {
+    const onChange = () => setRefreshKey(k => k + 1)
+    window.addEventListener('reloop:data-changed', onChange)
+    return () => window.removeEventListener('reloop:data-changed', onChange)
+  }, [])
+
+  // Load recommendations (personalised, separate from filters)
   useEffect(() => {
     getRecommendations(DEMO_CUSTOMER_ID, 4)
       .then(r => setRecommendations(r.recommendations || []))
       .catch(() => {})  // recommendations are non-critical, fail silently
-  }, [])
+  }, [refreshKey])
 
   useEffect(() => {
     setLoading(true)
@@ -36,11 +44,12 @@ export default function MarketplacePage() {
       })
       .catch(() => setError('Failed to load listings. Please try again.'))
       .finally(() => setLoading(false))
-  }, [filters])
+  }, [filters, refreshKey])
 
-  // IDs already shown in recommendations — exclude from main grid to avoid duplication
-  const recIds = new Set(recommendations.map(r => r.twin_id))
-  const mainListings = listings.filter(t => !recIds.has(t.twin_id))
+  // "All Listings" is the complete set of listed items — the recommendations row
+  // above is a curated highlight, not a filter, so every listing (and its latest
+  // price) always appears here too.
+  const mainListings = listings
 
   return (
     <div className="animate-fadeInUp">
