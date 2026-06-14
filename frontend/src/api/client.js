@@ -235,6 +235,67 @@ export async function getRecentTwins(limit = 10) {
   return data
 }
 
+// --- Grading status polling ---
+export async function getGradingStatus(twinId) {
+  if (MOCK_MODE) {
+    await delay(300)
+    const twin = findTwin(twinId)
+    const ready = twin?.state && ['GRADED','ROUTED','LISTED','SOLD','DONATED','RECYCLED'].includes(twin.state)
+    return {
+      twin_id: twinId,
+      state: twin?.state || 'ACTIVE',
+      ready,
+      pending: !ready,
+      rejected: twin?.grading?.grade === 'F',
+      grading: twin?.grading || null,
+      valuation: twin?.valuation || null,
+      condition_hash: twin?.grading?.condition_hash || null,
+    }
+  }
+  const { data } = await api.get(`/api/v1/grading/status/${twinId}`)
+  return data
+}
+
+// --- Marketplace recommendations ---
+export async function getRecommendations(customerId, limit = 6) {
+  if (MOCK_MODE) {
+    await delay(400)
+    const listed = mockTwins.filter(t => t.state === 'LISTED').slice(0, limit)
+    return { customer_id: customerId, preferred_categories: ['electronics'], recommendations: listed, total: listed.length }
+  }
+  const { data } = await api.get('/api/v1/marketplace/recommendations', { params: { customer_id: customerId, limit } })
+  return data
+}
+
+// --- Record prevention outcome ---
+export async function recordPrevention(twinId, riskScore, riskFactors, nudgeShown, nudgeType, prevented) {
+  if (MOCK_MODE) {
+    await delay(300)
+    const twin = findTwin(twinId)
+    if (twin) {
+      twin.prevention = { risk_score: riskScore, risk_factors: riskFactors, nudge_shown: nudgeShown, nudge_type: nudgeType, prevented }
+      twin.updated_at = new Date().toISOString()
+    }
+    return { twin_id: twinId, prevented, message: prevented ? 'Return prevented!' : 'Prevention outcome recorded.' }
+  }
+  const { data } = await api.post('/api/v1/prevention/record', {
+    twin_id: twinId,
+    risk_score: riskScore,
+    risk_factors: riskFactors,
+    nudge_shown: nudgeShown,
+    nudge_type: nudgeType,
+    prevented,
+  })
+  return data
+}
+  if (MOCK_MODE) {
+    await delay(300)
+    return MOCK_CREDITS
+  }
+  const { data } = await api.get(`/api/v1/credits/${customerId}`)
+  return data
+}
+
 // --- Credits ---
 export async function getCredits(customerId) {
   if (MOCK_MODE) {

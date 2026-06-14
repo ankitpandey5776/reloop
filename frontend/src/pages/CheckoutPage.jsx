@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingCart, CheckCircle, ArrowRight } from 'lucide-react'
-import { checkRisk, createTwin } from '../api/client.js'
+import { checkRisk, createTwin, recordPrevention } from '../api/client.js'
 import CartItem from '../components/checkout/CartItem.jsx'
 import RiskNudge from '../components/checkout/RiskNudge.jsx'
 import Button from '../components/common/Button.jsx'
@@ -39,6 +39,8 @@ export default function CheckoutPage() {
   function removeItem(id) { setCart(c => c.filter(i => i.id !== id)) }
   function changeQty(id, qty) { setCart(c => c.map(i => i.id === id ? { ...i, qty } : i)) }
 
+  const [createdTwinIds, setCreatedTwinIds] = useState([])
+
   function handleAccept() {
     setNudgeAccepted(true)
     setCart(c => c.map(i => i.id === 'c2' ? { ...i, title: "Allen Solly Men's Slim Fit Shirt (Size XL)", variant: 'XL' } : i)
@@ -49,19 +51,37 @@ export default function CheckoutPage() {
     setPlacing(true)
     try {
       const customer = { customer_id: 'cust-001', pincode: '400001', name: 'Demo User' }
-      const promises = []
+      const newTwinIds = []
       for (const cartItem of cart) {
         for (let i = 0; i < cartItem.qty; i++) {
-          promises.push(createTwin({
+          const twin = await createTwin({
             sku: cartItem.sku,
             title: cartItem.title,
             category: cartItem.category,
             original_price: cartItem.price,
             purchase_date: new Date().toISOString()
-          }, customer))
+          }, customer)
+          if (twin?.twin_id) newTwinIds.push(twin.twin_id)
         }
       }
-      await Promise.all(promises)
+      setCreatedTwinIds(newTwinIds)
+
+      // Feature 5: record prevention outcome for every twin just created
+      if (riskData && newTwinIds.length > 0) {
+        const prevented = nudgeAccepted
+        await Promise.all(
+          newTwinIds.map(tid =>
+            recordPrevention(
+              tid,
+              riskData.risk_score,
+              riskData.risk_factors || [],
+              showNudge,
+              riskData.nudge_type || 'none',
+              prevented
+            ).catch(() => {})   // fire-and-forget — never block order placement
+          )
+        )
+      }
     } catch (e) {
       console.error('Error creating twins:', e)
     }

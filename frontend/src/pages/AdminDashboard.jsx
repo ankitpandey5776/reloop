@@ -56,14 +56,10 @@ export default function AdminDashboard() {
   const costSaved = useCountUp(stats?.total_cost_saved || 0)
   const co2 = useCountUp(stats?.total_co2_saved_kg ? Math.round(stats.total_co2_saved_kg) : 0)
 
-  const gradeData = Object.entries(stats?.items_by_state || {}).length > 0
-    ? [
-        { grade: 'A', count: 8 },
-        { grade: 'B', count: 14 },
-        { grade: 'C', count: 7 },
-        { grade: 'D', count: 4 },
-      ]
-    : []
+  // Build grade chart data from real API response — sorted A→D
+  const gradeData = ['A', 'B', 'C', 'D']
+    .map(g => ({ grade: g, count: stats?.items_by_grade?.[g] || 0 }))
+    .filter(d => d.count > 0)
 
   if (loading) return <div className="flex justify-center py-24"><LoadingSpinner size="lg" message="Loading dashboard…" /></div>
 
