@@ -108,7 +108,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp delay-300">
             <Link to="/checkout">
-              <Button size="lg" className="gap-2 !bg-white !text-[#04150f] !shadow-lg hover:!bg-emerald-50 hover:!from-white hover:!to-white">
+              <Button size="lg" className="gap-2 !border-2 !border-transparent !bg-white !text-[#04150f] !shadow-lg hover:!bg-emerald-50 hover:!from-white hover:!to-white">
                 Start Customer Demo <ArrowRight size={18} />
               </Button>
             </Link>
