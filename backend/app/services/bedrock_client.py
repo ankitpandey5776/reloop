@@ -38,7 +38,7 @@ class BedrockClient:
             print("[BedrockClient] Running in MOCK mode.")
                 
     def _get_mock_multimodal_response(self, prompt: str = "") -> str:
-        if "brick" in prompt.lower() or "fraud" in prompt.lower() or "counterfeit" in prompt.lower():
+        if "brick" in prompt.lower() or "counterfeit" in prompt.lower():
             return json.dumps({
                 "is_authentic": False,
                 "is_blurry": False,
@@ -49,16 +49,7 @@ class BedrockClient:
                 "condition_report": "Return rejected. The item in the photo does not match the original purchase."
             })
             
-        if "blurry" in prompt.lower():
-            return json.dumps({
-                "is_authentic": True,
-                "is_blurry": True,
-                "fraud_reason": "",
-                "grade": "F",
-                "confidence": 0.20,
-                "defects": [],
-                "condition_report": "The photo provided is completely blurry and unrecognizable. Please retake the photo."
-            })
+        # Removed the check for 'blurry' since it's hardcoded in the system prompt instructions
 
         return json.dumps({
             "is_authentic": True,
