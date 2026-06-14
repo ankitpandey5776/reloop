@@ -58,13 +58,18 @@ async def grade(
     grading_result = grading_service.grade_item(photo_bytes_list, item_info)
     grading_result["photo_urls"] = photo_urls
     
-    # Valuation Service
+    # Valuation Service — strip to schema-defined fields only
     grade = grading_result.get("grade", "B")
-    valuation_result = valuation_service.calculate_value(
-        grade, 
-        item_info.get("original_price", 0), 
+    valuation_full = valuation_service.calculate_value(
+        grade,
+        item_info.get("original_price", 0),
         item_info.get("category", "other")
     )
+    valuation_result = {
+        "resale_price": valuation_full["resale_price"],
+        "price_multiplier": valuation_full["price_multiplier"],
+        "demand_factor": valuation_full["demand_factor"],
+    }
     
     # Update DB
     twin.grading_data = grading_result

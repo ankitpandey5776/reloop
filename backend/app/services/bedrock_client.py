@@ -3,23 +3,39 @@ import json
 import base64
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
+from dotenv import load_dotenv
 
-MOCK_MODE = os.getenv("MOCK_MODE", "true").lower() == "true"
+# Load .env from the backend directory (where uvicorn is run from)
+# Supports both: running from backend/ directly, or from repo root
+_this_file = os.path.abspath(__file__)
+_backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(_this_file)))  # …/backend/
+_env_path = os.path.join(_backend_dir, ".env")
+if not os.path.exists(_env_path):
+    # Fallback: running from repo root, backend/ is one level down
+    _env_path = os.path.join(os.getcwd(), ".env")
+load_dotenv(dotenv_path=_env_path, override=True)
 
 class BedrockClient:
     def __init__(self):
-        self.mock_mode = MOCK_MODE
-        self.model_id = os.getenv("BEDROCK_MODEL_ID", "anthropic.claude-3-sonnet-20240229-v1:0")
-        
+        # Read fresh from env every time an instance is created
+        mock_str = os.getenv("MOCK_MODE", "true").lower()
+        self.mock_mode = mock_str not in ("false", "0", "no")
+        self.model_id = os.getenv("BEDROCK_MODEL_ID", "anthropic.claude-sonnet-4-20250514")
+
         if not self.mock_mode:
             try:
                 self.client = boto3.client(
-                    service_name='bedrock-runtime',
-                    region_name=os.getenv("AWS_REGION", "us-east-1")
+                    service_name="bedrock-runtime",
+                    region_name=os.getenv("AWS_REGION", "us-east-1"),
+                    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+                    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
                 )
+                print(f"[BedrockClient] Initialized in LIVE mode. Model: {self.model_id}")
             except Exception as e:
-                print(f"Failed to initialize Bedrock client: {e}")
+                print(f"[BedrockClient] Failed to initialize, falling back to mock: {e}")
                 self.mock_mode = True
+        else:
+            print("[BedrockClient] Running in MOCK mode.")
                 
     def _get_mock_multimodal_response(self, prompt: str = "") -> str:
         if "brick" in prompt.lower() or "fraud" in prompt.lower() or "counterfeit" in prompt.lower():

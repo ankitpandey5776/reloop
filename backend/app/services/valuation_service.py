@@ -19,7 +19,17 @@ class ValuationService:
 
     def calculate_value(self, grade: str, original_price: int, category: str) -> dict:
         grade = grade.upper() if isinstance(grade, str) else 'B'
+
+        # Grade F = fraud/invalid item — zero value, no marketing copy needed
+        if grade == 'F':
+            return {
+                "resale_price": 0,
+                "price_multiplier": 0.0,
+                "demand_factor": 0.0,
+            }
+
         if grade not in self.grade_multipliers:
+            grade = 'B'
             grade = 'B'
             
         category = category.lower() if isinstance(category, str) else 'other'

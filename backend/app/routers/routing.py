@@ -24,6 +24,14 @@ async def route(
         
     if twin.state != "GRADED":
         raise HTTPException(status_code=409, detail={"error": {"code": "INVALID_STATE", "message": f"Expected GRADED, got {twin.state}"}})
+
+    # Reject fraud/invalid items — grade F cannot be routed
+    grading = twin.grading_data or {}
+    if grading.get("grade") == "F":
+        raise HTTPException(
+            status_code=400,
+            detail={"error": {"code": "ITEM_REJECTED", "message": grading.get("condition_report", "Item failed authenticity check and cannot be routed.")}}
+        )
         
     # Construct a dict for routing service which expects dicts
     twin_dict = {
