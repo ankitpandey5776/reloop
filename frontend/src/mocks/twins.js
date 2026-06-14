@@ -30,6 +30,66 @@ export const MOCK_TWINS = [
     credits: { earned: 0, action: null, lifetime_credits: 120 },
     created_at: "2026-06-05T10:00:00Z", updated_at: "2026-06-05T10:00:00Z"
   },
+  {
+    twin_id: "twin-019",
+    item: { sku: "SKU-NOISE-BUDS", title: "Noise Buds VS104 TWS Earbuds", category: "electronics", original_price: 1199, purchase_date: "2026-06-06T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-001", pincode: "400001", name: "Rahul Sharma" },
+    state: "ACTIVE",
+    prevention: { risk_score: 0.42, risk_factors: ["high_return_category"], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: null, valuation: null, routing: null,
+    credits: { earned: 0, action: null, lifetime_credits: 350 },
+    created_at: "2026-06-06T10:00:00Z", updated_at: "2026-06-06T10:00:00Z"
+  },
+  {
+    twin_id: "twin-020",
+    item: { sku: "SKU-HRX-JACKET", title: "HRX Men's Hooded Sweatshirt (Size M)", category: "fashion", original_price: 1799, purchase_date: "2026-06-07T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-002", pincode: "560001", name: "Priya Menon" },
+    state: "ACTIVE",
+    prevention: { risk_score: 0.78, risk_factors: ["size_bracketing", "high_return_category"], nudge_shown: true, nudge_type: "size_suggestion", prevented: false },
+    grading: null, valuation: null, routing: null,
+    credits: { earned: 0, action: null, lifetime_credits: 120 },
+    created_at: "2026-06-07T10:00:00Z", updated_at: "2026-06-07T10:00:00Z"
+  },
+  {
+    twin_id: "twin-021",
+    item: { sku: "SKU-INSTANT-POT", title: "Wonderchef Nutri-Blend Mixer", category: "home", original_price: 2899, purchase_date: "2026-06-08T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-003", pincode: "110001", name: "Amit Verma" },
+    state: "ACTIVE",
+    prevention: { risk_score: 0.33, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: null, valuation: null, routing: null,
+    credits: { earned: 0, action: null, lifetime_credits: 80 },
+    created_at: "2026-06-08T10:00:00Z", updated_at: "2026-06-08T10:00:00Z"
+  },
+  {
+    twin_id: "twin-022",
+    item: { sku: "SKU-PSYCHOLOGY-MONEY", title: "The Psychology of Money by Morgan Housel", category: "books", original_price: 399, purchase_date: "2026-06-09T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-004", pincode: "700001", name: "Sunita Das" },
+    state: "ACTIVE",
+    prevention: { risk_score: 0.22, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: null, valuation: null, routing: null,
+    credits: { earned: 0, action: null, lifetime_credits: 200 },
+    created_at: "2026-06-09T10:00:00Z", updated_at: "2026-06-09T10:00:00Z"
+  },
+  {
+    twin_id: "twin-023",
+    item: { sku: "SKU-BOAT-ROCKERZ", title: "boAt Rockerz 450 Bluetooth Headphones", category: "electronics", original_price: 1499, purchase_date: "2026-06-10T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-005", pincode: "711101", name: "Deepak Roy" },
+    state: "ACTIVE",
+    prevention: { risk_score: 0.51, risk_factors: ["high_return_category"], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: null, valuation: null, routing: null,
+    credits: { earned: 0, action: null, lifetime_credits: 50 },
+    created_at: "2026-06-10T10:00:00Z", updated_at: "2026-06-10T10:00:00Z"
+  },
+  {
+    twin_id: "twin-024",
+    item: { sku: "SKU-ADIDAS-TEE", title: "Adidas Men's Training T-Shirt (Size L)", category: "fashion", original_price: 1399, purchase_date: "2026-06-11T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-001", pincode: "400001", name: "Rahul Sharma" },
+    state: "ACTIVE",
+    prevention: { risk_score: 0.69, risk_factors: ["size_bracketing", "high_return_category"], nudge_shown: true, nudge_type: "fit_predictor", prevented: false },
+    grading: null, valuation: null, routing: null,
+    credits: { earned: 0, action: null, lifetime_credits: 350 },
+    created_at: "2026-06-11T10:00:00Z", updated_at: "2026-06-11T10:00:00Z"
+  },
   // RETURN_INTENT (2)
   {
     twin_id: "twin-004",
@@ -257,6 +317,150 @@ export const MOCK_TWINS = [
     },
     credits: { earned: 30, action: "p2p_local_handoff", lifetime_credits: 380 },
     created_at: "2026-04-10T10:00:00Z", updated_at: "2026-06-03T14:30:00Z"
+  },
+  {
+    twin_id: "twin-025",
+    item: { sku: "SKU-SONY-WH", title: "Sony WH-CH520 Wireless Headphones", category: "electronics", original_price: 4490, purchase_date: "2026-04-18T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-003", pincode: "110001", name: "Amit Verma" },
+    state: "LISTED",
+    prevention: { risk_score: 0.4, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: {
+      grade: "A", confidence: 0.95,
+      defects: [],
+      photo_urls: [],
+      condition_report: "Headphones are in excellent condition with no visible wear. Battery holds full charge. All accessories and original box included.",
+      graded_at: "2026-06-04T11:00:00Z"
+    },
+    valuation: { resale_price: 3100, price_multiplier: 0.69, demand_factor: 1.2 },
+    routing: {
+      decision: "RESELL_P2P",
+      reasoning: "Grade A audio gear has strong local demand. Direct P2P sale maximises value recovery with no refurbishment needed.",
+      destination: { type: "buyer", name: "Local P2P Buyer", pincode: "110004" },
+      savings: { cost_saved: 310, co2_saved_kg: 1.6, km_avoided: 640 },
+      routed_at: "2026-06-04T11:30:00Z"
+    },
+    credits: { earned: 50, action: "p2p_local_handoff", lifetime_credits: 130 },
+    created_at: "2026-04-18T10:00:00Z", updated_at: "2026-06-04T11:30:00Z"
+  },
+  {
+    twin_id: "twin-026",
+    item: { sku: "SKU-WROGN-SHIRT", title: "WROGN Men's Casual Shirt (Size M)", category: "fashion", original_price: 1599, purchase_date: "2026-04-22T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-004", pincode: "700001", name: "Sunita Das" },
+    state: "LISTED",
+    prevention: { risk_score: 0.6, risk_factors: ["size_bracketing"], nudge_shown: true, nudge_type: "size_suggestion", prevented: false },
+    grading: {
+      grade: "B", confidence: 0.87,
+      defects: [{ type: "discoloration", location: "Inner collar", severity: "minor" }],
+      photo_urls: [],
+      condition_report: "Shirt is in good condition with very minor collar discoloration from wear. No tears or stains. Freshly laundered and ready to wear.",
+      graded_at: "2026-06-04T13:00:00Z"
+    },
+    valuation: { resale_price: 800, price_multiplier: 0.50, demand_factor: 0.95 },
+    routing: {
+      decision: "RESELL_P2P",
+      reasoning: "Branded apparel in good condition sells well locally. P2P route avoids warehouse fees and speeds up turnaround.",
+      destination: { type: "buyer", name: "Local P2P Buyer", pincode: "700004" },
+      savings: { cost_saved: 140, co2_saved_kg: 0.5, km_avoided: 260 },
+      routed_at: "2026-06-04T13:30:00Z"
+    },
+    credits: { earned: 30, action: "p2p_local_handoff", lifetime_credits: 230 },
+    created_at: "2026-04-22T10:00:00Z", updated_at: "2026-06-04T13:30:00Z"
+  },
+  {
+    twin_id: "twin-027",
+    item: { sku: "SKU-PHILIPS-IRON", title: "Philips Steam Iron GC1905", category: "home", original_price: 1495, purchase_date: "2026-04-25T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-005", pincode: "711101", name: "Deepak Roy" },
+    state: "LISTED",
+    prevention: { risk_score: 0.3, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: {
+      grade: "A", confidence: 0.92,
+      defects: [],
+      photo_urls: [],
+      condition_report: "Steam iron in excellent working condition. Soleplate clean with no scratches. Lightly used, original box and manual included.",
+      graded_at: "2026-06-05T09:00:00Z"
+    },
+    valuation: { resale_price: 1050, price_multiplier: 0.70, demand_factor: 1.05 },
+    routing: {
+      decision: "RESELL_P2P",
+      reasoning: "Reliable small appliance with steady demand. Grade A condition makes direct resale the most efficient route.",
+      destination: { type: "buyer", name: "Local P2P Buyer", pincode: "711104" },
+      savings: { cost_saved: 130, co2_saved_kg: 0.6, km_avoided: 280 },
+      routed_at: "2026-06-05T09:30:00Z"
+    },
+    credits: { earned: 35, action: "p2p_local_handoff", lifetime_credits: 140 },
+    created_at: "2026-04-25T10:00:00Z", updated_at: "2026-06-05T09:30:00Z"
+  },
+  {
+    twin_id: "twin-028",
+    item: { sku: "SKU-IKIGAI-BOOK", title: "Ikigai by Héctor García", category: "books", original_price: 450, purchase_date: "2026-04-28T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-002", pincode: "560001", name: "Priya Menon" },
+    state: "LISTED",
+    prevention: { risk_score: 0.2, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: {
+      grade: "A", confidence: 0.94,
+      defects: [],
+      photo_urls: [],
+      condition_report: "Book is in like-new condition. No markings, creases, or spine damage. Read once and well kept.",
+      graded_at: "2026-06-05T15:00:00Z"
+    },
+    valuation: { resale_price: 320, price_multiplier: 0.71, demand_factor: 1.25 },
+    routing: {
+      decision: "RESELL_P2P",
+      reasoning: "Popular title with consistent demand. Like-new condition supports a strong P2P resale price.",
+      destination: { type: "buyer", name: "Local P2P Buyer", pincode: "560004" },
+      savings: { cost_saved: 70, co2_saved_kg: 0.2, km_avoided: 130 },
+      routed_at: "2026-06-05T15:30:00Z"
+    },
+    credits: { earned: 25, action: "p2p_local_handoff", lifetime_credits: 145 },
+    created_at: "2026-04-28T10:00:00Z", updated_at: "2026-06-05T15:30:00Z"
+  },
+  {
+    twin_id: "twin-029",
+    item: { sku: "SKU-REDMI-BAND", title: "Redmi Smart Band 2", category: "electronics", original_price: 1999, purchase_date: "2026-05-02T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-001", pincode: "400001", name: "Rahul Sharma" },
+    state: "LISTED",
+    prevention: { risk_score: 0.45, risk_factors: ["high_return_category"], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: {
+      grade: "B", confidence: 0.86,
+      defects: [{ type: "scratch", location: "Display surface", severity: "minor" }],
+      photo_urls: [],
+      condition_report: "Smart band functions perfectly with a faint scratch on the display. Strap in good condition. Charger included.",
+      graded_at: "2026-06-06T10:00:00Z"
+    },
+    valuation: { resale_price: 1100, price_multiplier: 0.55, demand_factor: 1.0 },
+    routing: {
+      decision: "RESELL_P2P",
+      reasoning: "Wearables retain decent resale value when functional. Grade B condition is acceptable for budget buyers via P2P.",
+      destination: { type: "buyer", name: "Local P2P Buyer", pincode: "400005" },
+      savings: { cost_saved: 160, co2_saved_kg: 0.7, km_avoided: 300 },
+      routed_at: "2026-06-06T10:30:00Z"
+    },
+    credits: { earned: 35, action: "p2p_local_handoff", lifetime_credits: 385 },
+    created_at: "2026-05-02T10:00:00Z", updated_at: "2026-06-06T10:30:00Z"
+  },
+  {
+    twin_id: "twin-030",
+    item: { sku: "SKU-FASTRACK-WATCH", title: "Fastrack Reflex Smart Watch", category: "fashion", original_price: 2495, purchase_date: "2026-05-05T00:00:00Z", image_url: null },
+    customer: { customer_id: "cust-003", pincode: "110001", name: "Amit Verma" },
+    state: "LISTED",
+    prevention: { risk_score: 0.5, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
+    grading: {
+      grade: "A", confidence: 0.90,
+      defects: [],
+      photo_urls: [],
+      condition_report: "Smart watch in excellent condition with no scratches on the dial or strap. Fully functional with original charger and box.",
+      graded_at: "2026-06-06T14:00:00Z"
+    },
+    valuation: { resale_price: 1700, price_multiplier: 0.68, demand_factor: 1.1 },
+    routing: {
+      decision: "RESELL_P2P",
+      reasoning: "Stylish wearable with strong local demand. Grade A condition supports premium P2P pricing without refurbishment.",
+      destination: { type: "buyer", name: "Local P2P Buyer", pincode: "110006" },
+      savings: { cost_saved: 200, co2_saved_kg: 0.9, km_avoided: 420 },
+      routed_at: "2026-06-06T14:30:00Z"
+    },
+    credits: { earned: 45, action: "p2p_local_handoff", lifetime_credits: 125 },
+    created_at: "2026-05-05T10:00:00Z", updated_at: "2026-06-06T14:30:00Z"
   },
   // SOLD (2)
   {

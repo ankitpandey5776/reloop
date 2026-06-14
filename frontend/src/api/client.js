@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {
-  MOCK_TWINS, MOCK_DASHBOARD_STATS, MOCK_RISK_RESPONSE, MOCK_CREDITS
+  MOCK_TWINS, MOCK_RISK_RESPONSE
 } from '../mocks/twins.js'
 
 const MOCK_MODE = import.meta.env.VITE_MOCK_MODE === 'true'
@@ -14,6 +14,50 @@ let mockTwins = [...MOCK_TWINS]
 
 function findTwin(twin_id) {
   return mockTwins.find(t => t.twin_id === twin_id) || null
+}
+
+// Broadcast that the in-memory mock store changed so live views (navbar credits,
+// dashboard, marketplace) can re-read the single source of truth and stay in sync.
+function emitDataChanged() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('reloop:data-changed'))
+  }
+}
+
+// Historical platform totals shown on the dashboard. Live session activity
+// (anything in mockTwins) is added on top so the headline numbers tick up as
+// returns are processed, while charts/pipeline reflect the live twins exactly.
+const STATS_BASELINE = {
+  total_twins: 132,
+  returns_prevented: 23,
+  total_cost_saved: 44200,
+  total_co2_saved_kg: 168.0,
+}
+
+function computeDashboardStats() {
+  const byState = {}, byRoute = {}, byGrade = {}
+  let liveCost = 0, liveCo2 = 0, livePrevented = 0, totalCredits = 0
+  for (const t of mockTwins) {
+    byState[t.state] = (byState[t.state] || 0) + 1
+    if (t.routing?.decision) byRoute[t.routing.decision] = (byRoute[t.routing.decision] || 0) + 1
+    if (t.grading?.grade) byGrade[t.grading.grade] = (byGrade[t.grading.grade] || 0) + 1
+    if (t.routing?.savings) {
+      liveCost += t.routing.savings.cost_saved || 0
+      liveCo2 += t.routing.savings.co2_saved_kg || 0
+    }
+    if (t.prevention?.prevented) livePrevented += 1
+    totalCredits += t.credits?.earned || 0
+  }
+  return {
+    total_twins: STATS_BASELINE.total_twins + mockTwins.length,
+    returns_prevented: STATS_BASELINE.returns_prevented + livePrevented,
+    total_cost_saved: STATS_BASELINE.total_cost_saved + liveCost,
+    total_co2_saved_kg: parseFloat((STATS_BASELINE.total_co2_saved_kg + liveCo2).toFixed(1)),
+    total_credits: totalCredits,
+    items_by_state: byState,
+    items_by_route: byRoute,
+    items_by_grade: byGrade,
+  }
 }
 
 // --- Prevention ---
@@ -42,6 +86,7 @@ export async function createTwin(item, customer) {
       created_at: new Date().toISOString(), updated_at: new Date().toISOString()
     }
     mockTwins.unshift(twin)
+    emitDataChanged()
     return twin
   }
   const { data } = await api.post('/api/v1/twins/', { item, customer })
@@ -76,6 +121,7 @@ export async function updateTwinState(twinId, state) {
     await delay(400)
     const twin = findTwin(twinId)
     if (twin) { twin.state = state; twin.updated_at = new Date().toISOString() }
+    emitDataChanged()
     return twin
   }
   const { data } = await api.patch(`/api/v1/twins/${twinId}/state`, { state })
@@ -113,6 +159,7 @@ export async function gradeItem(twinId, photos) {
       twin.state = 'GRADED'
       twin.updated_at = new Date().toISOString()
     }
+    emitDataChanged()
     return { twin_id: twinId, grading: gradeData, valuation }
   }
   const formData = new FormData()
@@ -158,6 +205,7 @@ export async function routeItem(twinId) {
       twin.state = 'ROUTED'
       twin.updated_at = new Date().toISOString()
     }
+    emitDataChanged()
     return { twin_id: twinId, routing: routingData, credits }
   }
   const { data } = await api.post('/api/v1/routing/route', { twin_id: twinId })
@@ -198,6 +246,7 @@ export async function listItem(twinId) {
     await delay(500)
     const twin = findTwin(twinId)
     if (twin) { twin.state = 'LISTED'; twin.updated_at = new Date().toISOString() }
+    emitDataChanged()
     return twin
   }
   const { data } = await api.post('/api/v1/marketplace/list', { twin_id: twinId })
@@ -209,6 +258,7 @@ export async function buyItem(twinId, buyerId) {
     await delay(500)
     const twin = findTwin(twinId)
     if (twin) { twin.state = 'SOLD'; twin.updated_at = new Date().toISOString() }
+    emitDataChanged()
     return twin
   }
   const { data } = await api.post('/api/v1/marketplace/buy', { twin_id: twinId, buyer_id: buyerId })
@@ -219,7 +269,7 @@ export async function buyItem(twinId, buyerId) {
 export async function getDashboardStats() {
   if (MOCK_MODE) {
     await delay(500)
-    return MOCK_DASHBOARD_STATS
+    return computeDashboardStats()
   }
   const { data } = await api.get('/api/v1/dashboard/stats')
   return data
@@ -276,6 +326,7 @@ export async function recordPrevention(twinId, riskScore, riskFactors, nudgeShow
       twin.prevention = { risk_score: riskScore, risk_factors: riskFactors, nudge_shown: nudgeShown, nudge_type: nudgeType, prevented }
       twin.updated_at = new Date().toISOString()
     }
+    emitDataChanged()
     return { twin_id: twinId, prevented, message: prevented ? 'Return prevented!' : 'Prevention outcome recorded.' }
   }
   const { data } = await api.post('/api/v1/prevention/record', {
@@ -293,7 +344,14 @@ export async function recordPrevention(twinId, riskScore, riskFactors, nudgeShow
 export async function getCredits(customerId) {
   if (MOCK_MODE) {
     await delay(300)
-    return MOCK_CREDITS
+    // Derive credits from the live store so every earned credit is tracked and
+    // the running total updates the moment a return is routed/listed.
+    const earners = mockTwins.filter(t => (t.credits?.earned || 0) > 0)
+    const total = earners.reduce((s, t) => s + (t.credits.earned || 0), 0)
+    const history = earners
+      .map(t => ({ twin_id: t.twin_id, action: t.credits.action, credits: t.credits.earned, timestamp: t.updated_at }))
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+    return { customer_id: customerId, total_credits: total, history }
   }
   const { data } = await api.get(`/api/v1/credits/${customerId}`)
   return data

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom'
 import { Recycle, Menu, X } from 'lucide-react'
 import CreditBadge from './components/common/CreditBadge.jsx'
 import ThemeToggle from './components/common/ThemeToggle.jsx'
+import { getCredits } from './api/client.js'
 import LandingPage from './pages/LandingPage.jsx'
 import CheckoutPage from './pages/CheckoutPage.jsx'
 import ReturnFlowPage from './pages/ReturnFlowPage.jsx'
@@ -21,12 +22,22 @@ const navLinks = [
 function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [credits, setCredits] = useState(0)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Keep the credit balance live — load on mount and refresh whenever a return
+  // earns credits anywhere in the app.
+  useEffect(() => {
+    const load = () => getCredits('cust-001').then(c => setCredits(c.total_credits || 0)).catch(() => {})
+    load()
+    window.addEventListener('reloop:data-changed', load)
+    return () => window.removeEventListener('reloop:data-changed', load)
   }, [])
 
   return (
@@ -62,7 +73,7 @@ function Navbar() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            <CreditBadge credits={350} />
+            <CreditBadge credits={credits} />
             <button className="md:hidden p-2 rounded-lg text-gray-200 hover:bg-white/10" onClick={() => setOpen(!open)}>
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>

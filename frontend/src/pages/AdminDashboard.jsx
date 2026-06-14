@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Package, ShieldCheck, TrendingUp, Leaf } from 'lucide-react'
+import { Package, ShieldCheck, TrendingUp, Leaf, Sparkles } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { getDashboardStats, getRecentTwins } from '../api/client.js'
 import RouteDistribution from '../components/dashboard/RouteDistribution.jsx'
@@ -45,16 +45,25 @@ export default function AdminDashboard() {
   }, [])
 
   useEffect(() => {
-    const id = setInterval(() => {
+    // Refresh both stats and the activity feed together so every panel reflects
+    // the same store — on a 10s tick and immediately whenever data changes.
+    const refresh = () => {
+      getDashboardStats().then(setStats).catch(() => {})
       getRecentTwins(10).then(r => setRecentTwins(r.twins || [])).catch(() => {})
-    }, 10000)
-    return () => clearInterval(id)
+    }
+    const id = setInterval(refresh, 10000)
+    window.addEventListener('reloop:data-changed', refresh)
+    return () => {
+      clearInterval(id)
+      window.removeEventListener('reloop:data-changed', refresh)
+    }
   }, [])
 
   const totalTwins = useCountUp(stats?.total_twins || 0)
   const prevented = useCountUp(stats?.returns_prevented || 0)
   const costSaved = useCountUp(stats?.total_cost_saved || 0)
   const co2 = useCountUp(stats?.total_co2_saved_kg ? Math.round(stats.total_co2_saved_kg) : 0)
+  const credits = useCountUp(stats?.total_credits || 0)
 
   // Build grade chart data from real API response — sorted A→D
   const gradeData = ['A', 'B', 'C', 'D']
@@ -81,11 +90,12 @@ export default function AdminDashboard() {
 
           {error && <div className="mb-6 p-3 bg-rose-500/10 border border-rose-400/30 rounded-xl text-sm text-rose-200">{error}</div>}
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <GlassStat label="Items Processed" value={totalTwins} icon={Package} />
             <GlassStat label="Returns Prevented" value={prevented} icon={ShieldCheck} />
             <GlassStat label="Cost Saved" value={costSaved} prefix="₹" icon={TrendingUp} />
             <GlassStat label="CO₂ Prevented" value={`${co2} kg`} icon={Leaf} />
+            <GlassStat label="Credits Earned" value={credits} icon={Sparkles} />
           </div>
         </div>
       </div>

@@ -38,7 +38,13 @@ class BedrockClient:
             print("[BedrockClient] Running in MOCK mode.")
                 
     def _get_mock_multimodal_response(self, prompt: str = "") -> str:
-        if "brick" in prompt.lower() or "fraud" in prompt.lower() or "counterfeit" in prompt.lower():
+        # The mock only sees the *prompt*, never the image, so it can't truly
+        # detect fraud/blur. These demo responses are gated behind explicit
+        # sentinels ("DEMO_BRICK" / "DEMO_BLURRY"). They must NOT match plain
+        # "fraud"/"blurry"/"counterfeit" — those words are baked into the
+        # standard grading prompt ("fraud investigator", "too blurry or dark"),
+        # which made EVERY item grade F and get rejected at routing.
+        if "demo_brick" in prompt.lower():
             return json.dumps({
                 "is_authentic": False,
                 "is_blurry": False,
@@ -48,8 +54,8 @@ class BedrockClient:
                 "defects": [],
                 "condition_report": "Return rejected. The item in the photo does not match the original purchase."
             })
-            
-        if "blurry" in prompt.lower():
+
+        if "demo_blurry" in prompt.lower():
             return json.dumps({
                 "is_authentic": True,
                 "is_blurry": True,
