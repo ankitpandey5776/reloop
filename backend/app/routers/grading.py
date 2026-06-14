@@ -1,5 +1,7 @@
 import os
+from datetime import datetime
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
+from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db, Twin
 from app.services.grading_service import grading_service
@@ -9,6 +11,49 @@ router = APIRouter(prefix="/api/v1/grading", tags=["grading"])
 
 MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024
 ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
+
+
+def _serialize_grading(twin: Twin) -> dict:
+    """Return a safe dict response for grading endpoints."""
+    return {
+        "twin_id":   twin.twin_id,
+        "state":     twin.state,
+        "item":      twin.item_data,
+        "grading":   twin.grading_data,
+        "valuation": twin.valuation_data,
+        "created_at": twin.created_at.isoformat() if isinstance(twin.created_at, datetime) else twin.created_at,
+        "updated_at": twin.updated_at.isoformat() if isinstance(twin.updated_at, datetime) else twin.updated_at,
+    }
+
+
+@router.get("/status/{twin_id}")
+async def grading_status(twin_id: str, db: Session = Depends(get_db)):
+    """
+    Feature 3 — Grading status polling endpoint.
+    Frontend polls this while waiting for grading to complete.
+    Returns current state + grading data if ready.
+    """
+    twin = db.query(Twin).filter(Twin.twin_id == twin_id).first()
+    if not twin:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": {"code": "TWIN_NOT_FOUND", "message": "Twin not found."}}
+        )
+
+    ready    = twin.state in ("GRADED", "ROUTED", "LISTED", "SOLD", "DONATED", "RECYCLED")
+    pending  = twin.state in ("ACTIVE", "RETURN_INTENT")
+    rejected = (twin.grading_data or {}).get("grade") == "F"
+
+    return {
+        "twin_id":  twin.twin_id,
+        "state":    twin.state,
+        "ready":    ready,
+        "pending":  pending,
+        "rejected": rejected,
+        "grading":  twin.grading_data,
+        "valuation": twin.valuation_data,
+        "condition_hash": (twin.grading_data or {}).get("condition_hash"),
+    }
 
 @router.post("/grade")
 async def grade(
@@ -77,5 +122,5 @@ async def grade(
     twin.state = "GRADED"
     db.commit()
     db.refresh(twin)
-    
-    return twin
+
+    return _serialize_grading(twin)

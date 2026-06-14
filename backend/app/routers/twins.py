@@ -6,38 +6,53 @@ from app.models import TwinCreate, TwinUpdate, TwinResponse, ItemInfo, CustomerI
 from app.events import emit
 from app.utils.helpers import generate_uuid, validate_state_transition
 from datetime import datetime
+from pydantic import BaseModel
+
 
 router = APIRouter(prefix="/api/v1/twins", tags=["Twins"])
 
+
 def _format_twin(twin: Twin) -> dict:
     return {
-        "twin_id": twin.twin_id,
-        "state": twin.state,
-        "item": twin.item_data,
-        "customer": twin.customer_data,
+        "twin_id":    twin.twin_id,
+        "state":      twin.state,
+        "item":       twin.item_data,
+        "customer":   twin.customer_data,
         "prevention": twin.prevention_data,
-        "grading": twin.grading_data,
-        "valuation": twin.valuation_data,
-        "routing": twin.routing_data,
-        "credits": twin.credits_data,
+        "grading":    twin.grading_data,
+        "valuation":  twin.valuation_data,
+        "routing":    twin.routing_data,
+        "credits":    twin.credits_data,
         "created_at": twin.created_at,
-        "updated_at": twin.updated_at
+        "updated_at": twin.updated_at,
     }
 
+
+# Feature 5: extended create model that optionally includes prevention outcome
+class TwinCreateWithPrevention(TwinCreate):
+    """
+    Superset of TwinCreate — accepts an optional prevention dict so the
+    frontend can record checkout nudge outcomes in a single call.
+    """
+    prevention: Optional[dict] = None
+
+
 @router.post("/", response_model=TwinResponse)
-async def create_twin(twin_data: TwinCreate, db: Session = Depends(get_db)):
+async def create_twin(twin_data: TwinCreateWithPrevention, db: Session = Depends(get_db)):
     new_twin = Twin(
         twin_id=generate_uuid(),
         state="ACTIVE",
         item_data=twin_data.item.dict(),
         customer_data=twin_data.customer.dict(),
+        # Feature 5 — store prevention at creation time if provided
+        prevention_data=twin_data.prevention,
         created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        updated_at=datetime.utcnow(),
     )
     db.add(new_twin)
     db.commit()
     db.refresh(new_twin)
-    
+
     result = _format_twin(new_twin)
     emit("twin.created", result)
     return result
