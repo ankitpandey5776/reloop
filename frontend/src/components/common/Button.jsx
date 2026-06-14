@@ -5,6 +5,11 @@ const variants = {
   secondary: 'bg-white border-2 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50 text-emerald-700 focus-visible:ring-emerald-400',
   danger: 'bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white focus-visible:ring-rose-500 shadow-lg shadow-rose-500/25 hover:-translate-y-0.5',
   ghost: 'bg-transparent hover:bg-gray-100 text-gray-600 focus-visible:ring-gray-400',
+  // Inverted/solid white button for dark backgrounds. Transparent border keeps
+  // it the exact same height as `glass` when the two sit side by side.
+  white: 'bg-white border-2 border-transparent text-[#04150f] shadow-lg hover:bg-emerald-50 hover:-translate-y-0.5 focus-visible:ring-emerald-300',
+  // Translucent outline button for dark backgrounds.
+  glass: 'bg-white/10 border-2 border-white/25 text-white hover:bg-white/20 hover:border-white/40 hover:-translate-y-0.5 focus-visible:ring-white/50',
 }
 
 const sizes = {

@@ -288,13 +288,6 @@ export async function recordPrevention(twinId, riskScore, riskFactors, nudgeShow
   })
   return data
 }
-  if (MOCK_MODE) {
-    await delay(300)
-    return MOCK_CREDITS
-  }
-  const { data } = await api.get(`/api/v1/credits/${customerId}`)
-  return data
-}
 
 // --- Credits ---
 export async function getCredits(customerId) {

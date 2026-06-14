@@ -82,12 +82,12 @@ export default function LandingPage() {
           </div>
         </FloatCard>
 
-        <FloatCard className="bottom-28 left-[12%]" delay="2.1s">
+        <FloatCard className="bottom-44 left-[7%]" delay="2.1s">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-violet-500/30 text-violet-200"><MapPin size={15} /></span>
           <p className="text-white text-sm font-medium">Routed → <span className="text-violet-300">Resell P2P</span></p>
         </FloatCard>
 
-        <FloatCard className="bottom-32 right-[11%]" delay="0.6s">
+        <FloatCard className="bottom-48 right-[6%]" delay="0.6s">
           <Leaf size={18} className="text-cyan-300" />
           <div className="text-left">
             <p className="text-white text-sm font-semibold leading-none font-display">187 kg</p>
@@ -108,12 +108,12 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp delay-300">
             <Link to="/checkout">
-              <Button size="lg" className="gap-2 !border-2 !border-transparent !bg-white !text-[#04150f] !shadow-lg hover:!bg-emerald-50 hover:!from-white hover:!to-white">
+              <Button size="lg" variant="white" className="gap-2">
                 Start Customer Demo <ArrowRight size={18} />
               </Button>
             </Link>
             <Link to="/dashboard">
-              <Button size="lg" className="gap-2 !bg-white/5 !border-2 !border-white/20 !text-white !shadow-none hover:!bg-white/10 hover:!from-transparent hover:!to-transparent">
+              <Button size="lg" variant="glass" className="gap-2">
                 View Admin Dashboard <BarChart3 size={18} />
               </Button>
             </Link>
@@ -203,7 +203,7 @@ export default function LandingPage() {
                 <Button size="lg" className="gap-2">Start Return Flow <ArrowRight size={18} /></Button>
               </Link>
               <Link to="/marketplace">
-                <Button size="lg" className="!bg-white !text-[#04150f] !shadow-lg hover:!bg-emerald-50 hover:!from-white hover:!to-white">Browse Marketplace</Button>
+                <Button size="lg" variant="white">Browse Marketplace</Button>
               </Link>
             </div>
           </div>
