@@ -57,16 +57,21 @@ Keep it warm, specific, and mention the environmental benefit. Respond with plai
         cost_saved = baseline_cost - route_cost
         
         km_ranges = {
-            "RESELL_P2P": (5, 50),
-            "RESELL_RENEWED": (200, 600),
-            "REFURBISH": (200, 600),
-            "DONATE": (5, 30),
-            "RECYCLE": (5, 20)
+            "RESELL_P2P": (10, 100),
+            "RESELL_RENEWED": (300, 800),
+            "REFURBISH": (150, 500),
+            "DONATE": (10, 50),
+            "RECYCLE": (10, 30)
         }
         min_km, max_km = km_ranges.get(decision, (0, 0))
         km_avoided = random.randint(min_km, max_km)
-        
-        co2_saved_kg = round(km_avoided * 0.0002, 3)
+
+        # CO2 saving = (baseline warehouse round-trip km) - (actual route km)
+        # Standard road freight: ~0.21 kg CO2 per km per shipment
+        BASELINE_KM = random.randint(400, 800)   # typical national return round-trip
+        actual_km   = km_avoided
+        net_km_saved = max(BASELINE_KM - actual_km, actual_km)  # km truly avoided
+        co2_saved_kg = round(net_km_saved * 0.21, 2)  # realistic: ~0.21 kg/km
         
         customer_pincode = customer.get('pincode', '000000')
         nearby_pincode = str(int(customer_pincode) + random.randint(1, 10)) if customer_pincode.isdigit() else customer_pincode

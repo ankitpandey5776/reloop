@@ -30,7 +30,6 @@ class ValuationService:
 
         if grade not in self.grade_multipliers:
             grade = 'B'
-            grade = 'B'
             
         category = category.lower() if isinstance(category, str) else 'other'
         if category not in self.category_demand_factors:
