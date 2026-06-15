@@ -41,19 +41,21 @@ function getReturnStatus(purchaseDateStr) {
 const STEPS = ['Select Item', 'Upload Photos', 'AI Grading', 'Route Decision', 'Done']
 const SCAN_MESSAGES = ['Detecting defects…', 'Assessing condition…', 'Calculating value…', 'Generating report…']
 
-/* Real Amazon product images for items in return flow */
+/* Real product images — local /public/ files + Unsplash CORS-safe fallbacks */
 const ITEM_IMAGES = {
-  'ELEC-SAM-S23':  'https://m.media-amazon.com/images/I/71NybWDVrBL._SY355_.jpg',
-  'ELEC-BOAT-141': 'https://m.media-amazon.com/images/I/61mZDYMHkNL._SY355_.jpg',
-  'ELEC-KIND-PW':  'https://m.media-amazon.com/images/I/61bCiVJbCsL._SY355_.jpg',
-  'ELEC-FIRE-4K':  'https://m.media-amazon.com/images/I/61WMEnwRa7L._SY355_.jpg',
-  'FASH-ALNS-SHT': 'https://m.media-amazon.com/images/I/81ib3x3M1QL._UY400_.jpg',
-  'FASH-NIKE-REV': 'https://m.media-amazon.com/images/I/71K96V+b5uL._UY400_.jpg',
-  'FASH-PUMA-TRK': 'https://m.media-amazon.com/images/I/71wWXs3HKVL._UY400_.jpg',
-  'HOME-PHIL-AIR': 'https://m.media-amazon.com/images/I/41A-KBb9lJL._SY355_.jpg',
-  'HOME-HAVL-FAN': 'https://m.media-amazon.com/images/I/71EXG5Eg+KL._SY355_.jpg',
-  'BOOK-ATMT':     'https://m.media-amazon.com/images/I/81YkqyaFVEL._SY355_.jpg',
-  'BOOK-SAPIENS':  'https://m.media-amazon.com/images/I/713jIoMO3UL._SY355_.jpg',
+  'ELEC-SAM-S23':  '/samsung-s23.jpg',
+  'ELEC-BOAT-141': 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&q=80&fit=crop',
+  'ELEC-KIND-PW':  'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80&fit=crop',
+  'ELEC-FIRE-4K':  'https://images.unsplash.com/photo-1593359677879-a4bb92f4834a?w=300&q=80&fit=crop',
+  'FASH-ALNS-SHT': '/allen-solly.jpg',
+  'FASH-NIKE-REV': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80&fit=crop',
+  'FASH-PUMA-TRK': 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=300&q=80&fit=crop',
+  'HOME-PHIL-AIR': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80&fit=crop',
+  'HOME-HAVL-FAN': 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=300&q=80&fit=crop',
+  'BOOK-ATMT':     'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&q=80&fit=crop',
+  'BOOK-SAPIENS':  'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=300&q=80&fit=crop',
+  'SKU-ALLEN-SHIRT': '/allen-solly.jpg',
+  'SKU-KINDLE-PW':   'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80&fit=crop',
 }
 
 export default function ReturnFlowPage() {

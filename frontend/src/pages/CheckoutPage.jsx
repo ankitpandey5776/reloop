@@ -9,9 +9,26 @@ import { checkRisk, createTwin, recordPrevention } from '../api/client.js'
 import Button from '../components/common/Button.jsx'
 import Modal from '../components/common/Modal.jsx'
 
-/* ─── Product image colors — category-based solid backgrounds ─────── */
-/* Amazon blocks hotlinking. We use colored backgrounds + product
-   SVG icons instead. Clean and consistent. */
+/* ─── Product images — local files in /public/ + Unsplash fallbacks ─ */
+/* Save images to frontend/public/ to use local ones.
+   Unsplash CDN serves with proper CORS headers as fallback. */
+const ITEM_IMAGES = {
+  'SKU-ALLEN-SHIRT': '/allen-solly.jpg',
+  'SKU-KINDLE-PW':   'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200&q=80&fit=crop',
+  'SKU-NIKE-REV6':   'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=80&fit=crop',
+  'SKU-BOAT-141':    'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&q=80&fit=crop',
+  'SKU-SAM-M34':     '/samsung-s23.jpg',
+  'ELEC-SAM-S23':    '/samsung-s23.jpg',
+  'ELEC-BOAT-141':   'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&q=80&fit=crop',
+  'ELEC-KIND-PW':    'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200&q=80&fit=crop',
+  'FASH-ALNS-SHT':   '/allen-solly.jpg',
+  'FASH-NIKE-REV':   'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=80&fit=crop',
+  'FASH-LEV-JNS':    'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=200&q=80&fit=crop',
+  'HOME-PRES-IND':   'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=200&q=80&fit=crop',
+  'BOOK-ATMT':       'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=200&q=80&fit=crop',
+  'BOOK-SAPIENS':    'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=200&q=80&fit=crop',
+}
+
 const CAT_COLORS = {
   fashion:     { bg: 'bg-rose-100 dark:bg-rose-500/15',     text: 'text-rose-500' },
   electronics: { bg: 'bg-sky-100 dark:bg-sky-500/15',       text: 'text-sky-500' },
@@ -58,45 +75,50 @@ function ProductSVG({ category, size = 36 }) {
 function CartItem({ item, onRemove, onQtyChange, flagged }) {
   const cat = item.category || 'other'
   const colors = CAT_COLORS[cat] || CAT_COLORS.other
+  const imgSrc = ITEM_IMAGES[item.sku]
+  const [imgError, setImgError] = useState(false)
+
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-gray-900 border transition-all ${
+    <div className={`flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-gray-900 border transition-all ${
       flagged
-        ? 'border-l-[3px] border-l-amber-400 border-t border-r border-b border-amber-100 dark:border-amber-500/20 bg-amber-50/30 dark:bg-amber-500/5'
+        ? 'border-l-[3px] border-l-amber-400 border-amber-100 dark:border-amber-500/20'
         : 'border-gray-100 dark:border-gray-800'
     }`}>
       {/* Product image */}
-      <div className={`w-16 h-16 rounded-xl ${colors.bg} flex items-center justify-center shrink-0`}>
-        <ProductSVG category={cat} size={36} />
+      <div className={`w-14 h-14 rounded-lg overflow-hidden shrink-0 ${!imgSrc || imgError ? colors.bg : ''} flex items-center justify-center`}>
+        {imgSrc && !imgError ? (
+          <img
+            src={imgSrc}
+            alt={item.title}
+            className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <ProductSVG category={cat} size={30} />
+        )}
       </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-start gap-2">
-          <p className="font-medium text-gray-900 dark:text-gray-100 text-sm leading-tight flex-1">{item.title}</p>
-          {flagged && <span className="text-[10px] bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded font-medium shrink-0">High risk</span>}
-        </div>
-        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 capitalize">
+        <p className="font-medium text-gray-900 dark:text-gray-100 text-sm leading-tight">{item.title}</p>
+        <p className="text-xs text-gray-400 mt-0.5 capitalize">
           {item.variant ? `Size ${item.variant} · ` : ''}{item.category}
         </p>
-        <p className="text-emerald-600 dark:text-emerald-400 font-bold mt-1 text-sm">₹{item.price?.toLocaleString('en-IN')}</p>
+        <p className="text-emerald-600 dark:text-emerald-400 font-bold text-sm mt-0.5">₹{item.price?.toLocaleString('en-IN')}</p>
       </div>
 
       {/* Qty */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-1.5 shrink-0">
         <button onClick={() => onQtyChange(item.id, Math.max(1, item.qty - 1))}
-          className="w-7 h-7 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-          <svg width="10" height="2" viewBox="0 0 10 2"><rect width="10" height="2" fill="currentColor" /></svg>
-        </button>
+          className="w-6 h-6 rounded-full border border-gray-200 dark:border-gray-700 text-gray-500 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 text-xs font-bold">−</button>
         <span className="w-5 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">{item.qty}</span>
         <button onClick={() => onQtyChange(item.id, item.qty + 1)}
-          className="w-7 h-7 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-          <svg width="10" height="10" viewBox="0 0 10 10"><rect x="4" width="2" height="10" fill="currentColor" /><rect y="4" width="10" height="2" fill="currentColor" /></svg>
-        </button>
+          className="w-6 h-6 rounded-full border border-gray-200 dark:border-gray-700 text-gray-500 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 text-xs font-bold">+</button>
       </div>
 
       <button onClick={() => onRemove(item.id)}
-        className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-300 hover:text-red-400 transition-colors shrink-0">
-        <X size={15} />
+        className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-300 hover:text-red-400 transition-colors shrink-0">
+        <X size={14} />
       </button>
     </div>
   )
@@ -365,144 +387,123 @@ export default function CheckoutPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
 
-        {/* ── Left: Prevention nudges + cart items ─────── */}
-        <div>
-          {/* Prevention intelligence header */}
-          {activeNudges.length > 0 && (
-            <div className="mb-4 flex items-center gap-2 text-sm">
-              <AlertTriangle size={15} className="text-amber-500 shrink-0" />
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                {activeNudges.length} smart {activeNudges.length === 1 ? 'suggestion' : 'suggestions'} to reduce your return risk
-              </span>
-            </div>
-          )}
-
-          {resolvedCount > 0 && (
-            <div className="mb-4 flex items-center gap-2 text-sm p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20">
-              <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-              <span className="text-emerald-700 dark:text-emerald-300 font-medium">
-                {resolvedCount} return risk{resolvedCount > 1 ? 's' : ''} resolved
-                {discount > 0 && ` · ₹${discount} discount applied`}
-                {greenCredits > 0 && ` · +${greenCredits} green credits`}
-              </span>
-            </div>
-          )}
-
-          {/* Active prevention nudges */}
-          {activeNudges.map(nudge => (
-            <PreventionCard
-              key={nudge.id}
-              nudge={nudge}
-              onAction={handleNudgeAction}
-              onDismiss={handleNudgeDismiss}
-            />
-          ))}
+        {/* ── LEFT: Cart items — always visible ────────── */}
+        <div className="lg:sticky lg:top-24">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display font-bold text-gray-900 dark:text-white text-xl flex items-center gap-2">
+              <ShoppingCart size={20} className="text-gray-400" />
+              Your Cart
+            </h2>
+            <span className="text-sm text-gray-500">{cart.length} item{cart.length !== 1 ? 's' : ''}</span>
+          </div>
 
           {/* Cart items */}
-          <div className="mt-2">
-            <h2 className="font-display font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <ShoppingCart size={18} className="text-gray-400" />
-              Your Cart · {cart.length} item{cart.length !== 1 ? 's' : ''}
-            </h2>
-            <div className="space-y-2">
-              {cart.map(item => (
-                <CartItem
-                  key={item.id}
-                  item={item}
-                  onRemove={removeItem}
-                  onQtyChange={changeQty}
-                  flagged={flaggedIds.has(item.id) && activeNudges.length > 0}
-                />
-              ))}
-            </div>
+          <div className="space-y-2 mb-6">
+            {cart.map(item => (
+              <CartItem
+                key={item.id}
+                item={item}
+                onRemove={removeItem}
+                onQtyChange={changeQty}
+                flagged={flaggedIds.has(item.id) && activeNudges.length > 0}
+              />
+            ))}
           </div>
-        </div>
 
-        {/* ── Right: Order summary ──────────────────────── */}
-        <div className="lg:sticky lg:top-24 h-fit">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
-            <h2 className="font-display font-bold text-gray-900 dark:text-white mb-4">Order Summary</h2>
-
+          {/* Order summary */}
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
             <div className="space-y-2 text-sm mb-4">
               <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                <span>Subtotal ({cart.length} items)</span>
-                <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                <span>Subtotal</span><span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                <span>Delivery</span>
-                <span className="text-emerald-600 font-medium">FREE</span>
+                <span>Delivery</span><span className="text-emerald-600 font-medium">FREE</span>
               </div>
               {discount > 0 && (
-                <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
-                  <span>Keep-It Discount</span>
-                  <span>−₹{discount.toLocaleString('en-IN')}</span>
+                <div className="flex justify-between text-emerald-600 font-semibold">
+                  <span>Keep-It Discount</span><span>−₹{discount}</span>
                 </div>
               )}
               {greenCredits > 0 && (
-                <div className="flex justify-between text-teal-600 dark:text-teal-400 font-medium">
-                  <span className="flex items-center gap-1"><Leaf size={11} /> Green Credits</span>
+                <div className="flex justify-between text-teal-600 text-xs font-medium">
+                  <span className="flex items-center gap-1"><Leaf size={10} />Green Credits</span>
                   <span>+{greenCredits} credits</span>
                 </div>
               )}
             </div>
-
-            <div className="flex justify-between font-bold text-gray-900 dark:text-white text-lg border-t border-gray-100 dark:border-gray-800 pt-3 mb-1">
+            <div className="flex justify-between font-bold text-gray-900 dark:text-white border-t border-gray-100 dark:border-gray-800 pt-3 mb-4">
               <span>Total</span>
-              <span className="font-display tabular-nums">₹{finalTotal.toLocaleString('en-IN')}</span>
+              <span className="font-display tabular-nums text-lg">₹{finalTotal.toLocaleString('en-IN')}</span>
             </div>
-            {discount > 0 && (
-              <p className="text-xs text-emerald-600 dark:text-emerald-400 text-right mb-4">You save ₹{discount.toLocaleString('en-IN')}</p>
-            )}
 
-            {/* Return risk indicator */}
+            {/* Risk bar */}
             {activeNudges.length > 0 && (
-              <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-500/10 rounded-xl border border-rose-100 dark:border-rose-500/20">
-                <div className="flex justify-between text-xs text-rose-600 dark:text-rose-400 mb-1.5">
-                  <span className="font-semibold">Current return risk</span>
+              <div className="mb-3 p-3 bg-rose-50 dark:bg-rose-500/10 rounded-xl border border-rose-100 dark:border-rose-500/20">
+                <div className="flex justify-between text-xs text-rose-600 mb-1">
+                  <span className="font-semibold">Return risk</span>
                   <span className="font-bold">{Math.max(20, 87 - resolvedCount * 18)}%</span>
                 </div>
-                <div className="h-1.5 bg-rose-200 dark:bg-rose-500/30 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-rose-500 rounded-full transition-all duration-700"
-                    style={{ width: `${Math.max(20, 87 - resolvedCount * 18)}%` }}
-                  />
+                <div className="h-1.5 bg-rose-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-rose-500 rounded-full transition-all duration-700"
+                    style={{ width: `${Math.max(20, 87 - resolvedCount * 18)}%` }} />
                 </div>
-                <p className="text-[10px] text-rose-500 mt-1">Resolve the suggestions above to reduce risk</p>
               </div>
             )}
 
-            {/* Delivery info */}
-            <div className="flex items-center gap-1.5 mb-4 text-xs text-gray-500 dark:text-gray-400">
-              <MapPin size={11} className="shrink-0" />
-              <span>Delivering to <strong className="text-gray-700 dark:text-gray-300">Rahul Sharma</strong> · Kolkata 700001</span>
+            <div className="flex items-center gap-1.5 mb-3 text-xs text-gray-500">
+              <MapPin size={11} /><span>Rahul Sharma · Kolkata 700001</span>
             </div>
 
             <Button className="w-full" size="lg" loading={placing} onClick={handlePlaceOrder}>
               Place Order · ₹{finalTotal.toLocaleString('en-IN')}
             </Button>
-
-            <div className="text-center mt-4">
+            <div className="text-center mt-3">
               <Link to="/return" className="text-xs text-emerald-600 hover:underline flex items-center justify-center gap-1">
-                Skip to Return Demo <ArrowRight size={12} />
+                Skip to Return Demo <ArrowRight size={11} />
               </Link>
             </div>
-
-            {/* Trust badges */}
-            <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-around text-center">
-              {[
-                { label: 'Secure', sub: 'Payment' },
-                { label: 'Free', sub: 'Returns' },
-                { label: 'Fast', sub: 'Delivery' },
-              ].map(b => (
-                <div key={b.label} className="text-xs">
-                  <p className="font-bold text-gray-700 dark:text-gray-300">{b.label}</p>
-                  <p className="text-gray-400">{b.sub}</p>
-                </div>
-              ))}
-            </div>
           </div>
+        </div>
+
+        {/* ── RIGHT: Prevention nudges — scrollable ────── */}
+        <div>
+          {/* Prevention header */}
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-display font-bold text-gray-900 dark:text-white text-xl flex items-center gap-2">
+              <AlertTriangle size={18} className="text-amber-500" />
+              ReLoop Prevention
+            </h2>
+            {resolvedCount > 0 && (
+              <span className="text-xs bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2 py-1 rounded-full font-bold">
+                {resolvedCount}/{nudges.length} resolved
+              </span>
+            )}
+          </div>
+
+          {resolvedCount > 0 && (
+            <div className="mb-3 flex items-center gap-2 p-2.5 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-300 font-medium">
+              <CheckCircle size={13} />
+              {resolvedCount} risk{resolvedCount > 1 ? 's' : ''} resolved
+              {discount > 0 && ` · ₹${discount} discount applied`}
+              {greenCredits > 0 && ` · +${greenCredits} green credits`}
+            </div>
+          )}
+
+          {/* Active nudge cards */}
+          {activeNudges.map(nudge => (
+            <PreventionCard key={nudge.id} nudge={nudge} onAction={handleNudgeAction} onDismiss={handleNudgeDismiss} />
+          ))}
+
+          {activeNudges.length === 0 && (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              <CheckCircle size={32} className="text-emerald-500 mx-auto mb-2" />
+              <p className="font-medium text-sm">All return risks resolved!</p>
+              <p className="text-xs mt-1">Your return probability is now low.</p>
+            </div>
+          )}
         </div>
 
       </div>
