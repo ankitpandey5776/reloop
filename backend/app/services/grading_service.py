@@ -22,21 +22,26 @@ def _compute_condition_hash(grading_result: dict) -> str:
 class GradingService:
     def __init__(self):
         self.prompt_template = """
-You are an expert product quality grader and fraud investigator for Amazon's Second Life Commerce program.
+You are an expert product quality grader for Amazon's Second Life Commerce program.
 
-Analyze the provided product photos and assess the item's physical condition, authenticity, and image quality.
+Analyze the provided product photos and assess the item's physical condition.
 
 Product Info:
-- Expected Title: {title}
-- Expected Category: {category}
+- Title: {title}
+- Category: {category}
 - Original Price: ₹{original_price}
+
+IMPORTANT GRADING RULES:
+- is_authentic should be TRUE for any reasonable product photo. Only set FALSE if the photo clearly shows a completely different product type (e.g. photo of food when expecting electronics) or is obviously fraudulent.
+- is_blurry should only be TRUE if the photo is so blurry nothing is visible.
+- Give the benefit of the doubt — customers take photos in normal home conditions.
 
 Respond ONLY with a JSON object (no markdown, no backticks, no extra text):
 {{
-  "is_authentic": <boolean, true if the image clearly matches the Expected Title and Category>,
-  "is_blurry": <boolean, true if the image is too blurry or dark to grade properly>,
-  "fraud_reason": "<if is_authentic is false, explain why it does not match the expected product. else empty string>",
-  "grade": "A or B or C or D or F",
+  "is_authentic": <boolean, true unless photo is clearly a completely different product type>,
+  "is_blurry": <boolean, true only if completely unusable>,
+  "fraud_reason": "<only if is_authentic is false, else empty string>",
+  "grade": "A or B or C or D",
   "confidence": <float between 0.0 and 1.0>,
   "defects": [
     {{
