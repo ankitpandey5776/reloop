@@ -4,7 +4,7 @@ import {
   Package, CheckCircle, ArrowRight, RotateCcw, ShieldCheck,
   Clock, AlertCircle, Camera
 } from 'lucide-react'
-import { updateTwinState, gradeItem, getGradingStatus, routeItem, listItem } from '../api/client.js'
+import { updateTwinState, gradeItem, getGradingStatus, routeItem, listItem, createTwin } from '../api/client.js'
 import Button from '../components/common/Button.jsx'
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
 import GradeResult from '../components/grading/GradeResult.jsx'
@@ -174,8 +174,19 @@ export default function ReturnFlowPage() {
   }, [grading])
 
   async function selectItem(twin) {
-    setSelected(twin)
-    await updateTwinState(twin.twin_id, 'RETURN_INTENT').catch(() => {})
+    try {
+      // Create the twin in the real DB (demo orders only exist in frontend memory)
+      const created = await createTwin(twin.item, twin.customer)
+      if (created?.twin_id) {
+        setSelected({ ...twin, twin_id: created.twin_id })
+        await updateTwinState(created.twin_id, 'RETURN_INTENT').catch(() => {})
+      } else {
+        setSelected(twin)
+        await updateTwinState(twin.twin_id, 'RETURN_INTENT').catch(() => {})
+      }
+    } catch {
+      setSelected(twin)
+    }
     setStep(1)
   }
 
@@ -184,36 +195,31 @@ export default function ReturnFlowPage() {
     setStep(2)
     const files = photos.map(p => p.file)
     try {
-      // Kick off grading — real API returns { twin_id, state, grading, valuation, ... }
-      // Mock API returns { twin_id, grading, valuation }
-      await gradeItem(selected.twin_id, files)
+      // gradeItem returns the serialized twin with grading + valuation
+      const result = await gradeItem(selected.twin_id, files)
 
-      // Poll status until ready (handles async Bedrock processing)
-      let attempts = 0
-      let statusResult = null
-      while (attempts < 30) {
-        await new Promise(r => setTimeout(r, 800))
+      // Normalise: real API returns {twin_id, state, grading, valuation, item, ...}
+      // Mock API returns {twin_id, grading, valuation}
+      let gradingData   = result?.grading   || result?.grading_data   || null
+      let valuationData = result?.valuation || result?.valuation_data || null
+
+      // If grading not in direct response, poll status once
+      if (!gradingData) {
+        await new Promise(r => setTimeout(r, 1000))
         const status = await getGradingStatus(selected.twin_id).catch(() => null)
-        if (status?.ready || status?.rejected || status?.grading) {
-          statusResult = status
-          break
-        }
-        attempts++
+        gradingData   = status?.grading   || null
+        valuationData = status?.valuation || null
       }
 
-      // Normalise response — works whether polling or mock
-      const gradingData   = statusResult?.grading   || null
-      const valuationData = statusResult?.valuation  || null
-
       if (!gradingData) throw new Error('No grading data received')
-
       setGradeResult({ grading: gradingData, valuation: valuationData })
-    } catch {
+    } catch (err) {
+      console.error('Grading error:', err)
       setError('Grading failed. Using demo data.')
       setGradeResult({
         grading: {
           grade: 'B', confidence: 0.88, defects: [],
-          condition_report: 'Demo: Item is in good condition.',
+          condition_report: 'Item is in good condition with minor signs of use.',
           graded_at: new Date().toISOString(), condition_hash: null,
         },
         valuation: {
