@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: reloop-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./reloop.db
+      - key: MOCK_MODE
+        value: "true"
+      - key: USE_GEMINI
+        value: "false"
+      - key: CORS_ORIGINS
+        value: '["https://reloop.vercel.app","https://*.vercel.app"]'
