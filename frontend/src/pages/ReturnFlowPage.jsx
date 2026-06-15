@@ -526,9 +526,25 @@ export default function ReturnFlowPage() {
           ) : gradeResult ? (
             <>
               <GradeResult grading={gradeResult.grading} valuation={gradeResult.valuation} originalPrice={selected?.item?.original_price} />
-              <Button className="mt-6 w-full" size="lg" onClick={handleRoute}>
-                Find Best Destination <ArrowRight size={16} />
-              </Button>
+              {gradeResult.grading?.grade === 'F' || gradeResult.grading?.is_authentic === false ? (
+                /* Rejected — ask for a correct photo, don't route */
+                <div className="mt-6 space-y-3">
+                  <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 text-sm text-amber-800 dark:text-amber-300 text-center">
+                    Please upload a clear photo of the actual product — front and back — so our AI can verify and grade it correctly.
+                  </div>
+                  <Button variant="secondary" className="w-full" onClick={() => {
+                    setGradeResult(null)
+                    setPhotos([])
+                    setStep(1)
+                  }}>
+                    <Camera size={15} /> Upload Correct Photo
+                  </Button>
+                </div>
+              ) : (
+                <Button className="mt-6 w-full" size="lg" onClick={handleRoute}>
+                  Find Best Destination <ArrowRight size={16} />
+                </Button>
+              )}
             </>
           ) : null}
         </div>

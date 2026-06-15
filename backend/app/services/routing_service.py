@@ -29,15 +29,9 @@ Keep it warm, specific, and mention the environmental benefit. Respond with plai
         # Determine Decision
         decision = "RECYCLE"
         if grade == 'A':
-            if demand_factor >= 1.0:
-                decision = "RESELL_P2P"
-            else:
-                decision = "RESELL_RENEWED"
+            decision = "RESELL_P2P"       # like-new → direct to buyer
         elif grade == 'B':
-            if resale_price > 500:
-                decision = "RESELL_P2P"
-            else:
-                decision = "REFURBISH"
+            decision = "REFURBISH"        # good → light refurb, then Renewed
         elif grade == 'C':
             decision = "DONATE"
         elif grade == 'D':
