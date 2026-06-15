@@ -258,7 +258,16 @@ export async function getListings(params = {}) {
     const start = (page - 1) * limit
     return { listings: listings.slice(start, start + limit), total: listings.length, page }
   }
-  const { data } = await api.get('/api/v1/marketplace/listings', { params })
+  // Only forward real filter values. The backend treats any non-empty
+  // category/grade as an exact match, so sending the sentinel 'all' (or an
+  // empty search) would filter every listing out and yield "No listings found".
+  const query = {}
+  if (params.category && params.category !== 'all') query.category = params.category
+  if (params.grade && params.grade !== 'all') query.grade = params.grade
+  if (params.search) query.search = params.search
+  if (params.page) query.page = params.page
+  if (params.limit) query.limit = params.limit
+  const { data } = await api.get('/api/v1/marketplace/listings', { params: query })
   return data
 }
 

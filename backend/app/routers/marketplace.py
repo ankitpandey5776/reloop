@@ -90,6 +90,13 @@ async def get_listings(
     Returns twins with state=LISTED, filtered by optional category/grade,
     sorted by created_at desc, with pagination.
     """
+    # Treat the UI sentinel 'all' (and empty strings) as "no filter" so a
+    # category=all&grade=all request returns every listing instead of none.
+    if category in (None, "", "all"):
+        category = None
+    if grade in (None, "", "all"):
+        grade = None
+
     query = db.query(Twin).filter(Twin.state == "LISTED")
     all_listed = query.order_by(Twin.created_at.desc()).all()
 
