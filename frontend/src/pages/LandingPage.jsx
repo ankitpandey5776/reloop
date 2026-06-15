@@ -6,7 +6,8 @@ import {
 } from 'framer-motion'
 import {
   ShieldCheck, ScanSearch, Recycle, ArrowRight, Leaf,
-  BarChart3, Sparkles, TrendingUp, MapPin, Zap, Users, Globe
+  BarChart3, Sparkles, TrendingUp, MapPin, Zap, Users, Globe,
+  ShoppingCart, Camera, Tag, Repeat2, Search, BadgeCheck
 } from 'lucide-react'
 import { useScrollReveal, useCountUp } from '../hooks/useAnimations.js'
 
@@ -173,12 +174,14 @@ function StatNum({ target, prefix = '', suffix = '', label }) {
 
 /* ─── Scrolling ticker ────────────────────────────────── */
 const TICKER_ITEMS = [
-  '📦 Samsung Galaxy graded B → P2P Resale · ₹270 saved',
-  '👟 Nike Shoes graded A → Listed · 118 kg CO₂ saved',
-  '📚 HP Book Set graded C → Donated · 8 returns prevented',
-  '💡 Wipro Bulbs graded D → Recycled · ₹320 saved',
-  '👔 Allen Solly Shirt → Return prevented at checkout · +20 credits',
-  '📱 Boat Airdopes 141 graded B → Marketplace · Buyer 2.4 km away',
+  'Samsung Galaxy S23 graded B · P2P Resale · ₹270 saved',
+  'Nike Revolution Shoes graded A · Listed · 118 kg CO₂ saved',
+  'Harry Potter Box Set graded C · Donated · 8 returns prevented',
+  'Wipro LED Bulbs graded D · Recycled · ₹320 saved',
+  'Allen Solly Shirt · Return prevented at checkout · +20 credits',
+  'Boat Airdopes 141 graded B · Marketplace · Buyer 2.4 km away',
+  'Kindle Paperwhite graded A · Renewed · ₹11,900 recovered',
+  'Prestige Cooktop graded C · Donate · GreenHands Foundation',
 ]
 
 function Ticker() {
@@ -235,10 +238,10 @@ const PILLARS = [
 ]
 
 const JOURNEY = [
-  { n: 1, title: 'Shop',        desc: 'Normal checkout experience',            icon: '🛒', gradient: 'from-emerald-500 to-teal-600' },
-  { n: 2, title: 'AI Nudge',   desc: 'Smart intervention catches return risk', icon: '⚡', gradient: 'from-amber-500 to-orange-600' },
-  { n: 3, title: 'Camera Grade', desc: 'Photo → instant AI grade + report',  icon: '📷', gradient: 'from-sky-500 to-cyan-600' },
-  { n: 4, title: 'Second Life', desc: 'Direct to next best owner',             icon: '♻️', gradient: 'from-violet-500 to-purple-600' },
+  { n: 1, title: 'Shop',         desc: 'Normal checkout experience',            icon: ShoppingCart, gradient: 'from-emerald-500 to-teal-600' },
+  { n: 2, title: 'AI Nudge',    desc: 'Smart intervention catches return risk', icon: ShieldCheck,  gradient: 'from-amber-500 to-orange-600' },
+  { n: 3, title: 'Camera Grade', desc: 'Photo → instant AI grade + report',    icon: Camera,       gradient: 'from-sky-500 to-cyan-600' },
+  { n: 4, title: 'Second Life',  desc: 'Direct to next best owner',             icon: Repeat2,      gradient: 'from-violet-500 to-purple-600' },
 ]
 
 /* ─── Main ────────────────────────────────────────────── */
@@ -460,16 +463,16 @@ export default function LandingPage() {
                 </div>
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <div className="flex items-start gap-2">
-                    <span className="text-orange-500 mt-0.5 shrink-0">→</span>
+                    <ArrowRight size={14} className="text-orange-400 mt-0.5 shrink-0" />
                     <span>Customer adds 3 sizes of same shirt</span>
                   </div>
                   <div className="flex items-start gap-2 bg-amber-100 dark:bg-amber-500/20 rounded-lg p-2">
-                    <span className="text-amber-600 mt-0.5 shrink-0">⚡</span>
-                    <span className="font-medium text-amber-800 dark:text-amber-300">ReLoop nudge appears: "87% of buyers your size found this runs small"</span>
+                    <ShieldCheck size={14} className="text-amber-600 mt-0.5 shrink-0" />
+                    <span className="font-medium text-amber-800 dark:text-amber-300">ReLoop nudge: "87% of buyers your size found this runs small"</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
-                    <span>Customer switches to one size → <strong>1 return prevented</strong></span>
+                    <BadgeCheck size={14} className="text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Switches to one size → <strong>1 return prevented</strong></span>
                   </div>
                 </div>
               </div>
@@ -495,15 +498,15 @@ export default function LandingPage() {
                 </div>
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-400 mt-0.5 shrink-0">→</span>
+                    <ArrowRight size={14} className="text-gray-400 mt-0.5 shrink-0" />
                     <span>Customer still returns item</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <span className="text-emerald-500 mt-0.5 shrink-0">📷</span>
+                    <Camera size={14} className="text-emerald-500 mt-0.5 shrink-0" />
                     <span>"Take 2 photos. Get faster refund + green credits."</span>
                   </div>
                   <div className="flex items-start gap-2 bg-emerald-100 dark:bg-emerald-500/20 rounded-lg p-2">
-                    <span className="text-emerald-600 mt-0.5 shrink-0">🤖</span>
+                    <ScanSearch size={14} className="text-emerald-600 mt-0.5 shrink-0" />
                     <span className="font-medium text-emerald-800 dark:text-emerald-300">AI grades: <strong>Grade B, ₹910</strong>. Routes to buyer 2.4km away in Kolkata.</span>
                   </div>
                 </div>
@@ -531,15 +534,15 @@ export default function LandingPage() {
                 </div>
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <div className="flex items-start gap-2">
-                    <span className="text-sky-500 mt-0.5 shrink-0">🔍</span>
+                    <Search size={14} className="text-sky-500 mt-0.5 shrink-0" />
                     <span>Searches "Allen Solly Shirt" on Amazon</span>
                   </div>
                   <div className="flex items-start gap-2 bg-sky-100 dark:bg-sky-500/20 rounded-lg p-2">
-                    <span className="text-sky-600 mt-0.5 shrink-0">🏷️</span>
+                    <Tag size={14} className="text-sky-600 mt-0.5 shrink-0" />
                     <span className="font-medium text-sky-800 dark:text-sky-300">"AI-Verified Grade B — ₹910. Seller 2.4 km away. <strong>No shipping needed.</strong>"</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+                    <BadgeCheck size={14} className="text-emerald-500 mt-0.5 shrink-0" />
                     <span>Buys it. Item never went to warehouse. <strong>₹270 saved. 118kg CO₂ prevented.</strong></span>
                   </div>
                 </div>
@@ -606,7 +609,7 @@ export default function LandingPage() {
             </div>
           </Reveal>
           <div className="relative grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-6">
-            {JOURNEY.map(({ n, title, desc, icon, gradient }, i) => (
+            {JOURNEY.map(({ n, title, desc, icon: Icon, gradient }, i) => (
               <motion.div key={n} className="flex flex-col items-center text-center relative"
                 initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}>
@@ -617,10 +620,10 @@ export default function LandingPage() {
                     viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.15 + 0.4 }} />
                 )}
                 <motion.div
-                  className={`w-16 h-16 rounded-full bg-gradient-to-br ${gradient} text-white text-2xl flex items-center justify-center shadow-lg ring-4 ring-white dark:ring-gray-900 mb-4 z-10`}
+                  className={`w-16 h-16 rounded-full bg-gradient-to-br ${gradient} text-white flex items-center justify-center shadow-lg ring-4 ring-white dark:ring-gray-900 mb-4 z-10`}
                   whileHover={{ scale: 1.15, rotate: 5 }} transition={{ type: 'spring', stiffness: 400 }}
                 >
-                  {icon}
+                  <Icon size={22} />
                 </motion.div>
                 <h3 className="font-display font-bold text-gray-900 dark:text-white mb-1">{title}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[150px]">{desc}</p>

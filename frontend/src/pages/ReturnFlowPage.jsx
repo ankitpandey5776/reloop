@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Package, CheckCircle, ArrowRight, RotateCcw, ShieldCheck } from 'lucide-react'
+import {
+  Package, CheckCircle, ArrowRight, RotateCcw, ShieldCheck,
+  Clock, AlertCircle, Camera
+} from 'lucide-react'
 import { getTwins, updateTwinState, gradeItem, getGradingStatus, routeItem, listItem } from '../api/client.js'
 import Button from '../components/common/Button.jsx'
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
@@ -12,23 +15,46 @@ import { stateVariant } from '../components/common/Badge.jsx'
 import { CategoryIcon } from '../components/common/ProductIcons.jsx'
 
 const CAT_BG = {
-  electronics: 'bg-sky-100 dark:bg-sky-500/15',
-  fashion:     'bg-rose-100 dark:bg-rose-500/15',
-  home:        'bg-amber-100 dark:bg-amber-500/15',
-  books:       'bg-violet-100 dark:bg-violet-500/15',
-  other:       'bg-emerald-100 dark:bg-emerald-500/15',
+  electronics: 'bg-sky-50 dark:bg-sky-500/10',
+  fashion:     'bg-rose-50 dark:bg-rose-500/10',
+  home:        'bg-amber-50 dark:bg-amber-500/10',
+  books:       'bg-violet-50 dark:bg-violet-500/10',
+  other:       'bg-emerald-50 dark:bg-emerald-500/10',
 }
 const CAT_COLOR = {
-  electronics: 'text-sky-600 dark:text-sky-300',
-  fashion:     'text-rose-600 dark:text-rose-300',
-  home:        'text-amber-600 dark:text-amber-300',
-  books:       'text-violet-600 dark:text-violet-300',
-  other:       'text-emerald-600 dark:text-emerald-300',
+  electronics: 'text-sky-500',
+  fashion:     'text-rose-500',
+  home:        'text-amber-500',
+  books:       'text-violet-500',
+  other:       'text-emerald-500',
+}
+
+/* Return window: items purchased > 10 days ago are past window */
+function getReturnStatus(purchaseDateStr) {
+  const purchased = new Date(purchaseDateStr)
+  const daysSince = Math.floor((Date.now() - purchased.getTime()) / 86400000)
+  if (daysSince > 10) return { eligible: false, label: 'Return window closed', days: daysSince }
+  const remaining = 10 - daysSince
+  return { eligible: true, label: `${remaining} day${remaining !== 1 ? 's' : ''} left to return`, days: daysSince }
 }
 
 const STEPS = ['Select Item', 'Upload Photos', 'AI Grading', 'Route Decision', 'Done']
-
 const SCAN_MESSAGES = ['Detecting defects…', 'Assessing condition…', 'Calculating value…', 'Generating report…']
+
+/* Real Amazon product images for items in return flow */
+const ITEM_IMAGES = {
+  'ELEC-SAM-S23':  'https://m.media-amazon.com/images/I/71NybWDVrBL._SY355_.jpg',
+  'ELEC-BOAT-141': 'https://m.media-amazon.com/images/I/61mZDYMHkNL._SY355_.jpg',
+  'ELEC-KIND-PW':  'https://m.media-amazon.com/images/I/61bCiVJbCsL._SY355_.jpg',
+  'ELEC-FIRE-4K':  'https://m.media-amazon.com/images/I/61WMEnwRa7L._SY355_.jpg',
+  'FASH-ALNS-SHT': 'https://m.media-amazon.com/images/I/81ib3x3M1QL._UY400_.jpg',
+  'FASH-NIKE-REV': 'https://m.media-amazon.com/images/I/71K96V+b5uL._UY400_.jpg',
+  'FASH-PUMA-TRK': 'https://m.media-amazon.com/images/I/71wWXs3HKVL._UY400_.jpg',
+  'HOME-PHIL-AIR': 'https://m.media-amazon.com/images/I/41A-KBb9lJL._SY355_.jpg',
+  'HOME-HAVL-FAN': 'https://m.media-amazon.com/images/I/71EXG5Eg+KL._SY355_.jpg',
+  'BOOK-ATMT':     'https://m.media-amazon.com/images/I/81YkqyaFVEL._SY355_.jpg',
+  'BOOK-SAPIENS':  'https://m.media-amazon.com/images/I/713jIoMO3UL._SY355_.jpg',
+}
 
 export default function ReturnFlowPage() {
   const [step, setStep] = useState(0)
@@ -49,9 +75,21 @@ export default function ReturnFlowPage() {
   useEffect(() => { document.title = 'ReLoop — Return Flow' }, [])
 
   useEffect(() => {
+    // Only load ACTIVE items for our demo customer (Rahul Sharma)
+    // This prevents showing every twin in the DB
     getTwins({ state: 'ACTIVE' })
-      .then(r => setTwins(r.twins || []))
-      .catch(() => setError('Could not load your orders. Showing demo data.'))
+      .then(r => {
+        const all = r.twins || []
+        // Filter to demo customer only — in real product this would be the logged-in user
+        const mine = all.filter(t =>
+          t.customer?.customer_id === 'cust-demo-001' ||
+          t.customer_id === 'cust-demo-001' ||
+          t.customer?.name === 'Rahul Sharma'
+        )
+        // Fallback: if no demo twins found, show first 4 items only
+        setTwins(mine.length > 0 ? mine : all.slice(0, 4))
+      })
+      .catch(() => setError('Could not load your orders.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -192,30 +230,72 @@ export default function ReturnFlowPage() {
       {/* Step 0: Select item */}
       {step === 0 && (
         <div>
-          <h2 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">Which item would you like to return?</h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">My Orders</h2>
+            <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">Rahul Sharma · Kolkata</span>
+          </div>
           {loading ? (
             <div className="flex justify-center py-16"><LoadingSpinner message="Loading your orders…" /></div>
           ) : twins.length === 0 ? (
-            <div className="text-center py-16 text-gray-500">No active orders found.</div>
+            <div className="text-center py-16 text-gray-500">No orders found. Place an order from the Checkout page first.</div>
           ) : (
             <div className="space-y-3">
-              {twins.map(twin => (
-                <div key={twin.twin_id} className="flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-all">
-                  <div className={`w-14 h-14 ${CAT_BG[twin.item.category] || CAT_BG.other} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                    <CategoryIcon
-                      category={twin.item.category}
-                      size={32}
-                      className={CAT_COLOR[twin.item.category] || CAT_COLOR.other}
-                    />
+              {twins.map(twin => {
+                const returnStatus = getReturnStatus(twin.item?.purchase_date || twin.item?.purchase_date)
+                const imgSrc = twin.item?.image_url || ITEM_IMAGES[twin.item?.sku]
+                const cat = twin.item?.category || 'other'
+                return (
+                  <div key={twin.twin_id}
+                    className={`flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border transition-all ${
+                      returnStatus.eligible
+                        ? 'border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-500/30 hover:shadow-md'
+                        : 'border-gray-100 dark:border-gray-800 opacity-60'
+                    }`}
+                  >
+                    {/* Product image */}
+                    <div className={`w-16 h-16 rounded-xl overflow-hidden shrink-0 ${!imgSrc ? CAT_BG[cat] : ''}`}>
+                      {imgSrc ? (
+                        <img src={imgSrc} alt={twin.item.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <CategoryIcon category={cat} size={28} className={CAT_COLOR[cat]} />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Item info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 dark:text-gray-100 text-sm leading-tight">{twin.item.title}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 capitalize">
+                        {twin.item.category} · ₹{twin.item.original_price?.toLocaleString('en-IN')}
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-1.5">
+                        {returnStatus.eligible ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                            <Clock size={9} /> {returnStatus.label}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
+                            <AlertCircle size={9} /> {returnStatus.label}
+                          </span>
+                        )}
+                        <span className="text-[10px] text-gray-400">
+                          Purchased {new Date(twin.item.purchase_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Action */}
+                    {returnStatus.eligible ? (
+                      <Button size="sm" onClick={() => selectItem(twin)} className="shrink-0">
+                        <Camera size={14} /> Return
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-gray-400 shrink-0 font-medium">Closed</span>
+                    )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{twin.item.title}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">₹{twin.item.original_price?.toLocaleString('en-IN')} · Purchased {new Date(twin.item.purchase_date).toLocaleDateString('en-IN')}</p>
-                    <Badge text={twin.state} variant={stateVariant(twin.state)} className="mt-1" />
-                  </div>
-                  <Button size="sm" onClick={() => selectItem(twin)}>Initiate Return</Button>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
@@ -224,19 +304,30 @@ export default function ReturnFlowPage() {
       {/* Step 1: Photo upload */}
       {step === 1 && selected && (
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Package size={20} className="text-emerald-600" />
-            <p className="font-medium text-gray-900 dark:text-gray-100">{selected.item.title}</p>
+          <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100 dark:border-gray-800">
+            <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-gray-100 dark:bg-gray-800">
+              {selected.item?.image_url || ITEM_IMAGES[selected.item?.sku] ? (
+                <img src={selected.item?.image_url || ITEM_IMAGES[selected.item?.sku]} alt={selected.item.title} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <CategoryIcon category={selected.item?.category} size={28} className={CAT_COLOR[selected.item?.category] || 'text-gray-400'} />
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{selected.item.title}</p>
+              <p className="text-xs text-gray-400 mt-0.5">₹{selected.item.original_price?.toLocaleString('en-IN')}</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Upload 1–4 clear photos showing the item's condition</p>
+          <div className="flex items-center gap-2 mb-4 p-3 bg-sky-50 dark:bg-sky-500/10 rounded-xl border border-sky-100 dark:border-sky-500/20">
+            <Camera size={16} className="text-sky-600 dark:text-sky-400 shrink-0" />
+            <p className="text-sm text-sky-700 dark:text-sky-300">
+              Take clear photos showing the item's current condition — front, back, and any damage. Better photos = higher AI accuracy.
+            </p>
+          </div>
           <PhotoCapture photos={photos} setPhotos={setPhotos} error={photoError} setError={setPhotoError} />
-          <Button
-            className="mt-6 w-full"
-            size="lg"
-            disabled={photos.length === 0}
-            onClick={handleGrade}
-          >
-            Analyze Condition <ArrowRight size={16} />
+          <Button className="mt-6 w-full" size="lg" disabled={photos.length === 0} onClick={handleGrade}>
+            Analyze with AI <ArrowRight size={16} />
           </Button>
         </div>
       )}
