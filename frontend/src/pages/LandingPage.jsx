@@ -437,121 +437,152 @@ export default function LandingPage() {
 
       {/* ══ HOW IT ACTUALLY WORKS — Plugin story ═════════ */}
       <section className="px-4 py-20 bg-gray-50 dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <Reveal>
-            <div className="text-center mb-14">
-              <span className="inline-block text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400 mb-4">How It Actually Works</span>
+            <div className="text-center mb-12">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400 mb-3">How It Actually Works</span>
               <h2 className="font-display text-3xl sm:text-4xl font-black text-gray-900 dark:text-white leading-tight">
                 ReLoop runs inside Amazon — not beside it
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-4 max-w-xl mx-auto text-sm leading-relaxed">
-                Customers never leave Amazon. ReLoop is middleware that plugs into the existing return flow, grades items at the customer's location, and routes them to the next best owner automatically.
+              <p className="text-gray-500 dark:text-gray-400 mt-3 max-w-2xl mx-auto text-sm leading-relaxed">
+                Customers never leave Amazon. ReLoop is middleware — it plugs into checkout and the return flow, grades items at the customer's location, and routes them to the next best owner.
               </p>
             </div>
           </Reveal>
 
-          {/* 3-column flow: Amazon Checkout → ReLoop Engine → Amazon Second Hand */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-            {/* Col 1: Amazon Checkout */}
+          {/* ── 3 steps in one clean row with arrows ── */}
+          <div className="flex flex-col md:flex-row items-stretch gap-0">
+
+            {/* Step 1 — Amazon Checkout */}
             <Reveal delay={0}>
-              <div className="rounded-2xl border-2 border-orange-200 dark:border-orange-500/30 bg-orange-50 dark:bg-orange-500/8 p-6">
+              <div className="flex-1 rounded-2xl border-2 border-orange-200 dark:border-orange-500/30 bg-white dark:bg-gray-900 p-5 flex flex-col">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">A</span>
+                  <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0">
+                    <ShoppingCart size={14} className="text-white" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-orange-700 dark:text-orange-400">Amazon Checkout</span>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">Step 1</p>
+                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">Amazon Checkout</p>
+                  </div>
                 </div>
-                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                  <div className="flex items-start gap-2">
-                    <ArrowRight size={14} className="text-orange-400 mt-0.5 shrink-0" />
-                    <span>Customer adds 3 sizes of same shirt</span>
+                <div className="space-y-2.5 text-sm flex-1">
+                  <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0" />
+                    <span>Customer adds 3 sizes of same shirt (S, M, L)</span>
                   </div>
-                  <div className="flex items-start gap-2 bg-amber-100 dark:bg-amber-500/20 rounded-lg p-2">
-                    <ShieldCheck size={14} className="text-amber-600 mt-0.5 shrink-0" />
-                    <span className="font-medium text-amber-800 dark:text-amber-300">ReLoop nudge: "87% of buyers your size found this runs small"</span>
+                  <div className="flex items-start gap-2 p-2.5 bg-amber-50 dark:bg-amber-500/15 rounded-xl border border-amber-200 dark:border-amber-500/30">
+                    <ShieldCheck size={13} className="text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                    <span className="text-xs font-medium text-amber-800 dark:text-amber-300">
+                      ReLoop detects bracketing. Nudge: "87% of buyers found this runs small — order only Size M"
+                    </span>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <BadgeCheck size={14} className="text-emerald-500 mt-0.5 shrink-0" />
-                    <span>Switches to one size → <strong>1 return prevented</strong></span>
+                  <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                    <BadgeCheck size={13} className="text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Customer keeps only Size M → <strong className="text-gray-800 dark:text-gray-200">1 return prevented</strong></span>
                   </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-orange-100 dark:border-orange-500/20">
+                  <span className="text-[10px] text-orange-600 dark:text-orange-400 font-semibold">PREVENTION · −₹400 logistics saved</span>
                 </div>
               </div>
             </Reveal>
 
-            {/* Arrow */}
-            <div className="hidden md:flex items-center justify-center pt-16">
+            {/* Arrow 1→2 */}
+            <div className="hidden md:flex items-center justify-center px-3 shrink-0">
               <motion.div
-                animate={{ x: [0, 6, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="text-3xl text-gray-300 dark:text-gray-600"
-              >→</motion.div>
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+                className="flex flex-col items-center gap-1"
+              >
+                <ArrowRight size={20} className="text-gray-300 dark:text-gray-600" />
+                <span className="text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-wider text-center leading-tight">if still<br/>returned</span>
+              </motion.div>
             </div>
 
-            {/* Col 2: ReLoop grading engine */}
-            <Reveal delay={100}>
-              <div className="rounded-2xl border-2 border-emerald-200 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/8 p-6">
+            {/* Step 2 — ReLoop Engine */}
+            <Reveal delay={120}>
+              <div className="flex-1 rounded-2xl border-2 border-emerald-200 dark:border-emerald-500/30 bg-white dark:bg-gray-900 p-5 flex flex-col">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">R</span>
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0">
+                    <Camera size={14} className="text-white" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">ReLoop Engine</span>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">Step 2</p>
+                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">ReLoop AI Engine</p>
+                  </div>
                 </div>
-                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                  <div className="flex items-start gap-2">
-                    <ArrowRight size={14} className="text-gray-400 mt-0.5 shrink-0" />
-                    <span>Customer still returns item</span>
+                <div className="space-y-2.5 text-sm flex-1">
+                  <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0" />
+                    <span>Instead of printing a return label, Amazon asks: take 2 photos</span>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <Camera size={14} className="text-emerald-500 mt-0.5 shrink-0" />
-                    <span>"Take 2 photos. Get faster refund + green credits."</span>
+                  <div className="flex items-start gap-2 p-2.5 bg-emerald-50 dark:bg-emerald-500/15 rounded-xl border border-emerald-200 dark:border-emerald-500/30">
+                    <ScanSearch size={13} className="text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
+                    <span className="text-xs font-medium text-emerald-800 dark:text-emerald-300">
+                      AI grades: <strong>Grade B, ₹910</strong>. Tamper-proof certificate generated. Buyer matched 2.4km away.
+                    </span>
                   </div>
-                  <div className="flex items-start gap-2 bg-emerald-100 dark:bg-emerald-500/20 rounded-lg p-2">
-                    <ScanSearch size={14} className="text-emerald-600 mt-0.5 shrink-0" />
-                    <span className="font-medium text-emerald-800 dark:text-emerald-300">AI grades: <strong>Grade B, ₹910</strong>. Routes to buyer 2.4km away in Kolkata.</span>
+                  <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                    <BadgeCheck size={13} className="text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Item <strong className="text-gray-800 dark:text-gray-200">never reaches a warehouse</strong></span>
                   </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-emerald-100 dark:border-emerald-500/20">
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">GRADING · 10 seconds · AI-certified</span>
                 </div>
               </div>
             </Reveal>
-          </div>
 
-          {/* Second row: buyer flow */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start mt-4">
-            <div className="hidden md:block" />
-            <div className="hidden md:flex items-center justify-center">
+            {/* Arrow 2→3 */}
+            <div className="hidden md:flex items-center justify-center px-3 shrink-0">
               <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="text-3xl text-gray-300 dark:text-gray-600"
-              >↓</motion.div>
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+                className="flex flex-col items-center gap-1"
+              >
+                <ArrowRight size={20} className="text-gray-300 dark:text-gray-600" />
+                <span className="text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-wider text-center leading-tight">matched<br/>locally</span>
+              </motion.div>
             </div>
-            <Reveal delay={200}>
-              <div className="rounded-2xl border-2 border-sky-200 dark:border-sky-500/30 bg-sky-50 dark:bg-sky-500/8 p-6">
+
+            {/* Step 3 — Buyer on Amazon */}
+            <Reveal delay={240}>
+              <div className="flex-1 rounded-2xl border-2 border-sky-200 dark:border-sky-500/30 bg-white dark:bg-gray-900 p-5 flex flex-col">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">B</span>
+                  <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center shrink-0">
+                    <Tag size={14} className="text-white" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400">Buyer on Amazon</span>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-sky-500">Step 3</p>
+                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">Buyer on Amazon</p>
+                  </div>
                 </div>
-                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                  <div className="flex items-start gap-2">
-                    <Search size={14} className="text-sky-500 mt-0.5 shrink-0" />
-                    <span>Searches "Allen Solly Shirt" on Amazon</span>
+                <div className="space-y-2.5 text-sm flex-1">
+                  <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                    <Search size={13} className="text-sky-400 mt-0.5 shrink-0" />
+                    <span>Buyer searches "Allen Solly shirt" on Amazon</span>
                   </div>
-                  <div className="flex items-start gap-2 bg-sky-100 dark:bg-sky-500/20 rounded-lg p-2">
-                    <Tag size={14} className="text-sky-600 mt-0.5 shrink-0" />
-                    <span className="font-medium text-sky-800 dark:text-sky-300">"AI-Verified Grade B — ₹910. Seller 2.4 km away. <strong>No shipping needed.</strong>"</span>
+                  <div className="flex items-start gap-2 p-2.5 bg-sky-50 dark:bg-sky-500/15 rounded-xl border border-sky-200 dark:border-sky-500/30">
+                    <BadgeCheck size={13} className="text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
+                    <span className="text-xs font-medium text-sky-800 dark:text-sky-300">
+                      Sees: "AI-Verified Grade B — ₹910. Seller 2.4km away. <strong>No shipping needed.</strong>"
+                    </span>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <BadgeCheck size={14} className="text-emerald-500 mt-0.5 shrink-0" />
-                    <span>Buys it. Item never went to warehouse. <strong>₹270 saved. 118kg CO₂ prevented.</strong></span>
+                  <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                    <Leaf size={13} className="text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Buys it. <strong className="text-gray-800 dark:text-gray-200">₹270 saved. 118kg CO₂ prevented.</strong></span>
                   </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-sky-100 dark:border-sky-500/20">
+                  <span className="text-[10px] text-sky-600 dark:text-sky-400 font-semibold">P2P RESALE · zero warehouse stops</span>
                 </div>
               </div>
             </Reveal>
+
           </div>
 
           <Reveal delay={300}>
-            <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-8">
+            <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-6">
               * This demo simulates the Amazon integration. In production, ReLoop runs as middleware inside Amazon's return and product discovery flows.
             </p>
           </Reveal>
