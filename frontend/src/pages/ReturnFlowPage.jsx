@@ -4,7 +4,7 @@ import {
   Package, CheckCircle, ArrowRight, RotateCcw, ShieldCheck,
   Clock, AlertCircle, Camera
 } from 'lucide-react'
-import { getTwins, updateTwinState, gradeItem, getGradingStatus, routeItem, listItem } from '../api/client.js'
+import { updateTwinState, gradeItem, getGradingStatus, routeItem, listItem } from '../api/client.js'
 import Button from '../components/common/Button.jsx'
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
 import GradeResult from '../components/grading/GradeResult.jsx'
@@ -58,10 +58,101 @@ const ITEM_IMAGES = {
   'SKU-KINDLE-PW':   'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80&fit=crop',
 }
 
+/* ── Curated demo order list ─────────────────────────────────────────
+   6 items, fixed purchase dates so return window status is realistic:
+   - Items 1–4: within return window (eligible)
+   - Items 5–6: return window expired (shows "Return window closed")
+   Different items, no duplicates, real images.
+───────────────────────────────────────────────────────────────────── */
+const now = Date.now()
+const daysAgo = d => new Date(now - d * 86400000).toISOString()
+
+const DEMO_ORDERS = [
+  {
+    twin_id: 'demo-twin-shirt-xl',
+    state: 'ACTIVE',
+    item: {
+      sku: 'FASH-ALNS-SHT',
+      title: "Allen Solly Men's Slim Fit Casual Shirt (Size XL)",
+      category: 'fashion',
+      original_price: 1299,
+      purchase_date: daysAgo(2),
+      image_url: null,
+    },
+    customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
+  },
+  {
+    twin_id: 'demo-twin-s23',
+    state: 'ACTIVE',
+    item: {
+      sku: 'ELEC-SAM-S23',
+      title: 'Samsung Galaxy S23 (256GB, Phantom Black)',
+      category: 'electronics',
+      original_price: 74999,
+      purchase_date: daysAgo(5),
+      image_url: null,
+    },
+    customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
+  },
+  {
+    twin_id: 'demo-twin-airdopes',
+    state: 'ACTIVE',
+    item: {
+      sku: 'ELEC-BOAT-141',
+      title: 'boAt Airdopes 141 True Wireless Earbuds',
+      category: 'electronics',
+      original_price: 1299,
+      purchase_date: daysAgo(7),
+      image_url: null,
+    },
+    customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
+  },
+  {
+    twin_id: 'demo-twin-nike',
+    state: 'ACTIVE',
+    item: {
+      sku: 'FASH-NIKE-REV',
+      title: 'Nike Revolution 6 Running Shoes (UK 9)',
+      category: 'fashion',
+      original_price: 3695,
+      purchase_date: daysAgo(9),
+      image_url: null,
+    },
+    customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
+  },
+  // Return window expired
+  {
+    twin_id: 'demo-twin-kindle',
+    state: 'ACTIVE',
+    item: {
+      sku: 'ELEC-KIND-PW',
+      title: 'Amazon Kindle Paperwhite (16GB, 2023)',
+      category: 'electronics',
+      original_price: 13999,
+      purchase_date: daysAgo(18),
+      image_url: null,
+    },
+    customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
+  },
+  {
+    twin_id: 'demo-twin-puma',
+    state: 'ACTIVE',
+    item: {
+      sku: 'FASH-PUMA-TRK',
+      title: "Puma Men's Track Pants (M, Black)",
+      category: 'fashion',
+      original_price: 1499,
+      purchase_date: daysAgo(25),
+      image_url: null,
+    },
+    customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
+  },
+]
+
 export default function ReturnFlowPage() {
   const [step, setStep] = useState(0)
-  const [twins, setTwins] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [twins, setTwins] = useState(DEMO_ORDERS)
+  const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState(null)
   const [photos, setPhotos] = useState([])
   const [photoError, setPhotoError] = useState(null)
@@ -75,25 +166,6 @@ export default function ReturnFlowPage() {
   const [error, setError] = useState(null)
 
   useEffect(() => { document.title = 'ReLoop — Return Flow' }, [])
-
-  useEffect(() => {
-    // Only load ACTIVE items for our demo customer (Rahul Sharma)
-    // This prevents showing every twin in the DB
-    getTwins({ state: 'ACTIVE' })
-      .then(r => {
-        const all = r.twins || []
-        // Filter to demo customer only — in real product this would be the logged-in user
-        const mine = all.filter(t =>
-          t.customer?.customer_id === 'cust-demo-001' ||
-          t.customer_id === 'cust-demo-001' ||
-          t.customer?.name === 'Rahul Sharma'
-        )
-        // Fallback: if no demo twins found, show first 4 items only
-        setTwins(mine.length > 0 ? mine : all.slice(0, 4))
-      })
-      .catch(() => setError('Could not load your orders.'))
-      .finally(() => setLoading(false))
-  }, [])
 
   useEffect(() => {
     if (!grading) return
