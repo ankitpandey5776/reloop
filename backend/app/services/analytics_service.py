@@ -8,11 +8,16 @@ class AnalyticsService:
         returns_prevented = 0
         total_cost_saved = 0
         total_co2_saved_kg = 0.0
+        total_credits = 0            # ← Feature: platform-wide credits for dashboard counter
         items_by_state = {}
         items_by_route = {}
         items_by_grade = {}          # ← Feature: real grade distribution for dashboard chart
 
         for twin in twins:
+            # Sum credits awarded across all twins
+            if twin.credits_data:
+                total_credits += twin.credits_data.get("earned", 0)
+
             # Count states
             state = twin.state
             items_by_state[state] = items_by_state.get(state, 0) + 1
@@ -42,6 +47,7 @@ class AnalyticsService:
             "returns_prevented": returns_prevented,
             "total_cost_saved": total_cost_saved,
             "total_co2_saved_kg": round(total_co2_saved_kg, 2),
+            "total_credits": total_credits,     # ← new field, backwards-compatible
             "items_by_state": items_by_state,
             "items_by_route": items_by_route,
             "items_by_grade": items_by_grade,   # ← new field, backwards-compatible

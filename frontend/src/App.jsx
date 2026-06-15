@@ -34,7 +34,9 @@ function Navbar() {
   // Keep the credit balance live — load on mount and refresh whenever a return
   // earns credits anywhere in the app.
   useEffect(() => {
-    const load = () => getCredits('cust-001').then(c => setCredits(c.total_credits || 0)).catch(() => {})
+    // Must match the customer_id used when returns are created (ReturnFlowPage /
+    // CheckoutPage use 'cust-demo-001'), otherwise the balance always reads 0.
+    const load = () => getCredits('cust-demo-001').then(c => setCredits(c.total_credits || 0)).catch(() => {})
     load()
     window.addEventListener('reloop:data-changed', load)
     return () => window.removeEventListener('reloop:data-changed', load)

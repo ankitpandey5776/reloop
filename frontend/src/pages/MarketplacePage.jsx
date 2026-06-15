@@ -5,8 +5,10 @@ import ListingCard from '../components/marketplace/ListingCard.jsx'
 import ListingFilters from '../components/marketplace/ListingFilters.jsx'
 import { CardSkeleton } from '../components/common/Skeleton.jsx'
 
-// Fixed demo customer — in production this comes from auth context
-const DEMO_CUSTOMER_ID = 'cust-001'
+// Fixed demo customer — in production this comes from auth context.
+// Must match the customer_id used when returns are created (ReturnFlowPage /
+// CheckoutPage use 'cust-demo-001') so recommendations resolve to real data.
+const DEMO_CUSTOMER_ID = 'cust-demo-001'
 
 export default function MarketplacePage() {
   const [listings, setListings] = useState([])

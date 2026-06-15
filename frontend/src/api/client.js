@@ -4,9 +4,39 @@ import {
 } from '../mocks/twins.js'
 
 const MOCK_MODE = import.meta.env.VITE_MOCK_MODE === 'true'
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+// Strip any trailing slash so `${API_BASE}` + `/api/...` can never produce a
+// `//api/...` path — the backend returns 404 on double slashes.
+const API_BASE = (import.meta.env.VITE_API_BASE || 'http://localhost:8000').replace(/\/+$/, '')
 
 const api = axios.create({ baseURL: API_BASE })
+
+// Render's free tier spins the backend down after inactivity; the first request
+// then comes back as a network error or 502/503/504 while it cold-starts
+// (~30-60s). Retry transient failures with backoff so the marketplace and
+// dashboard don't surface a transient boot as a hard "failed to load" error.
+// On success of a mutating call, broadcast reloop:data-changed so live views
+// (navbar credits, marketplace) refresh in real (non-mock) mode too — the mock
+// branches already emit this on their own.
+api.interceptors.response.use(
+  (response) => {
+    const method = (response.config?.method || '').toLowerCase()
+    if (['post', 'patch', 'put', 'delete'].includes(method)) emitDataChanged()
+    return response
+  },
+  async (error) => {
+    const config = error.config
+    const status = error.response?.status
+    const retriable = !error.response || [502, 503, 504].includes(status)
+    if (config && retriable) {
+      config.__retryCount = (config.__retryCount || 0) + 1
+      if (config.__retryCount <= 5) {
+        await new Promise(r => setTimeout(r, Math.min(2000 * config.__retryCount, 8000)))
+        return api(config)
+      }
+    }
+    return Promise.reject(error)
+  }
+)
 
 const delay = (ms = 600) => new Promise(r => setTimeout(r, ms))
 
