@@ -206,7 +206,7 @@ async def list_item(request: ListRequest, db: Session = Depends(get_db)):
             status_code=404,
             detail={"error": {"code": "TWIN_NOT_FOUND", "message": "Twin not found."}}
         )
-    if twin.state != "ROUTED":
+    if twin.state not in ("ROUTED", "LISTED"):
         raise HTTPException(
             status_code=409,
             detail={"error": {"code": "INVALID_STATE", "message": f"Expected ROUTED, got {twin.state}"}}

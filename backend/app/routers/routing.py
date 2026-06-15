@@ -22,7 +22,7 @@ async def route(
     if not twin:
         raise HTTPException(status_code=404, detail={"error": {"code": "TWIN_NOT_FOUND", "message": "Twin not found."}})
         
-    if twin.state != "GRADED":
+    if twin.state not in ("GRADED", "ROUTED"):
         raise HTTPException(status_code=409, detail={"error": {"code": "INVALID_STATE", "message": f"Expected GRADED, got {twin.state}"}})
 
     # Reject fraud/invalid items — grade F cannot be routed

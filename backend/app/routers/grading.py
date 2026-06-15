@@ -95,7 +95,7 @@ async def grade(
     if not twin:
         raise HTTPException(status_code=404, detail={"error": {"code": "TWIN_NOT_FOUND", "message": "Twin not found."}})
         
-    if twin.state != "RETURN_INTENT" and twin.state != "ACTIVE":
+    if twin.state not in ("RETURN_INTENT", "ACTIVE", "GRADED"):
         raise HTTPException(status_code=409, detail={"error": {"code": "INVALID_STATE", "message": f"Expected RETURN_INTENT or ACTIVE, got {twin.state}"}})
         
     # Grading Service
