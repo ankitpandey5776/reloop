@@ -244,46 +244,13 @@ export default function ReturnFlowPage() {
       const creditsData = result?.credits_data || result?.credits || null
       setRouteResult({ routing: routingData, credits: creditsData })
     } catch {
-      // Silently use demo data — never show routing error to user
-      const grade = gradeResult?.grading?.grade || 'B'
-      const originalPrice = selected?.item?.original_price || 5000
-      const resalePrice = gradeResult?.valuation?.resale_price || Math.round(originalPrice * 0.65)
-      const category = selected?.item?.category || 'electronics'
-
-      // Pick realistic buyer based on category
-      const BUYERS = {
-        electronics: [
-          { name: 'Priya Patel', pincode: '700005', city: 'Kolkata', distance: '2.4 km', searched: '3 days ago', avatar: 'PP' },
-          { name: 'Arjun Singh', pincode: '700012', city: 'Kolkata', distance: '4.1 km', searched: 'yesterday', avatar: 'AS' },
-        ],
-        fashion: [
-          { name: 'Neha Gupta', pincode: '700003', city: 'Kolkata', distance: '1.8 km', searched: '2 days ago', avatar: 'NG' },
-          { name: 'Meera Das', pincode: '700009', city: 'Kolkata', distance: '3.2 km', searched: 'today', avatar: 'MD' },
-        ],
-        home: [
-          { name: 'Vikram Nair', pincode: '700007', city: 'Kolkata', distance: '3.6 km', searched: '4 days ago', avatar: 'VN' },
-        ],
-        books: [
-          { name: 'Ananya Roy', pincode: '700004', city: 'Kolkata', distance: '1.2 km', searched: 'today', avatar: 'AR' },
-        ],
-      }
-      const buyers = BUYERS[category] || BUYERS.electronics
-      const buyer = buyers[Math.floor(Math.random() * buyers.length)]
-
-      const decision = (grade === 'A' || grade === 'B') ? 'RESELL_P2P'
-        : grade === 'C' ? 'DONATE' : 'RECYCLE'
-
+      setError('Routing failed. Using demo data.')
       setRouteResult({
         routing: {
-          decision,
-          reasoning: `Grade ${grade} condition with strong local demand — direct handoff to a nearby buyer eliminates warehouse costs entirely and gets you paid faster.`,
-          destination: { type: 'buyer', name: buyer.name, pincode: buyer.pincode, city: buyer.city },
-          buyer,
-          savings: {
-            cost_saved: 270,
-            co2_saved_kg: Math.round(118 + Math.random() * 30),
-            km_avoided: 45,
-          },
+          decision: 'RESELL_P2P',
+          reasoning: 'Your item is in great condition — a local buyer in Kolkata is the fastest and most eco-friendly path. Direct handoff saves significant shipping cost and prevents CO₂ emissions.',
+          destination: { type: 'buyer', name: 'Amit Kumar', pincode: '700008' },
+          savings: { cost_saved: 270, co2_saved_kg: 118.6, km_avoided: 45 },
           routed_at: new Date().toISOString(),
         },
         credits: { earned: 50, action: 'resell_p2p', lifetime_credits: 50 },
@@ -336,7 +303,9 @@ export default function ReturnFlowPage() {
         ))}
       </div>
 
-      {/* Routing errors are suppressed — fallback handles them silently */}
+      {error && (
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-700">{error}</div>
+      )}
 
       {/* Step 0: Select item */}
       {step === 0 && (
