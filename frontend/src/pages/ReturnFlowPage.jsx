@@ -178,19 +178,6 @@ const DEMO_ORDERS = [
     },
     customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
   },
-  {
-    twin_id: 'demo-twin-puma',
-    state: 'ACTIVE',
-    item: {
-      sku: 'FASH-PUMA-TRK',
-      title: "Puma Men's Track Pants (M, Black)",
-      category: 'fashion',
-      original_price: 1499,
-      purchase_date: daysAgo(25),
-      image_url: null,
-    },
-    customer: { customer_id: 'cust-demo-001', name: 'Rahul Sharma', pincode: '700001' },
-  },
 ]
 
 export default function ReturnFlowPage() {
