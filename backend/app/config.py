@@ -7,16 +7,16 @@ class Settings(BaseSettings):
     AWS_REGION: str = "us-east-1"
     AWS_ACCESS_KEY_ID: str = ""
     AWS_SECRET_ACCESS_KEY: str = ""
-    BEDROCK_MODEL_ID: str = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+    BEDROCK_MODEL_ID: str = ""
     MOCK_MODE: bool = True
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173"]
-    # Gemini integration
-    GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.5-flash"
-    USE_GEMINI: bool = False
+    # Groq integration
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "meta-llama/llama-4-scout-17b-16e-instruct"
 
     class Config:
         env_file = ".env"
+        extra = "ignore"   # silently ignore any extra env vars
 
 @lru_cache()
 def get_settings():
