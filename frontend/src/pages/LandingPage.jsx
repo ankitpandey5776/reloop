@@ -432,7 +432,130 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ══ HOW IT WORKS ══════════════════════════════════ */}
+      {/* ══ HOW IT ACTUALLY WORKS — Plugin story ═════════ */}
+      <section className="px-4 py-20 bg-gray-50 dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+        <div className="max-w-5xl mx-auto">
+          <Reveal>
+            <div className="text-center mb-14">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400 mb-4">How It Actually Works</span>
+              <h2 className="font-display text-3xl sm:text-4xl font-black text-gray-900 dark:text-white leading-tight">
+                ReLoop runs inside Amazon — not beside it
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 mt-4 max-w-xl mx-auto text-sm leading-relaxed">
+                Customers never leave Amazon. ReLoop is middleware that plugs into the existing return flow, grades items at the customer's location, and routes them to the next best owner automatically.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* 3-column flow: Amazon Checkout → ReLoop Engine → Amazon Second Hand */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+            {/* Col 1: Amazon Checkout */}
+            <Reveal delay={0}>
+              <div className="rounded-2xl border-2 border-orange-200 dark:border-orange-500/30 bg-orange-50 dark:bg-orange-500/8 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">A</span>
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-orange-700 dark:text-orange-400">Amazon Checkout</span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  <div className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-0.5 shrink-0">→</span>
+                    <span>Customer adds 3 sizes of same shirt</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-amber-100 dark:bg-amber-500/20 rounded-lg p-2">
+                    <span className="text-amber-600 mt-0.5 shrink-0">⚡</span>
+                    <span className="font-medium text-amber-800 dark:text-amber-300">ReLoop nudge appears: "87% of buyers your size found this runs small"</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+                    <span>Customer switches to one size → <strong>1 return prevented</strong></span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Arrow */}
+            <div className="hidden md:flex items-center justify-center pt-16">
+              <motion.div
+                animate={{ x: [0, 6, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="text-3xl text-gray-300 dark:text-gray-600"
+              >→</motion.div>
+            </div>
+
+            {/* Col 2: ReLoop grading engine */}
+            <Reveal delay={100}>
+              <div className="rounded-2xl border-2 border-emerald-200 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/8 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">R</span>
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">ReLoop Engine</span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-400 mt-0.5 shrink-0">→</span>
+                    <span>Customer still returns item</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-emerald-500 mt-0.5 shrink-0">📷</span>
+                    <span>"Take 2 photos. Get faster refund + green credits."</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-emerald-100 dark:bg-emerald-500/20 rounded-lg p-2">
+                    <span className="text-emerald-600 mt-0.5 shrink-0">🤖</span>
+                    <span className="font-medium text-emerald-800 dark:text-emerald-300">AI grades: <strong>Grade B, ₹910</strong>. Routes to buyer 2.4km away in Kolkata.</span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Second row: buyer flow */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start mt-4">
+            <div className="hidden md:block" />
+            <div className="hidden md:flex items-center justify-center">
+              <motion.div
+                animate={{ y: [0, 6, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="text-3xl text-gray-300 dark:text-gray-600"
+              >↓</motion.div>
+            </div>
+            <Reveal delay={200}>
+              <div className="rounded-2xl border-2 border-sky-200 dark:border-sky-500/30 bg-sky-50 dark:bg-sky-500/8 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">B</span>
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400">Buyer on Amazon</span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  <div className="flex items-start gap-2">
+                    <span className="text-sky-500 mt-0.5 shrink-0">🔍</span>
+                    <span>Searches "Allen Solly Shirt" on Amazon</span>
+                  </div>
+                  <div className="flex items-start gap-2 bg-sky-100 dark:bg-sky-500/20 rounded-lg p-2">
+                    <span className="text-sky-600 mt-0.5 shrink-0">🏷️</span>
+                    <span className="font-medium text-sky-800 dark:text-sky-300">"AI-Verified Grade B — ₹910. Seller 2.4 km away. <strong>No shipping needed.</strong>"</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+                    <span>Buys it. Item never went to warehouse. <strong>₹270 saved. 118kg CO₂ prevented.</strong></span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={300}>
+            <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-8">
+              * This demo simulates the Amazon integration. In production, ReLoop runs as middleware inside Amazon's return and product discovery flows.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ══ HOW IT WORKS — 3 pillars ══════════════════════ */}
       <section className="px-4 py-24 bg-white dark:bg-gray-900">
         <div className="max-w-6xl mx-auto">
           <Reveal>

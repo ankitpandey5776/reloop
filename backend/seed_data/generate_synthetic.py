@@ -30,36 +30,36 @@ def random_date(days_ago=30):
     start = datetime.utcnow() - timedelta(days=days_ago)
     return start + timedelta(seconds=random.randint(0, days_ago * 24 * 60 * 60))
 
-# Rich realistic Indian product pool (25+ products)
+# Rich realistic Indian product pool (28 products with real Amazon CDN images)
 ITEMS_POOL = [
-    {"sku": "ELEC-SAM-S23",  "title": "Samsung Galaxy S23 (256GB, Phantom Black)",   "category": "electronics", "original_price": 74999},
-    {"sku": "ELEC-BOAT-141", "title": "boAt Airdopes 141 True Wireless Earbuds",      "category": "electronics", "original_price": 1299},
-    {"sku": "ELEC-KIND-PW",  "title": "Amazon Kindle Paperwhite (16GB, 2023)",        "category": "electronics", "original_price": 13999},
-    {"sku": "ELEC-FIRE-4K",  "title": "Fire TV Stick 4K Max (Wi-Fi 6)",               "category": "electronics", "original_price": 6999},
-    {"sku": "ELEC-IPAD-10",  "title": "Apple iPad 10th Gen (64GB, Wi-Fi)",            "category": "electronics", "original_price": 44900},
-    {"sku": "ELEC-BOAT-RK",  "title": "boAt Rockerz 450 Bluetooth Headphones",        "category": "electronics", "original_price": 899},
-    {"sku": "ELEC-MI-TV",    "title": "Mi 43 inch 4K Android TV (X Series)",          "category": "electronics", "original_price": 29999},
-    {"sku": "ELEC-NOISE-X",  "title": "Noise ColorFit Pro 4 Max Smartwatch",          "category": "electronics", "original_price": 3999},
-    {"sku": "ELEC-JBL-C",    "title": "JBL C100SI In-Ear Wired Earphones",            "category": "electronics", "original_price": 699},
-    {"sku": "ELEC-ANKER-CH", "title": "Anker 65W USB-C GaN Charger (2-Port)",         "category": "electronics", "original_price": 2499},
-    {"sku": "FASH-ALNS-SHT", "title": "Allen Solly Men Slim Fit Casual Shirt (L)",   "category": "fashion",     "original_price": 1299},
-    {"sku": "FASH-NIKE-REV", "title": "Nike Revolution 6 Running Shoes (UK 9)",       "category": "fashion",     "original_price": 3695},
-    {"sku": "FASH-LEV-JNS",  "title": "Levi's 511 Slim Fit Jeans (32x30, Blue)",      "category": "fashion",     "original_price": 2999},
-    {"sku": "FASH-PUMA-TRK", "title": "Puma Men's Track Pants (M, Black)",            "category": "fashion",     "original_price": 1499},
-    {"sku": "FASH-UCB-POLO", "title": "United Colors of Benetton Polo T-Shirt (XL)", "category": "fashion",     "original_price": 999},
-    {"sku": "FASH-ADID-UL",  "title": "Adidas Ultraboost 22 Running Shoes (UK 8)",   "category": "fashion",     "original_price": 13999},
-    {"sku": "FASH-FABIND-KT","title": "FabIndia Women Kurta (M, Indigo)",             "category": "fashion",     "original_price": 1799},
-    {"sku": "HOME-PRES-IND", "title": "Prestige Induction Cooktop (1600W)",           "category": "home",        "original_price": 2499},
-    {"sku": "HOME-PIG-MXR",  "title": "Pigeon Mixer Grinder 750W (3 Jars)",           "category": "home",        "original_price": 1899},
-    {"sku": "HOME-PHIL-AIR", "title": "Philips Air Purifier AC1215 (333 sqft)",       "category": "home",        "original_price": 8999},
-    {"sku": "HOME-WIP-BLB",  "title": "Wipro 9W LED Bulb Smart (Pack of 4)",          "category": "home",        "original_price": 699},
-    {"sku": "HOME-KENT-RO",  "title": "KENT Grand 8L RO+UV Water Purifier",           "category": "home",        "original_price": 14999},
-    {"sku": "HOME-HAVL-FAN", "title": "Havells Sprinto 600mm Ceiling Fan (White)",    "category": "home",        "original_price": 1999},
-    {"sku": "BOOK-HP-SET",   "title": "Harry Potter Complete 7-Book Box Set",         "category": "books",       "original_price": 2500},
-    {"sku": "BOOK-ATMT",     "title": "Atomic Habits by James Clear",                 "category": "books",       "original_price": 399},
-    {"sku": "BOOK-ZERO",     "title": "Zero to One by Peter Thiel",                   "category": "books",       "original_price": 350},
-    {"sku": "BOOK-IKIGAI",   "title": "Ikigai by Hector Garcia & Francesc Miralles",  "category": "books",       "original_price": 299},
-    {"sku": "BOOK-SAPIENS",  "title": "Sapiens: A Brief History of Humankind",        "category": "books",       "original_price": 499},
+    {"sku": "ELEC-SAM-S23",  "title": "Samsung Galaxy S23 (256GB, Phantom Black)",   "category": "electronics", "original_price": 74999, "image_url": "https://m.media-amazon.com/images/I/71NybWDVrBL._SY355_.jpg"},
+    {"sku": "ELEC-BOAT-141", "title": "boAt Airdopes 141 True Wireless Earbuds",      "category": "electronics", "original_price": 1299,  "image_url": "https://m.media-amazon.com/images/I/61mZDYMHkNL._SY355_.jpg"},
+    {"sku": "ELEC-KIND-PW",  "title": "Amazon Kindle Paperwhite (16GB, 2023)",        "category": "electronics", "original_price": 13999, "image_url": "https://m.media-amazon.com/images/I/61bCiVJbCsL._SY355_.jpg"},
+    {"sku": "ELEC-FIRE-4K",  "title": "Fire TV Stick 4K Max (Wi-Fi 6)",               "category": "electronics", "original_price": 6999,  "image_url": "https://m.media-amazon.com/images/I/61WMEnwRa7L._SY355_.jpg"},
+    {"sku": "ELEC-IPAD-10",  "title": "Apple iPad 10th Gen (64GB, Wi-Fi)",            "category": "electronics", "original_price": 44900, "image_url": "https://m.media-amazon.com/images/I/71p9eZDsizL._SY355_.jpg"},
+    {"sku": "ELEC-BOAT-RK",  "title": "boAt Rockerz 450 Bluetooth Headphones",        "category": "electronics", "original_price": 899,   "image_url": "https://m.media-amazon.com/images/I/61VEnzBl4jL._SY355_.jpg"},
+    {"sku": "ELEC-MI-TV",    "title": "Mi 43 inch 4K Android TV (X Series)",          "category": "electronics", "original_price": 29999, "image_url": "https://m.media-amazon.com/images/I/81Y-kGmZ3UL._SY355_.jpg"},
+    {"sku": "ELEC-NOISE-X",  "title": "Noise ColorFit Pro 4 Max Smartwatch",          "category": "electronics", "original_price": 3999,  "image_url": "https://m.media-amazon.com/images/I/61qFBL3VWYL._SY355_.jpg"},
+    {"sku": "ELEC-JBL-C",    "title": "JBL C100SI In-Ear Wired Earphones",            "category": "electronics", "original_price": 699,   "image_url": "https://m.media-amazon.com/images/I/51kz2ZtRR2L._SY355_.jpg"},
+    {"sku": "ELEC-ANKER-CH", "title": "Anker 65W USB-C GaN Charger (2-Port)",         "category": "electronics", "original_price": 2499,  "image_url": "https://m.media-amazon.com/images/I/61vSnEEexdL._SY355_.jpg"},
+    {"sku": "FASH-ALNS-SHT", "title": "Allen Solly Men Slim Fit Casual Shirt (L)",    "category": "fashion",     "original_price": 1299,  "image_url": "https://m.media-amazon.com/images/I/81ib3x3M1QL._UY400_.jpg"},
+    {"sku": "FASH-NIKE-REV", "title": "Nike Revolution 6 Running Shoes (UK 9)",       "category": "fashion",     "original_price": 3695,  "image_url": "https://m.media-amazon.com/images/I/71K96V+b5uL._UY400_.jpg"},
+    {"sku": "FASH-LEV-JNS",  "title": "Levi's 511 Slim Fit Jeans (32x30, Blue)",      "category": "fashion",     "original_price": 2999,  "image_url": "https://m.media-amazon.com/images/I/81e4JZG9DPL._UY400_.jpg"},
+    {"sku": "FASH-PUMA-TRK", "title": "Puma Men's Track Pants (M, Black)",            "category": "fashion",     "original_price": 1499,  "image_url": "https://m.media-amazon.com/images/I/71wWXs3HKVL._UY400_.jpg"},
+    {"sku": "FASH-UCB-POLO", "title": "United Colors of Benetton Polo T-Shirt (XL)",  "category": "fashion",     "original_price": 999,   "image_url": "https://m.media-amazon.com/images/I/71J5e4Y1KeL._UY400_.jpg"},
+    {"sku": "FASH-ADID-UL",  "title": "Adidas Ultraboost 22 Running Shoes (UK 8)",    "category": "fashion",     "original_price": 13999, "image_url": "https://m.media-amazon.com/images/I/71GWJ+HTMQL._UY400_.jpg"},
+    {"sku": "FASH-FABIND-KT","title": "FabIndia Women Kurta (M, Indigo)",              "category": "fashion",     "original_price": 1799,  "image_url": "https://m.media-amazon.com/images/I/81a4cHFUH6L._UY400_.jpg"},
+    {"sku": "HOME-PRES-IND", "title": "Prestige Induction Cooktop (1600W)",            "category": "home",        "original_price": 2499,  "image_url": "https://m.media-amazon.com/images/I/71UHYJBkU4L._SY355_.jpg"},
+    {"sku": "HOME-PIG-MXR",  "title": "Pigeon Mixer Grinder 750W (3 Jars)",            "category": "home",        "original_price": 1899,  "image_url": "https://m.media-amazon.com/images/I/71jxCvQivGL._SY355_.jpg"},
+    {"sku": "HOME-PHIL-AIR", "title": "Philips Air Purifier AC1215 (333 sqft)",        "category": "home",        "original_price": 8999,  "image_url": "https://m.media-amazon.com/images/I/41A-KBb9lJL._SY355_.jpg"},
+    {"sku": "HOME-WIP-BLB",  "title": "Wipro 9W LED Bulb Smart (Pack of 4)",           "category": "home",        "original_price": 699,   "image_url": "https://m.media-amazon.com/images/I/61uCIWAc0vL._SY355_.jpg"},
+    {"sku": "HOME-KENT-RO",  "title": "KENT Grand 8L RO+UV Water Purifier",            "category": "home",        "original_price": 14999, "image_url": "https://m.media-amazon.com/images/I/51v-IFaFt8L._SY355_.jpg"},
+    {"sku": "HOME-HAVL-FAN", "title": "Havells Sprinto 600mm Ceiling Fan (White)",     "category": "home",        "original_price": 1999,  "image_url": "https://m.media-amazon.com/images/I/71EXG5Eg+KL._SY355_.jpg"},
+    {"sku": "BOOK-HP-SET",   "title": "Harry Potter Complete 7-Book Box Set",          "category": "books",       "original_price": 2500,  "image_url": "https://m.media-amazon.com/images/I/91eopoePl+L._SY355_.jpg"},
+    {"sku": "BOOK-ATMT",     "title": "Atomic Habits by James Clear",                  "category": "books",       "original_price": 399,   "image_url": "https://m.media-amazon.com/images/I/81YkqyaFVEL._SY355_.jpg"},
+    {"sku": "BOOK-ZERO",     "title": "Zero to One by Peter Thiel",                    "category": "books",       "original_price": 350,   "image_url": "https://m.media-amazon.com/images/I/71uoqSahcPL._SY355_.jpg"},
+    {"sku": "BOOK-IKIGAI",   "title": "Ikigai by Hector Garcia & Francesc Miralles",   "category": "books",       "original_price": 299,   "image_url": "https://m.media-amazon.com/images/I/81l3rZK4lnL._SY355_.jpg"},
+    {"sku": "BOOK-SAPIENS",  "title": "Sapiens: A Brief History of Humankind",         "category": "books",       "original_price": 499,   "image_url": "https://m.media-amazon.com/images/I/713jIoMO3UL._SY355_.jpg"},
 ]
 
 # Indian city pincodes with names for realism
@@ -159,7 +159,7 @@ def make_twin(state: str) -> Twin:
         "category": item_tpl["category"],
         "original_price": item_tpl["original_price"],
         "purchase_date": (created - timedelta(days=random.randint(1, 14))).isoformat(),
-        "image_url": None,
+        "image_url": item_tpl.get("image_url"),
     }
 
     customer_data = {
@@ -351,39 +351,39 @@ def seed_demo_customer():
         # 4 ACTIVE items
         {
             "state": "ACTIVE",
-            "item": {"sku": "ELEC-SAM-S23",  "title": "Samsung Galaxy S23 (256GB, Phantom Black)",  "category": "electronics", "original_price": 74999, "purchase_date": (now - timedelta(days=12)).isoformat(), "image_url": None},
+            "item": {"sku": "ELEC-SAM-S23",  "title": "Samsung Galaxy S23 (256GB, Phantom Black)",  "category": "electronics", "original_price": 74999, "purchase_date": (now - timedelta(days=12)).isoformat(), "image_url": "https://m.media-amazon.com/images/I/71NybWDVrBL._SY355_.jpg"},
         },
         {
             "state": "ACTIVE",
-            "item": {"sku": "ELEC-BOAT-141", "title": "boAt Airdopes 141 True Wireless Earbuds",     "category": "electronics", "original_price": 1299,  "purchase_date": (now - timedelta(days=5)).isoformat(),  "image_url": None},
+            "item": {"sku": "ELEC-BOAT-141", "title": "boAt Airdopes 141 True Wireless Earbuds",     "category": "electronics", "original_price": 1299,  "purchase_date": (now - timedelta(days=5)).isoformat(),  "image_url": "https://m.media-amazon.com/images/I/61mZDYMHkNL._SY355_.jpg"},
         },
         {
             "state": "ACTIVE",
-            "item": {"sku": "FASH-ALNS-SHT", "title": "Allen Solly Men Slim Fit Casual Shirt (L)",  "category": "fashion",     "original_price": 1299,  "purchase_date": (now - timedelta(days=8)).isoformat(),  "image_url": None},
+            "item": {"sku": "FASH-ALNS-SHT", "title": "Allen Solly Men Slim Fit Casual Shirt (L)",  "category": "fashion",     "original_price": 1299,  "purchase_date": (now - timedelta(days=8)).isoformat(),  "image_url": "https://m.media-amazon.com/images/I/81ib3x3M1QL._UY400_.jpg"},
         },
         {
             "state": "ACTIVE",
-            "item": {"sku": "FASH-NIKE-REV", "title": "Nike Revolution 6 Running Shoes (UK 9)",      "category": "fashion",     "original_price": 3695,  "purchase_date": (now - timedelta(days=2)).isoformat(),  "image_url": None},
+            "item": {"sku": "FASH-NIKE-REV", "title": "Nike Revolution 6 Running Shoes (UK 9)",      "category": "fashion",     "original_price": 3695,  "purchase_date": (now - timedelta(days=2)).isoformat(),  "image_url": "https://m.media-amazon.com/images/I/71K96V+b5uL._UY400_.jpg"},
         },
         # 2 RETURN_INTENT items
         {
             "state": "RETURN_INTENT",
-            "item": {"sku": "ELEC-FIRE-4K",  "title": "Fire TV Stick 4K Max (Wi-Fi 6)",              "category": "electronics", "original_price": 6999,  "purchase_date": (now - timedelta(days=20)).isoformat(), "image_url": None},
+            "item": {"sku": "ELEC-FIRE-4K",  "title": "Fire TV Stick 4K Max (Wi-Fi 6)",              "category": "electronics", "original_price": 6999,  "purchase_date": (now - timedelta(days=20)).isoformat(), "image_url": "https://m.media-amazon.com/images/I/61WMEnwRa7L._SY355_.jpg"},
         },
         {
             "state": "RETURN_INTENT",
-            "item": {"sku": "FASH-PUMA-TRK", "title": "Puma Men's Track Pants (M, Black)",           "category": "fashion",     "original_price": 1499,  "purchase_date": (now - timedelta(days=18)).isoformat(), "image_url": None},
+            "item": {"sku": "FASH-PUMA-TRK", "title": "Puma Men's Track Pants (M, Black)",           "category": "fashion",     "original_price": 1499,  "purchase_date": (now - timedelta(days=18)).isoformat(), "image_url": "https://m.media-amazon.com/images/I/71wWXs3HKVL._UY400_.jpg"},
         },
         # 1 GRADED item
         {
             "state": "GRADED",
-            "item": {"sku": "ELEC-KIND-PW",  "title": "Amazon Kindle Paperwhite (16GB, 2023)",       "category": "electronics", "original_price": 13999, "purchase_date": (now - timedelta(days=30)).isoformat(), "image_url": None},
+            "item": {"sku": "ELEC-KIND-PW",  "title": "Amazon Kindle Paperwhite (16GB, 2023)",       "category": "electronics", "original_price": 13999, "purchase_date": (now - timedelta(days=30)).isoformat(), "image_url": "https://m.media-amazon.com/images/I/61bCiVJbCsL._SY355_.jpg"},
             "grade": "B",
         },
         # 1 SOLD item (history)
         {
             "state": "SOLD",
-            "item": {"sku": "HOME-PHIL-AIR", "title": "Philips Air Purifier AC1215 (333 sqft)",      "category": "home",        "original_price": 8999,  "purchase_date": (now - timedelta(days=45)).isoformat(), "image_url": None},
+            "item": {"sku": "HOME-PHIL-AIR", "title": "Philips Air Purifier AC1215 (333 sqft)",      "category": "home",        "original_price": 8999,  "purchase_date": (now - timedelta(days=45)).isoformat(), "image_url": "https://m.media-amazon.com/images/I/41A-KBb9lJL._SY355_.jpg"},
             "grade": "A",
         },
     ]

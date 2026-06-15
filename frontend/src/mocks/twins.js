@@ -2,7 +2,7 @@ export const MOCK_TWINS = [
   // ACTIVE (3)
   {
     twin_id: "twin-001",
-    item: { sku: "SKU-SAM-M34", title: "Samsung Galaxy M34 5G (128GB)", category: "electronics", original_price: 15999, purchase_date: "2026-06-01T00:00:00Z", image_url: null },
+    item: { sku: "SKU-SAM-M34", title: "Samsung Galaxy M34 5G (128GB)", category: "electronics", original_price: 15999, purchase_date: "2026-06-01T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/71NybWDVrBL._SY355_.jpg" },
     customer: { customer_id: "cust-001", pincode: "400001", name: "Rahul Sharma" },
     state: "ACTIVE",
     prevention: { risk_score: 0.45, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
@@ -12,7 +12,7 @@ export const MOCK_TWINS = [
   },
   {
     twin_id: "twin-002",
-    item: { sku: "SKU-ALLEN-SHIRT", title: "Allen Solly Men's Slim Fit Shirt (Size L)", category: "fashion", original_price: 1299, purchase_date: "2026-06-03T00:00:00Z", image_url: null },
+    item: { sku: "SKU-ALLEN-SHIRT", title: "Allen Solly Men's Slim Fit Shirt (Size L)", category: "fashion", original_price: 1299, purchase_date: "2026-06-03T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/81ib3x3M1QL._UY400_.jpg" },
     customer: { customer_id: "cust-001", pincode: "400001", name: "Rahul Sharma" },
     state: "ACTIVE",
     prevention: { risk_score: 0.87, risk_factors: ["size_bracketing", "high_return_category"], nudge_shown: true, nudge_type: "size_suggestion", prevented: false },
@@ -22,7 +22,7 @@ export const MOCK_TWINS = [
   },
   {
     twin_id: "twin-003",
-    item: { sku: "SKU-KINDLE-PW", title: "Kindle Paperwhite (16GB)", category: "electronics", original_price: 13999, purchase_date: "2026-06-05T00:00:00Z", image_url: null },
+    item: { sku: "SKU-KINDLE-PW", title: "Kindle Paperwhite (16GB)", category: "electronics", original_price: 13999, purchase_date: "2026-06-05T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/61bCiVJbCsL._SY355_.jpg" },
     customer: { customer_id: "cust-002", pincode: "560001", name: "Priya Menon" },
     state: "ACTIVE",
     prevention: { risk_score: 0.3, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
@@ -93,7 +93,7 @@ export const MOCK_TWINS = [
   // RETURN_INTENT (2)
   {
     twin_id: "twin-004",
-    item: { sku: "SKU-NIKE-REV6", title: "Nike Revolution 6 Running Shoes (UK 9)", category: "fashion", original_price: 3695, purchase_date: "2026-05-25T00:00:00Z", image_url: null },
+    item: { sku: "SKU-NIKE-REV6", title: "Nike Revolution 6 Running Shoes (UK 9)", category: "fashion", original_price: 3695, purchase_date: "2026-05-25T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/71K96V+b5uL._UY400_.jpg" },
     customer: { customer_id: "cust-002", pincode: "560001", name: "Priya Menon" },
     state: "RETURN_INTENT",
     prevention: { risk_score: 0.72, risk_factors: ["high_return_category", "review_fit_warnings"], nudge_shown: true, nudge_type: "fit_predictor", prevented: false },
@@ -103,7 +103,7 @@ export const MOCK_TWINS = [
   },
   {
     twin_id: "twin-005",
-    item: { sku: "SKU-BOAT-141", title: "boAt Airdopes 141 TWS", category: "electronics", original_price: 1299, purchase_date: "2026-05-28T00:00:00Z", image_url: null },
+    item: { sku: "SKU-BOAT-141", title: "boAt Airdopes 141 TWS", category: "electronics", original_price: 1299, purchase_date: "2026-05-28T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/61mZDYMHkNL._SY355_.jpg" },
     customer: { customer_id: "cust-003", pincode: "110001", name: "Amit Verma" },
     state: "RETURN_INTENT",
     prevention: { risk_score: 0.55, risk_factors: ["high_return_category"], nudge_shown: false, nudge_type: "none", prevented: false },
@@ -114,7 +114,7 @@ export const MOCK_TWINS = [
   // GRADED (3)
   {
     twin_id: "twin-006",
-    item: { sku: "SKU-FIRE-4K", title: "Fire TV Stick 4K Max", category: "electronics", original_price: 3999, purchase_date: "2026-05-20T00:00:00Z", image_url: null },
+    item: { sku: "SKU-FIRE-4K", title: "Fire TV Stick 4K Max", category: "electronics", original_price: 3999, purchase_date: "2026-05-20T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/61WMEnwRa7L._SY355_.jpg" },
     customer: { customer_id: "cust-003", pincode: "110001", name: "Amit Verma" },
     state: "GRADED",
     prevention: { risk_score: 0.4, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
@@ -132,7 +132,7 @@ export const MOCK_TWINS = [
   },
   {
     twin_id: "twin-007",
-    item: { sku: "SKU-LEVIS-511", title: "Levi's 511 Slim Fit Jeans (32)", category: "fashion", original_price: 2999, purchase_date: "2026-05-18T00:00:00Z", image_url: null },
+    item: { sku: "SKU-LEVIS-511", title: "Levi's 511 Slim Fit Jeans (32)", category: "fashion", original_price: 2999, purchase_date: "2026-05-18T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/81e4JZG9DPL._UY400_.jpg" },
     customer: { customer_id: "cust-004", pincode: "700001", name: "Sunita Das" },
     state: "GRADED",
     prevention: { risk_score: 0.65, risk_factors: ["size_bracketing"], nudge_shown: true, nudge_type: "size_suggestion", prevented: false },
@@ -248,7 +248,7 @@ export const MOCK_TWINS = [
   // LISTED (3)
   {
     twin_id: "twin-012",
-    item: { sku: "SKU-CAMPUS-SHOES", title: "Campus Men's Running Shoes (UK 8)", category: "fashion", original_price: 1499, purchase_date: "2026-04-20T00:00:00Z", image_url: null },
+    item: { sku: "SKU-CAMPUS-SHOES", title: "Campus Men's Running Shoes (UK 8)", category: "fashion", original_price: 1499, purchase_date: "2026-04-20T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/71K96V+b5uL._UY400_.jpg" },
     customer: { customer_id: "cust-002", pincode: "560001", name: "Priya Menon" },
     state: "LISTED",
     prevention: { risk_score: 0.68, risk_factors: ["size_bracketing", "review_fit_warnings"], nudge_shown: true, nudge_type: "fit_predictor", prevented: false },
@@ -272,7 +272,7 @@ export const MOCK_TWINS = [
   },
   {
     twin_id: "twin-013",
-    item: { sku: "SKU-ATOMIC-HABITS", title: "Atomic Habits by James Clear", category: "books", original_price: 499, purchase_date: "2026-04-15T00:00:00Z", image_url: null },
+    item: { sku: "SKU-ATOMIC-HABITS", title: "Atomic Habits by James Clear", category: "books", original_price: 499, purchase_date: "2026-04-15T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/81YkqyaFVEL._SY355_.jpg" },
     customer: { customer_id: "cust-003", pincode: "110001", name: "Amit Verma" },
     state: "LISTED",
     prevention: { risk_score: 0.2, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
@@ -320,7 +320,7 @@ export const MOCK_TWINS = [
   },
   {
     twin_id: "twin-025",
-    item: { sku: "SKU-SONY-WH", title: "Sony WH-CH520 Wireless Headphones", category: "electronics", original_price: 4490, purchase_date: "2026-04-18T00:00:00Z", image_url: null },
+    item: { sku: "SKU-SONY-WH", title: "Sony WH-CH520 Wireless Headphones", category: "electronics", original_price: 4490, purchase_date: "2026-04-18T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/61VEnzBl4jL._SY355_.jpg" },
     customer: { customer_id: "cust-003", pincode: "110001", name: "Amit Verma" },
     state: "LISTED",
     prevention: { risk_score: 0.4, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
@@ -465,7 +465,7 @@ export const MOCK_TWINS = [
   // SOLD (2)
   {
     twin_id: "twin-015",
-    item: { sku: "SKU-HP-BOXSET", title: "Harry Potter Complete Box Set", category: "books", original_price: 2500, purchase_date: "2026-03-20T00:00:00Z", image_url: null },
+    item: { sku: "SKU-HP-BOXSET", title: "Harry Potter Complete Box Set", category: "books", original_price: 2500, purchase_date: "2026-03-20T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/91eopoePl+L._SY355_.jpg" },
     customer: { customer_id: "cust-004", pincode: "700001", name: "Sunita Das" },
     state: "SOLD",
     prevention: { risk_score: 0.15, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },

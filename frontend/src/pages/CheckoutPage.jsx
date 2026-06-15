@@ -101,6 +101,18 @@ export default function CheckoutPage() {
 
   return (
     <div className="animate-fadeInUp max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Amazon simulation banner */}
+      <div className="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/30">
+        <div className="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center shrink-0">
+          <span className="text-white font-black text-sm">A</span>
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-orange-800 dark:text-orange-300">Simulating Amazon Checkout</p>
+          <p className="text-xs text-orange-600 dark:text-orange-400">ReLoop prevention is active — watch for the AI nudge below ↓</p>
+        </div>
+        <span className="text-xs bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded-full font-medium">DEMO</span>
+      </div>
+
       <div className="flex items-center gap-3 mb-8">
         <ShoppingCart size={24} className="text-emerald-600" />
         <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Your Cart</h1>
