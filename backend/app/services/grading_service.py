@@ -24,43 +24,47 @@ class GradingService:
         self.prompt_template = """
 You are an expert product quality grader for Amazon's Second Life Commerce program.
 
-Analyze the provided product photos and assess the item's physical condition.
-
-Product Info:
-- Title: {title}
+A customer claims to be returning this specific product:
+- Product: {title}
 - Category: {category}
 - Original Price: ₹{original_price}
 
-IMPORTANT GRADING RULES:
-- is_authentic should be TRUE for any reasonable product photo. Only set FALSE if the photo clearly shows a completely different product type (e.g. photo of food when expecting electronics) or is obviously fraudulent.
-- is_blurry should only be TRUE if the photo is so blurry nothing is visible.
-- Give the benefit of the doubt — customers take photos in normal home conditions.
+STEP 1 — AUTHENTICITY CHECK (most important):
+Look at the photo and ask: "Is the object in this photo actually a {category} product consistent with '{title}'?"
+- If the photo shows a shirt/clothing → authentic for fashion items
+- If the photo shows a phone/electronics device → authentic for electronics
+- If the photo shows food, a person, a landscape, a random screenshot of an app/website, or anything clearly NOT the product category → set is_authentic=false
+- A screenshot of a computer screen or phone screen is NOT a product photo → is_authentic=false
+- If you cannot identify any physical product in the image → is_authentic=false
+
+STEP 2 — CONDITION GRADING (only if authentic):
+Grade the physical condition of the actual product shown.
 
 Respond ONLY with a JSON object (no markdown, no backticks, no extra text):
 {{
-  "is_authentic": <boolean, true unless photo is clearly a completely different product type>,
-  "is_blurry": <boolean, true only if completely unusable>,
-  "fraud_reason": "<only if is_authentic is false, else empty string>",
-  "grade": "A or B or C or D",
-  "confidence": <float between 0.0 and 1.0>,
+  "is_authentic": <boolean>,
+  "is_blurry": <boolean, true only if so blurry you cannot identify the product at all>,
+  "fraud_reason": "<if is_authentic=false, explain what you see instead of the product. Otherwise empty string>",
+  "grade": "A or B or C or D or F",
+  "confidence": <float 0.0-1.0>,
   "defects": [
     {{
       "type": "<one of: scratch, dent, stain, missing_part, discoloration, packaging_damage>",
       "location": "<where on the item>",
-      "severity": "<one of: minor, moderate, major>"
+      "severity": "<minor, moderate, or major>"
     }}
   ],
-  "condition_report": "<2-3 sentence human-readable summary of condition>"
+  "condition_report": "<2-3 sentences describing what you actually see in the photo and the condition of the product>"
 }}
 
 Grading scale:
-A (Like New): No visible defects, original packaging intact, could pass as new
-B (Good): Minor cosmetic defects only, fully functional, light wear
-C (Fair): Noticeable wear or cosmetic damage, functional but visible defects
-D (Salvage): Significant damage, missing parts, or non-functional components
-F (Fraud/Invalid): Item does not match the product description, or photo is completely unusable.
+A (Like New): No visible defects, could pass as new
+B (Good): Minor cosmetic defects only, light wear
+C (Fair): Noticeable wear or cosmetic damage
+D (Salvage): Significant damage, missing parts
+F (Fraud/Invalid): Photo does not show the actual product, or is a screenshot/unrelated image
 
-Be precise about defect locations. Be honest about condition. If is_authentic is false, grade MUST be F.
+CRITICAL: If is_authentic=false, grade MUST be F. Be strict — a screenshot of an app or website is never a valid product photo.
 """
 
     def _get_fallback_grading(self) -> dict:
