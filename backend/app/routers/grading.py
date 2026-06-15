@@ -6,7 +6,9 @@ from typing import List
 from app.database import get_db, Twin
 from app.services.grading_service import grading_service
 from app.services.valuation_service import valuation_service
+from app.config import get_settings
 
+settings = get_settings()
 router = APIRouter(prefix="/api/v1/grading", tags=["grading"])
 
 MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024
@@ -70,7 +72,7 @@ async def grade(
     photo_bytes_list = []
     photo_urls = []
     
-    upload_dir = os.path.join("uploads", twin_id)
+    upload_dir = os.path.join(settings.UPLOAD_DIR, twin_id)
     os.makedirs(upload_dir, exist_ok=True)
     
     for i, photo in enumerate(photos):

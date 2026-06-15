@@ -8,9 +8,13 @@ services:
     envVars:
       - key: DATABASE_URL
         value: sqlite:///./reloop.db
+      - key: UPLOAD_DIR
+        value: ./uploads
       - key: MOCK_MODE
-        value: "true"
-      - key: USE_GEMINI
         value: "false"
       - key: CORS_ORIGINS
-        value: '["https://reloop.vercel.app","https://*.vercel.app"]'
+        value: '["*"]'
+      - key: GROQ_API_KEY
+        sync: false        # set this manually in Render dashboard — never commit the real key
+      - key: GROQ_MODEL
+        value: meta-llama/llama-4-scout-17b-16e-instruct
