@@ -86,8 +86,7 @@ Be precise about defect locations. Be honest about condition. If is_authentic is
                 original_price=item_info.get('original_price', 0)
             )
 
-            response_text = bedrock_client.invoke_multimodal(photos, prompt)
-            
+            response_text = bedrock_client.invoke_multimodal(photos, prompt)            
             # Clean up the response if the LLM included markdown by accident
             clean_json_str = response_text.strip()
             if clean_json_str.startswith("```json"):
