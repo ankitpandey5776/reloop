@@ -248,26 +248,26 @@ export const MOCK_TWINS = [
   // LISTED (3)
   {
     twin_id: "twin-012",
-    item: { sku: "SKU-CAMPUS-SHOES", title: "Campus Men's Running Shoes (UK 8)", category: "fashion", original_price: 1499, purchase_date: "2026-04-20T00:00:00Z", image_url: "https://m.media-amazon.com/images/I/71K96V+b5uL._UY400_.jpg" },
+    item: { sku: "SKU-ZERO-TO-ONE", title: "Zero to One by Peter Thiel", category: "books", original_price: 499, purchase_date: "2026-04-20T00:00:00Z", image_url: "/zero_to_one.png" },
     customer: { customer_id: "cust-002", pincode: "560001", name: "Priya Menon" },
     state: "LISTED",
-    prevention: { risk_score: 0.68, risk_factors: ["size_bracketing", "review_fit_warnings"], nudge_shown: true, nudge_type: "fit_predictor", prevented: false },
+    prevention: { risk_score: 0.15, risk_factors: [], nudge_shown: false, nudge_type: "none", prevented: false },
     grading: {
-      grade: "A", confidence: 0.91,
+      grade: "A", confidence: 0.93,
       defects: [],
       photo_urls: [],
-      condition_report: "Shoes are in excellent condition, worn only once. No scuffs or sole wear. Original box included.",
+      condition_report: "Book is in like-new condition. No highlights, markings or spine creases. Read once and carefully maintained.",
       graded_at: "2026-06-05T12:00:00Z"
     },
-    valuation: { resale_price: 1050, price_multiplier: 0.70, demand_factor: 1.0 },
+    valuation: { resale_price: 350, price_multiplier: 0.70, demand_factor: 1.2 },
     routing: {
       decision: "RESELL_P2P",
-      reasoning: "Grade A condition and high demand for Campus shoes locally. Direct P2P sale avoids warehouse handling and maximises seller recovery.",
+      reasoning: "Highly rated business book with consistent demand. Like-new condition commands strong P2P resale price.",
       destination: { type: "buyer", name: "Local P2P Buyer", pincode: "560002" },
-      savings: { cost_saved: 270, co2_saved_kg: 1.1, km_avoided: 580 },
+      savings: { cost_saved: 80, co2_saved_kg: 0.3, km_avoided: 140 },
       routed_at: "2026-06-05T12:30:00Z"
     },
-    credits: { earned: 50, action: "p2p_local_handoff", lifetime_credits: 170 },
+    credits: { earned: 30, action: "p2p_local_handoff", lifetime_credits: 170 },
     created_at: "2026-04-20T10:00:00Z", updated_at: "2026-06-05T12:30:00Z"
   },
   {

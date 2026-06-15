@@ -16,13 +16,14 @@ const UNSPLASH = {
 
 /* SKU-specific overrides for demo items */
 const SKU_IMAGES = {
-  'ELEC-SAM-S23':  '/samsung-s23.jpg',
-  'FASH-ALNS-SHT': '/allen-solly.jpg',
-  'ELEC-BOAT-141': 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&q=80&fit=crop',
-  'ELEC-KIND-PW':  'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80&fit=crop',
-  'FASH-NIKE-REV': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80&fit=crop',
-  'FASH-LEV-JNS':  'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=300&q=80&fit=crop',
-  'BOOK-ATMT':     'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&q=80&fit=crop',
+  'ELEC-SAM-S23':    '/samsung_s23.png',
+  'FASH-ALNS-SHT':   '/allen-solly.jpg',
+  'ELEC-BOAT-141':   'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&q=80&fit=crop',
+  'ELEC-KIND-PW':    'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80&fit=crop',
+  'FASH-NIKE-REV':   'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80&fit=crop',
+  'FASH-LEV-JNS':    'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=300&q=80&fit=crop',
+  'BOOK-ATMT':       'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&q=80&fit=crop',
+  'SKU-ZERO-TO-ONE': '/zero_to_one.png',
 }
 
 const CAT_BG = {

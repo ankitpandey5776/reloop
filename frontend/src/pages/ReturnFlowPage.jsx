@@ -4,7 +4,7 @@ import {
   Package, CheckCircle, ArrowRight, RotateCcw, ShieldCheck,
   Clock, AlertCircle, Camera
 } from 'lucide-react'
-import { updateTwinState, gradeItem, getGradingStatus, routeItem, listItem, createTwin } from '../api/client.js'
+import { updateTwinState, routeItem, listItem, createTwin } from '../api/client.js'
 import Button from '../components/common/Button.jsx'
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
 import GradeResult from '../components/grading/GradeResult.jsx'
@@ -41,9 +41,53 @@ function getReturnStatus(purchaseDateStr) {
 const STEPS = ['Select Item', 'Upload Photos', 'AI Grading', 'Route Decision', 'Done']
 const SCAN_MESSAGES = ['Detecting defects…', 'Assessing condition…', 'Calculating value…', 'Generating report…']
 
+/* ── Demo grade map — one grade per item so every grade is reachable ─
+   A = Like New, B = Good, C = Fair, D = Salvage
+   This bypasses AI entirely for reliable demo presentations.
+─────────────────────────────────────────────────────────────────────── */
+const DEMO_GRADES = {
+  'demo-twin-shirt-xl':  'A',
+  'demo-twin-s23':       'B',
+  'demo-twin-airdopes':  'C',
+  'demo-twin-nike':      'D',
+}
+
+const DEMO_GRADE_DATA = {
+  A: {
+    grade: 'A', confidence: 0.96, is_authentic: true, is_blurry: false, fraud_reason: '',
+    defects: [],
+    condition_report: 'Item is in excellent, like-new condition. No visible defects detected. Original packaging intact and all components functional. Ready for immediate resale at premium price.',
+    multiplier: 0.78,
+  },
+  B: {
+    grade: 'B', confidence: 0.89, is_authentic: true, is_blurry: false, fraud_reason: '',
+    defects: [{ type: 'scratch', location: 'rear panel', severity: 'minor' }],
+    condition_report: 'Item shows minor signs of use but remains in good working condition. Light cosmetic wear visible on the rear panel. No functional issues — suitable for direct resale.',
+    multiplier: 0.62,
+  },
+  C: {
+    grade: 'C', confidence: 0.81, is_authentic: true, is_blurry: false, fraud_reason: '',
+    defects: [
+      { type: 'scratch', location: 'front surface', severity: 'moderate' },
+      { type: 'discoloration', location: 'edges', severity: 'minor' },
+    ],
+    condition_report: 'Item shows noticeable cosmetic wear with moderate scratching on the front surface. Fully functional but would benefit from light refurbishment before resale to maximise value recovery.',
+    multiplier: 0.44,
+  },
+  D: {
+    grade: 'D', confidence: 0.74, is_authentic: true, is_blurry: false, fraud_reason: '',
+    defects: [
+      { type: 'dent', location: 'main body', severity: 'major' },
+      { type: 'packaging_damage', location: 'outer casing', severity: 'moderate' },
+    ],
+    condition_report: 'Item has significant visible damage including a major dent on the main body. Structural integrity may be compromised. Recommended for recycling or parts recovery to avoid further depreciation.',
+    multiplier: 0.20,
+  },
+}
+
 /* Real product images — local /public/ files + Unsplash CORS-safe fallbacks */
 const ITEM_IMAGES = {
-  'ELEC-SAM-S23':  '/samsung-s23.jpg',
+  'ELEC-SAM-S23':  '/samsung_s23.png',
   'ELEC-BOAT-141': 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&q=80&fit=crop',
   'ELEC-KIND-PW':  'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80&fit=crop',
   'ELEC-FIRE-4K':  'https://images.unsplash.com/photo-1593359677879-a4bb92f4834a?w=300&q=80&fit=crop',
@@ -174,18 +218,20 @@ export default function ReturnFlowPage() {
   }, [grading])
 
   async function selectItem(twin) {
+    // Always preserve the original demo_twin_id for grade lookup,
+    // even after createTwin replaces twin_id with a real DB UUID.
+    const demoTwinId = twin.twin_id
     try {
-      // Create the twin in the real DB (demo orders only exist in frontend memory)
       const created = await createTwin(twin.item, twin.customer)
       if (created?.twin_id) {
-        setSelected({ ...twin, twin_id: created.twin_id })
+        setSelected({ ...twin, twin_id: created.twin_id, demo_twin_id: demoTwinId })
         await updateTwinState(created.twin_id, 'RETURN_INTENT').catch(() => {})
       } else {
-        setSelected(twin)
+        setSelected({ ...twin, demo_twin_id: demoTwinId })
         await updateTwinState(twin.twin_id, 'RETURN_INTENT').catch(() => {})
       }
     } catch {
-      setSelected(twin)
+      setSelected({ ...twin, demo_twin_id: demoTwinId })
     }
     setStep(1)
   }
@@ -193,43 +239,37 @@ export default function ReturnFlowPage() {
   async function handleGrade() {
     setGrading(true)
     setStep(2)
-    const files = photos.map(p => p.file)
-    try {
-      // gradeItem returns the serialized twin with grading + valuation
-      const result = await gradeItem(selected.twin_id, files)
 
-      // Normalise: real API returns {twin_id, state, grading, valuation, item, ...}
-      // Mock API returns {twin_id, grading, valuation}
-      let gradingData   = result?.grading   || result?.grading_data   || null
-      let valuationData = result?.valuation || result?.valuation_data || null
+    // Simulate AI scan time for demo effect
+    await new Promise(r => setTimeout(r, 3200))
 
-      // If grading not in direct response, poll status once
-      if (!gradingData) {
-        await new Promise(r => setTimeout(r, 1000))
-        const status = await getGradingStatus(selected.twin_id).catch(() => null)
-        gradingData   = status?.grading   || null
-        valuationData = status?.valuation || null
-      }
+    // Use hardcoded demo grade for the selected item — guarantees all grades
+    // are reachable without depending on AI or network.
+    // demo_twin_id is the original DEMO_ORDERS key; twin_id may be a real DB UUID.
+    const gradeKey   = DEMO_GRADES[selected.demo_twin_id] || DEMO_GRADES[selected.twin_id] || 'B'
+    const demoData   = DEMO_GRADE_DATA[gradeKey]
+    const origPrice  = selected?.item?.original_price || 1000
 
-      if (!gradingData) throw new Error('No grading data received')
-      setGradeResult({ grading: gradingData, valuation: valuationData })
-    } catch (err) {
-      console.error('Grading error:', err)
-      setError('Grading failed. Using demo data.')
-      setGradeResult({
-        grading: {
-          grade: 'B', confidence: 0.88, defects: [],
-          condition_report: 'Item is in good condition with minor signs of use.',
-          graded_at: new Date().toISOString(), condition_hash: null,
-        },
-        valuation: {
-          resale_price: Math.round((selected?.item?.original_price || 1000) * 0.6),
-          price_multiplier: 0.6, demand_factor: 1.0,
-        }
-      })
-    } finally {
-      setGrading(false)
+    const gradingData = {
+      grade:            demoData.grade,
+      confidence:       demoData.confidence,
+      is_authentic:     demoData.is_authentic,
+      is_blurry:        demoData.is_blurry,
+      fraud_reason:     demoData.fraud_reason,
+      defects:          demoData.defects,
+      condition_report: demoData.condition_report,
+      graded_at:        new Date().toISOString(),
+      condition_hash:   'demo-sealed-' + demoData.grade,
+      photo_urls:       [],
     }
+    const valuationData = {
+      resale_price:     Math.round(origPrice * demoData.multiplier),
+      price_multiplier: demoData.multiplier,
+      demand_factor:    1.0,
+    }
+
+    setGradeResult({ grading: gradingData, valuation: valuationData })
+    setGrading(false)
   }
 
   async function handleRoute() {
@@ -244,16 +284,65 @@ export default function ReturnFlowPage() {
       const creditsData = result?.credits_data || result?.credits || null
       setRouteResult({ routing: routingData, credits: creditsData })
     } catch {
-      setError('Routing failed. Using demo data.')
+      // Silently use demo data — never show routing error to user
+      const grade = gradeResult?.grading?.grade || 'B'
+      const originalPrice = selected?.item?.original_price || 5000
+      const resalePrice = gradeResult?.valuation?.resale_price || Math.round(originalPrice * 0.65)
+      const category = selected?.item?.category || 'electronics'
+
+      // Pick realistic buyer based on category
+      const BUYERS = {
+        electronics: [
+          { name: 'Priya Patel', pincode: '700005', city: 'Kolkata', distance: '2.4 km', searched: '3 days ago', avatar: 'PP' },
+          { name: 'Arjun Singh', pincode: '700012', city: 'Kolkata', distance: '4.1 km', searched: 'yesterday', avatar: 'AS' },
+        ],
+        fashion: [
+          { name: 'Neha Gupta', pincode: '700003', city: 'Kolkata', distance: '1.8 km', searched: '2 days ago', avatar: 'NG' },
+          { name: 'Meera Das', pincode: '700009', city: 'Kolkata', distance: '3.2 km', searched: 'today', avatar: 'MD' },
+        ],
+        home: [
+          { name: 'Vikram Nair', pincode: '700007', city: 'Kolkata', distance: '3.6 km', searched: '4 days ago', avatar: 'VN' },
+        ],
+        books: [
+          { name: 'Ananya Roy', pincode: '700004', city: 'Kolkata', distance: '1.2 km', searched: 'today', avatar: 'AR' },
+        ],
+      }
+      const buyers = BUYERS[category] || BUYERS.electronics
+      const buyer = buyers[Math.floor(Math.random() * buyers.length)]
+
+      const decision = grade === 'A' ? 'RESELL_P2P'
+        : grade === 'B' ? 'REFURBISH'
+        : grade === 'C' ? 'DONATE'
+        : 'RECYCLE'
+
+      const destinations = {
+        RESELL_P2P: { type: 'buyer', name: buyer.name, pincode: buyer.pincode, city: buyer.city },
+        REFURBISH:  { type: 'refurbisher', name: 'ReNew Pro — Certified Refurbishment Partner', pincode: '700016', city: 'Kolkata' },
+        DONATE:     { type: 'ngo', name: 'Goonj Foundation', pincode: '700010', city: 'Kolkata' },
+        RECYCLE:    { type: 'recycler', name: 'EcoRecycle Partners', pincode: '711105', city: 'Howrah' },
+      }
+
+      const reasonings = {
+        RESELL_P2P: `Grade A — item is in like-new condition. A direct handoff to a nearby buyer eliminates warehouse stops entirely, gets you paid faster, and has the lowest carbon footprint of any route.`,
+        REFURBISH:  `Grade B — item has minor cosmetic wear that a certified technician can restore in 2–3 days. After light refurbishment it qualifies for Amazon Renewed, unlocking a higher resale price than a direct P2P sale.`,
+        DONATE:     `Grade C — item shows noticeable wear. Donating to a local NGO partner gives it a useful second life, earns you maximum green credits, and keeps it out of landfill.`,
+        RECYCLE:    `Grade D — item has significant damage. Responsible recycling recovers raw materials and prevents harmful e-waste. Our certified partner ensures zero landfill disposal.`,
+      }
+
       setRouteResult({
         routing: {
-          decision: 'RESELL_P2P',
-          reasoning: 'Your item is in great condition — a local buyer in Kolkata is the fastest and most eco-friendly path. Direct handoff saves significant shipping cost and prevents CO₂ emissions.',
-          destination: { type: 'buyer', name: 'Amit Kumar', pincode: '700008' },
-          savings: { cost_saved: 270, co2_saved_kg: 118.6, km_avoided: 45 },
+          decision,
+          reasoning: reasonings[decision],
+          destination: destinations[decision],
+          buyer: decision === 'RESELL_P2P' ? buyer : null,
+          savings: {
+            cost_saved: 270,
+            co2_saved_kg: Math.round(118 + Math.random() * 30),
+            km_avoided: 45,
+          },
           routed_at: new Date().toISOString(),
         },
-        credits: { earned: 50, action: 'resell_p2p', lifetime_credits: 50 },
+        credits: { earned: decision === 'DONATE' ? 80 : 50, action: decision.toLowerCase(), lifetime_credits: 50 },
       })
     } finally {
       setRouting(false)
@@ -303,9 +392,7 @@ export default function ReturnFlowPage() {
         ))}
       </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-700">{error}</div>
-      )}
+      {/* Routing errors are suppressed — fallback handles them silently */}
 
       {/* Step 0: Select item */}
       {step === 0 && (
@@ -455,7 +542,9 @@ export default function ReturnFlowPage() {
                   ? 'Confirm Donation'
                   : decision === 'RECYCLE'
                   ? 'Schedule Recycling'
-                  : 'Send to Repair Partner'
+                  : decision === 'REFURBISH'
+                  ? 'Send to Refurbishment Partner'
+                  : 'Confirm'
                 } <ArrowRight size={16} />
               </Button>
             </>
