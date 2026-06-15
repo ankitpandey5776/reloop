@@ -4,7 +4,7 @@ import {
   Package, CheckCircle, ArrowRight, RotateCcw, ShieldCheck,
   Clock, AlertCircle, Camera
 } from 'lucide-react'
-import { updateTwinState, routeItem, listItem, createTwin } from '../api/client.js'
+import { updateTwinState, gradeItem, getGradingStatus, routeItem, listItem, createTwin } from '../api/client.js'
 import Button from '../components/common/Button.jsx'
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
 import GradeResult from '../components/grading/GradeResult.jsx'
@@ -239,37 +239,46 @@ export default function ReturnFlowPage() {
   async function handleGrade() {
     setGrading(true)
     setStep(2)
+    const files = photos.map(p => p.file)
+    try {
+      // Call the real backend — Groq llama-4-scout grades the actual uploaded photo
+      const result = await gradeItem(selected.twin_id, files)
 
-    // Simulate AI scan time for demo effect
-    await new Promise(r => setTimeout(r, 3200))
+      let gradingData   = result?.grading   || result?.grading_data   || null
+      let valuationData = result?.valuation || result?.valuation_data || null
 
-    // Use hardcoded demo grade for the selected item — guarantees all grades
-    // are reachable without depending on AI or network.
-    // demo_twin_id is the original DEMO_ORDERS key; twin_id may be a real DB UUID.
-    const gradeKey   = DEMO_GRADES[selected.demo_twin_id] || DEMO_GRADES[selected.twin_id] || 'B'
-    const demoData   = DEMO_GRADE_DATA[gradeKey]
-    const origPrice  = selected?.item?.original_price || 1000
+      // Poll once if grading not in direct response
+      if (!gradingData) {
+        await new Promise(r => setTimeout(r, 1200))
+        const status = await getGradingStatus(selected.twin_id).catch(() => null)
+        gradingData   = status?.grading   || null
+        valuationData = status?.valuation || null
+      }
 
-    const gradingData = {
-      grade:            demoData.grade,
-      confidence:       demoData.confidence,
-      is_authentic:     demoData.is_authentic,
-      is_blurry:        demoData.is_blurry,
-      fraud_reason:     demoData.fraud_reason,
-      defects:          demoData.defects,
-      condition_report: demoData.condition_report,
-      graded_at:        new Date().toISOString(),
-      condition_hash:   'demo-sealed-' + demoData.grade,
-      photo_urls:       [],
+      if (!gradingData) throw new Error('No grading data received')
+      setGradeResult({ grading: gradingData, valuation: valuationData })
+    } catch (err) {
+      console.error('Grading error — using demo fallback:', err)
+      // Fallback: use hardcoded grade for the selected demo item
+      const gradeKey  = DEMO_GRADES[selected.demo_twin_id] || DEMO_GRADES[selected.twin_id] || 'B'
+      const demoData  = DEMO_GRADE_DATA[gradeKey]
+      const origPrice = selected?.item?.original_price || 1000
+      setGradeResult({
+        grading: {
+          grade: demoData.grade, confidence: demoData.confidence,
+          is_authentic: true, is_blurry: false, fraud_reason: '',
+          defects: demoData.defects, condition_report: demoData.condition_report,
+          graded_at: new Date().toISOString(), condition_hash: 'demo-sealed-' + demoData.grade,
+          photo_urls: [],
+        },
+        valuation: {
+          resale_price: Math.round(origPrice * demoData.multiplier),
+          price_multiplier: demoData.multiplier, demand_factor: 1.0,
+        }
+      })
+    } finally {
+      setGrading(false)
     }
-    const valuationData = {
-      resale_price:     Math.round(origPrice * demoData.multiplier),
-      price_multiplier: demoData.multiplier,
-      demand_factor:    1.0,
-    }
-
-    setGradeResult({ grading: gradingData, valuation: valuationData })
-    setGrading(false)
   }
 
   async function handleRoute() {
